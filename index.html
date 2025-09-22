@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarrakFit – Votre coach calories & macros made in Morocco</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary-color: #C1272D; /* Rouge Marrakech */
@@ -264,7 +263,7 @@
             box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
         }
 
-        .btn-pdf {
+        .btn-export {
             background-color: #D32F2F;
             color: white;
             display: flex;
@@ -273,10 +272,25 @@
             gap: 8px;
         }
 
-        .btn-pdf:hover {
+        .btn-export:hover {
             background-color: #B71C1C;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+        }
+
+        .btn-print {
+            background-color: #1976D2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-print:hover {
+            background-color: #1565C0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
         }
 
         .result-card {
@@ -475,7 +489,7 @@
             font-size: 1.1em;
         }
 
-        .pdf-section {
+        .export-section {
             margin-top: 30px;
             text-align: center;
             padding: 20px;
@@ -483,13 +497,51 @@
             border-radius: 8px;
         }
 
-        .mobile-pdf-info {
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .mobile-info {
             display: none;
             background-color: #e3f2fd;
             padding: 10px;
             border-radius: 5px;
             margin-top: 10px;
             font-size: 0.9em;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            flex-direction: column;
+            color: white;
+            display: none;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @media (max-width: 768px) {
@@ -527,8 +579,12 @@
                 padding: 5px;
             }
             
-            .mobile-pdf-info {
+            .mobile-info {
                 display: block;
+            }
+            
+            .export-buttons {
+                flex-direction: column;
             }
         }
 
@@ -539,9 +595,36 @@
                 white-space: nowrap;
             }
         }
+
+        /* Styles pour l'impression */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            
+            #planSection, #planSection * {
+                visibility: visible;
+            }
+            
+            #planSection {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+            }
+            
+            .export-section, .form-actions {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p id="loadingText">Génération de l'image en cours...</p>
+    </div>
+
     <div class="container">
         <!-- Sélecteur de langue -->
         <div class="language-selector">
@@ -700,12 +783,17 @@
                     <!-- Le tableau du plan sera généré ici dynamiquement -->
                 </div>
                 
-                <div class="pdf-section">
-                    <button type="button" id="exportPdfBtn" class="btn-pdf">
-                        <span>📄</span> Exporter en PDF
-                    </button>
-                    <div class="mobile-pdf-info" id="mobilePdfInfo">
-                        Sur mobile, le PDF peut prendre quelques secondes à générer. Vérifiez vos téléchargements.
+                <div class="export-section">
+                    <div class="export-buttons">
+                        <button type="button" id="exportImageBtn" class="btn-export">
+                            <span>🖼️</span> Télécharger l'image
+                        </button>
+                        <button type="button" id="printPlanBtn" class="btn-print">
+                            <span>🖨️</span> Imprimer le plan
+                        </button>
+                    </div>
+                    <div class="mobile-info" id="mobileInfo">
+                        Sur mobile, utilisez "Télécharger l'image" pour sauvegarder votre plan.
                     </div>
                 </div>
                 
@@ -767,7 +855,8 @@
                 planTitle: "Votre Plan Nutritionnel Quotidien",
                 planDescription: "Basé sur vos besoins de",
                 restartButton: "Recommencer",
-                exportPdfButton: "Exporter en PDF",
+                exportImageButton: "Télécharger l'image",
+                printButton: "Imprimer le plan",
                 meal: "Repas",
                 food: "Aliment",
                 weight: "Poids",
@@ -781,7 +870,10 @@
                 dailyTotal: "Total quotidien",
                 protein: "Protéines",
                 carbs: "Glucides",
-                fat: "Lipides"
+                fat: "Lipides",
+                generatingImage: "Génération de l'image en cours...",
+                imageReady: "Image générée avec succès!",
+                mobileInfo: "Sur mobile, utilisez 'Télécharger l'image' pour sauvegarder votre plan."
             },
             en: {
                 appTitle: "MarrakFit – Your calories & macros coach made in Morocco",
@@ -830,7 +922,8 @@
                 planTitle: "Your Daily Nutrition Plan",
                 planDescription: "Based on your needs of",
                 restartButton: "Restart",
-                exportPdfButton: "Export to PDF",
+                exportImageButton: "Download Image",
+                printButton: "Print Plan",
                 meal: "Meal",
                 food: "Food",
                 weight: "Weight",
@@ -844,7 +937,10 @@
                 dailyTotal: "Daily total",
                 protein: "Protein",
                 carbs: "Carbs",
-                fat: "Fat"
+                fat: "Fat",
+                generatingImage: "Generating image...",
+                imageReady: "Image generated successfully!",
+                mobileInfo: "On mobile, use 'Download Image' to save your plan."
             },
             ar: {
                 appTitle: "MarrakFit – مدرب السعرات والماكرو من المغرب",
@@ -893,7 +989,8 @@
                 planTitle: "خطتك الغذائية اليومية",
                 planDescription: "بناءً على احتياجاتك من",
                 restartButton: "إعادة البدء",
-                exportPdfButton: "تصدير إلى PDF",
+                exportImageButton: "تحميل الصورة",
+                printButton: "طباعة الخطة",
                 meal: "الوجبة",
                 food: "الغذاء",
                 weight: "الوزن",
@@ -907,7 +1004,10 @@
                 dailyTotal: "المجموع اليومي",
                 protein: "البروتين",
                 carbs: "الكربوهيدرات",
-                fat: "الدهون"
+                fat: "الدهون",
+                generatingImage: "جارٍ إنشاء الصورة...",
+                imageReady: "تم إنشاء الصورة بنجاح!",
+                mobileInfo: "على الهاتف، استخدم 'تحميل الصورة' لحفظ خطتك."
             }
         };
 
@@ -924,8 +1024,11 @@
         const nextToPlanBtn = document.getElementById('nextToPlanBtn');
         const backToResultsBtn = document.getElementById('backToResultsBtn');
         const restartBtn = document.getElementById('restartBtn');
-        const exportPdfBtn = document.getElementById('exportPdfBtn');
-        const mobilePdfInfo = document.getElementById('mobilePdfInfo');
+        const exportImageBtn = document.getElementById('exportImageBtn');
+        const printPlanBtn = document.getElementById('printPlanBtn');
+        const mobileInfo = document.getElementById('mobileInfo');
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        const loadingText = document.getElementById('loadingText');
         
         const steps = document.querySelectorAll('.step');
         
@@ -1001,7 +1104,8 @@
         nextToPlanBtn.addEventListener('click', goToPlanSection);
         backToResultsBtn.addEventListener('click', backToResultsSection);
         restartBtn.addEventListener('click', restartApp);
-        exportPdfBtn.addEventListener('click', exportToPdf);
+        exportImageBtn.addEventListener('click', exportToImage);
+        printPlanBtn.addEventListener('click', printPlan);
         
         // Gestionnaire de langue
         languageBtn.addEventListener('click', () => {
@@ -1414,164 +1518,50 @@
             planTableContainer.appendChild(table);
         }
         
-        // Exportation en PDF améliorée pour mobile
-        function exportToPdf() {
-            // Afficher un message d'attente sur mobile
-            if (window.innerWidth <= 768) {
-                mobilePdfInfo.style.display = 'block';
-                mobilePdfInfo.textContent = currentLang === 'fr' 
-                    ? 'Génération du PDF en cours...' 
-                    : currentLang === 'en' 
-                    ? 'Generating PDF...' 
-                    : 'جارٍ إنشاء PDF...';
+        // Exportation en image (solution pour mobile)
+        function exportToImage() {
+            loadingText.textContent = translations[currentLang].generatingImage;
+            loadingOverlay.style.display = 'flex';
+            
+            // Capturer le tableau avec html2canvas
+            html2canvas(planTableContainer, {
+                scale: 2, // Qualité plus élevée
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#FFFFFF'
+            }).then(canvas => {
+                // Convertir le canvas en image
+                const image = canvas.toDataURL('image/png');
                 
-                // Simuler un délai pour permettre à l'utilisateur de voir le message
-                setTimeout(generatePdf, 500);
-            } else {
-                generatePdf();
-            }
+                // Créer un lien de téléchargement
+                const link = document.createElement('a');
+                link.download = `Plan_Nutritionnel_MarrakFit_${userData.goalCalories}cal.png`;
+                link.href = image;
+                
+                // Simuler le clic pour télécharger
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // Cacher l'overlay de chargement
+                loadingOverlay.style.display = 'none';
+                
+                // Afficher un message de confirmation
+                alert(translations[currentLang].imageReady);
+            }).catch(error => {
+                console.error('Erreur lors de la génération de l\'image:', error);
+                loadingOverlay.style.display = 'none';
+                alert(currentLang === 'fr' 
+                    ? 'Erreur lors de la génération de l\'image. Essayez l\'impression.' 
+                    : currentLang === 'en' 
+                    ? 'Error generating image. Try printing instead.' 
+                    : 'خطأ في إنشاء الصورة. جرب الطباعة بدلاً من ذلك.');
+            });
         }
         
-        function generatePdf() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            // Titre du document
-            doc.setFontSize(20);
-            doc.setTextColor(193, 39, 45); // Rouge Marrakech
-            doc.text(translations[currentLang].appTitle, 105, 20, { align: 'center' });
-            
-            doc.setFontSize(12);
-            doc.setTextColor(0, 0, 0);
-            doc.text(`${translations[currentLang].planDescription} ${userData.goalCalories} ${translations[currentLang].calories}`, 105, 30, { align: 'center' });
-            
-            // En-têtes du tableau
-            const headers = [
-                translations[currentLang].meal,
-                translations[currentLang].food,
-                translations[currentLang].weight,
-                translations[currentLang].calories,
-                translations[currentLang].nutrition
-            ];
-            
-            // Données du tableau
-            const tableData = [];
-            let currentMeal = '';
-            let mealCalories = 0;
-            let mealProtein = 0;
-            let mealCarbs = 0;
-            let mealFat = 0;
-            
-            let dailyCalories = 0;
-            let dailyProtein = 0;
-            let dailyCarbs = 0;
-            let dailyFat = 0;
-            
-            mealStructure.forEach((item, index) => {
-                // Si on change de repas, ajouter la ligne de total du repas précédent
-                if (currentMeal !== '' && currentMeal !== item.meal) {
-                    tableData.push([
-                        { content: `${translations[currentLang][currentMeal]} - ${translations[currentLang].total}`, colSpan: 2, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } },
-                        '',
-                        `${mealCalories} kcal`,
-                        `${translations[currentLang].protein} ${mealProtein}g, ${translations[currentLang].carbs} ${mealCarbs}g, ${translations[currentLang].fat} ${mealFat}g`
-                    ]);
-                    
-                    // Réinitialiser les totaux du repas
-                    mealCalories = 0;
-                    mealProtein = 0;
-                    mealCarbs = 0;
-                    mealFat = 0;
-                }
-                
-                // Si c'est le début d'un nouveau repas, ajouter l'en-tête du repas
-                if (currentMeal !== item.meal) {
-                    currentMeal = item.meal;
-                    tableData.push([
-                        { content: translations[currentLang][item.meal], colSpan: 5, styles: { fontStyle: 'bold', fillColor: [212, 175, 55] } }
-                    ]);
-                }
-                
-                // Ajuster la quantité selon les calories nécessaires
-                const adjustedWeight = Math.round(item.baseWeight * (userData.goalCalories / 2000));
-                const adjustedCalories = Math.round(item.calories * (userData.goalCalories / 2000));
-                const adjustedProtein = Math.round(item.protein * (userData.goalCalories / 2000));
-                const adjustedCarbs = Math.round(item.carbs * (userData.goalCalories / 2000));
-                const adjustedFat = Math.round(item.fat * (userData.goalCalories / 2000));
-                
-                // Ajouter les valeurs aux totaux
-                mealCalories += adjustedCalories;
-                mealProtein += adjustedProtein;
-                mealCarbs += adjustedCarbs;
-                mealFat += adjustedFat;
-                
-                dailyCalories += adjustedCalories;
-                dailyProtein += adjustedProtein;
-                dailyCarbs += adjustedCarbs;
-                dailyFat += adjustedFat;
-                
-                // Ligne de l'aliment
-                tableData.push([
-                    '',
-                    item.food,
-                    `${adjustedWeight}g`,
-                    `${adjustedCalories} kcal`,
-                    `${adjustedProtein > 0 ? `${translations[currentLang].protein} ${adjustedProtein}g` : ''}${adjustedCarbs > 0 ? `, ${translations[currentLang].carbs} ${adjustedCarbs}g` : ''}${adjustedFat > 0 ? `, ${translations[currentLang].fat} ${adjustedFat}g` : ''}`
-                ]);
-                
-                // Si c'est le dernier aliment, ajouter le total du repas
-                if (index === mealStructure.length - 1) {
-                    tableData.push([
-                        { content: `${translations[currentLang][currentMeal]} - ${translations[currentLang].total}`, colSpan: 2, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } },
-                        '',
-                        `${mealCalories} kcal`,
-                        `${translations[currentLang].protein} ${mealProtein}g, ${translations[currentLang].carbs} ${mealCarbs}g, ${translations[currentLang].fat} ${mealFat}g`
-                    ]);
-                }
-            });
-            
-            // Ajouter la ligne de total quotidien
-            tableData.push([
-                { content: translations[currentLang].dailyTotal, colSpan: 2, styles: { fontStyle: 'bold', fillColor: [193, 39, 45], textColor: [255, 255, 255] } },
-                '',
-                `${dailyCalories} kcal`,
-                `${translations[currentLang].protein} ${dailyProtein}g, ${translations[currentLang].carbs} ${dailyCarbs}g, ${translations[currentLang].fat} ${dailyFat}g`
-            ]);
-            
-            // Générer le tableau
-            doc.autoTable({
-                head: [headers],
-                body: tableData,
-                startY: 40,
-                theme: 'grid',
-                styles: { fontSize: 9, cellPadding: 3 },
-                headStyles: { fillColor: [193, 39, 45] }, // Rouge Marrakech
-                alternateRowStyles: { fillColor: [248, 246, 227] } // Beige sable
-            });
-            
-            // Pied de page
-            const pageCount = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= pageCount; i++) {
-                doc.setPage(i);
-                doc.setFontSize(10);
-                doc.text(`Page ${i} sur ${pageCount}`, 105, doc.internal.pageSize.height - 10, { align: 'center' });
-            }
-            
-            // Sauvegarder le PDF
-            doc.save(`Plan_Nutritionnel_MarrakFit_${userData.goalCalories}cal.pdf`);
-            
-            // Cacher le message d'information sur mobile
-            if (window.innerWidth <= 768) {
-                mobilePdfInfo.textContent = currentLang === 'fr' 
-                    ? 'PDF généré avec succès! Vérifiez vos téléchargements.' 
-                    : currentLang === 'en' 
-                    ? 'PDF generated successfully! Check your downloads.' 
-                    : 'تم إنشاء PDF بنجاح! تحقق من التنزيلات.';
-                
-                setTimeout(() => {
-                    mobilePdfInfo.style.display = 'none';
-                }, 3000);
-            }
+        // Impression du plan
+        function printPlan() {
+            window.print();
         }
         
         // Changer la langue de l'application
@@ -1627,7 +1617,9 @@
             document.getElementById('planDescription').textContent = `${translations[lang].planDescription} `;
             document.getElementById('backToResultsBtn').textContent = translations[lang].previousButton;
             document.getElementById('restartBtn').textContent = translations[lang].restartButton;
-            document.getElementById('exportPdfBtn').textContent = translations[lang].exportPdfButton;
+            document.getElementById('exportImageBtn').innerHTML = `<span>🖼️</span> ${translations[lang].exportImageButton}`;
+            document.getElementById('printPlanBtn').innerHTML = `<span>🖨️</span> ${translations[lang].printButton}`;
+            document.getElementById('mobileInfo').textContent = translations[lang].mobileInfo;
             
             // Si nous sommes sur la page des résultats, recalculer pour mettre à jour les textes
             if (!resultsSection.classList.contains('hidden')) {
