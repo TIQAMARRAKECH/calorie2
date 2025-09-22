@@ -820,30 +820,55 @@
         // Langue actuelle
         let currentLang = 'fr';
         
-        // Base d'aliments avec priorités selon les repas (sans doublons)
-        const foodDatabase = {
-            // Aliments pour petit-déjeuner (priorité aux œufs)
-            breakfast: [
-                { name: "Œufs brouillés", calories: 149, protein: 10, carbs: 1.6, fat: 11 },
-                { name: "Flocons d'avoine", calories: 68, protein: 2.4, carbs: 12, fat: 1.4 },
-                { name: "Yaourt grec", calories: 59, protein: 10, carbs: 3.6, fat: 0.4 },
-                { name: "Pain complet", calories: 265, protein: 13, carbs: 44, fat: 3.4 }
-            ],
-            // Aliments pour déjeuner et dîner (priorité au poulet et riz)
-            lunchDinner: [
-                { name: "Poulet grillé", calories: 165, protein: 31, carbs: 0, fat: 3.6 },
-                { name: "Riz brun cuit", calories: 111, protein: 2.6, carbs: 23, fat: 0.9 },
-                { name: "Brocoli cuit", calories: 55, protein: 3.7, carbs: 11, fat: 0.6 },
-                { name: "Salade marocaine", calories: 80, protein: 2, carbs: 10, fat: 4 },
-                { name: "Poivrons grillés", calories: 40, protein: 1, carbs: 9, fat: 0.5 }
-            ],
-            // Aliments pour collation
-            snack: [
-                { name: "Amandes", calories: 579, protein: 21, carbs: 22, fat: 50 },
-                { name: "Banane", calories: 89, protein: 1.1, carbs: 23, fat: 0.3 },
-                { name: "Pomme", calories: 52, protein: 0.3, carbs: 14, fat: 0.2 },
-                { name: "Dattes", calories: 282, protein: 2, carbs: 75, fat: 0.4 }
-            ]
+        // Structure fixe du plan nutritionnel (adaptatif selon les calories)
+        const mealStructure = {
+            breakfast: {
+                name: { fr: "Petit-déjeuner", en: "Breakfast", ar: "الإفطار" },
+                baseCalories: 500,
+                foods: [
+                    { name: { fr: "Œufs (3 moyens)", en: "Eggs (3 medium)", ar: "بيض (3 حبات متوسطة)" }, baseQuantity: 150, calories: 149, protein: 10, carbs: 1.6, fat: 11 },
+                    { name: { fr: "Pain complet (2 tranches)", en: "Whole wheat bread (2 slices)", ar: "خبز القمح الكامل (2 شريحة)" }, baseQuantity: 50, calories: 265, protein: 13, carbs: 44, fat: 3.4 },
+                    { name: { fr: "Avocat (50g)", en: "Avocado (50g)", ar: "أفوكادو (50 جرام)" }, baseQuantity: 50, calories: 160, protein: 2, carbs: 9, fat: 15 },
+                    { name: { fr: "Orange ou pomme", en: "Orange or apple", ar: "برتقال أو تفاحة" }, baseQuantity: 100, calories: 52, protein: 0.3, carbs: 14, fat: 0.2 }
+                ]
+            },
+            morningSnack: {
+                name: { fr: "Collation du matin", en: "Morning snack", ar: "وجبة خفيفة صباحية" },
+                baseCalories: 200,
+                foods: [
+                    { name: { fr: "Yaourt nature", en: "Plain yogurt", ar: "زبادي طبيعي" }, baseQuantity: 150, calories: 59, protein: 10, carbs: 3.6, fat: 0.4 },
+                    { name: { fr: "Amandes (15g)", en: "Almonds (15g)", ar: "لوز (15 جرام)" }, baseQuantity: 15, calories: 579, protein: 21, carbs: 22, fat: 50 },
+                    { name: { fr: "Fruits rouges ou banane", en: "Berries or banana", ar: "فواكه حمراء أو موز" }, baseQuantity: 100, calories: 89, protein: 1.1, carbs: 23, fat: 0.3 }
+                ]
+            },
+            lunch: {
+                name: { fr: "Déjeuner", en: "Lunch", ar: "الغداء" },
+                baseCalories: 600,
+                foods: [
+                    { name: { fr: "Poulet grillé (150g)", en: "Grilled chicken (150g)", ar: "دجاج مشوي (150 جرام)" }, baseQuantity: 150, calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+                    { name: { fr: "Riz complet (100g cuit)", en: "Brown rice (100g cooked)", ar: "أرز بني (100 جرام مطبوخ)" }, baseQuantity: 100, calories: 111, protein: 2.6, carbs: 23, fat: 0.9 },
+                    { name: { fr: "Légumes vapeur (200g)", en: "Steamed vegetables (200g)", ar: "خضروات مطهوة على البخار (200 جرام)" }, baseQuantity: 200, calories: 55, protein: 3.7, carbs: 11, fat: 0.6 },
+                    { name: { fr: "Huile d'olive (1 c. à soupe)", en: "Olive oil (1 tbsp)", ar: "زيت زيتون (1 ملعقة طعام)" }, baseQuantity: 15, calories: 884, protein: 0, carbs: 0, fat: 100 }
+                ]
+            },
+            afternoonSnack: {
+                name: { fr: "Collation de l'après-midi", en: "Afternoon snack", ar: "وجبة خفيفة بعد الظهر" },
+                baseCalories: 200,
+                foods: [
+                    { name: { fr: "Pomme ou poire", en: "Apple or pear", ar: "تفاحة أو إجاص" }, baseQuantity: 100, calories: 52, protein: 0.3, carbs: 14, fat: 0.2 },
+                    { name: { fr: "Noix (20g)", en: "Nuts (20g)", ar: "مكسرات (20 جرام)" }, baseQuantity: 20, calories: 607, protein: 20, carbs: 21, fat: 54 }
+                ]
+            },
+            dinner: {
+                name: { fr: "Dîner", en: "Dinner", ar: "العشاء" },
+                baseCalories: 500,
+                foods: [
+                    { name: { fr: "Poulet grillé (120g)", en: "Grilled chicken (120g)", ar: "دجاج مشوي (120 جرام)" }, baseQuantity: 120, calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+                    { name: { fr: "Riz complet (100g cuit)", en: "Brown rice (100g cooked)", ar: "أرز بني (100 جرام مطبوخ)" }, baseQuantity: 100, calories: 111, protein: 2.6, carbs: 23, fat: 0.9 },
+                    { name: { fr: "Salade verte (150g)", en: "Green salad (150g)", ar: "سلطة خضراء (150 جرام)" }, baseQuantity: 150, calories: 15, protein: 1, carbs: 3, fat: 0.2 },
+                    { name: { fr: "Huile d'olive (1 c. à soupe)", en: "Olive oil (1 tbsp)", ar: "زيت زيتون (1 ملعقة طعام)" }, baseQuantity: 15, calories: 884, protein: 0, carbs: 0, fat: 100 }
+                ]
+            }
         };
         
         // Écouteurs d'événements
@@ -1059,64 +1084,59 @@
             dailyCaloriesPlan.textContent = userData.goalCalories;
         }
         
-        // Génération du plan nutritionnel avec priorités alimentaires (sans doublons)
+        // Génération du plan nutritionnel adaptatif
         function generateNutritionPlan() {
             nutritionPlan.innerHTML = '';
             
-            // Repas de la journée
-            const meals = [
-                { name: currentLang === 'fr' ? "Petit-déjeuner" : currentLang === 'en' ? "Breakfast" : "الإفطار", 
-                  type: "breakfast", targetCalories: userData.goalCalories * 0.25 },
-                { name: currentLang === 'fr' ? "Déjeuner" : currentLang === 'en' ? "Lunch" : "الغداء", 
-                  type: "lunchDinner", targetCalories: userData.goalCalories * 0.35 },
-                { name: currentLang === 'fr' ? "Collation" : currentLang === 'en' ? "Snack" : "وجبة خفيفة", 
-                  type: "snack", targetCalories: userData.goalCalories * 0.15 },
-                { name: currentLang === 'fr' ? "Dîner" : currentLang === 'en' ? "Dinner" : "العشاء", 
-                  type: "lunchDinner", targetCalories: userData.goalCalories * 0.25 }
-            ];
+            // Facteur d'ajustement selon les calories totales
+            const baseCalories = 2000; // Calories de référence du plan de base
+            const adjustmentFactor = userData.goalCalories / baseCalories;
             
-            // Pour éviter les doublons entre repas
-            const usedFoods = new Set();
-            
-            meals.forEach(meal => {
+            // Générer chaque repas
+            Object.values(mealStructure).forEach(meal => {
                 const mealCard = document.createElement('div');
                 mealCard.className = 'meal-card';
                 
                 const mealTitle = document.createElement('div');
                 mealTitle.className = 'meal-title';
-                mealTitle.textContent = meal.name;
+                mealTitle.textContent = meal.name[currentLang] || meal.name.fr;
                 mealCard.appendChild(mealTitle);
                 
-                // Générer des aliments pour ce repas selon son type (sans doublons)
-                const foods = generateFoodsForMeal(meal.targetCalories, meal.type, usedFoods);
                 let totalCalories = 0;
                 let totalProtein = 0;
                 let totalCarbs = 0;
                 let totalFat = 0;
                 
-                foods.forEach(food => {
+                // Ajouter chaque aliment du repas
+                meal.foods.forEach(food => {
+                    // Ajuster la quantité selon les calories nécessaires
+                    const adjustedQuantity = Math.round(food.baseQuantity * adjustmentFactor);
+                    const ratio = adjustedQuantity / 100;
+                    
+                    const foodCalories = food.calories * ratio;
+                    const foodProtein = food.protein * ratio;
+                    const foodCarbs = food.carbs * ratio;
+                    const foodFat = food.fat * ratio;
+                    
                     const foodItem = document.createElement('div');
                     foodItem.className = 'food-item';
                     
                     const foodName = document.createElement('span');
                     foodName.className = 'food-name';
-                    foodName.textContent = food.name;
+                    foodName.textContent = food.name[currentLang] || food.name.fr;
                     
                     const foodQuantity = document.createElement('span');
                     foodQuantity.className = 'food-quantity';
-                    foodQuantity.textContent = `${food.quantity}g`;
+                    foodQuantity.textContent = `${adjustedQuantity}g`;
                     
                     foodItem.appendChild(foodName);
                     foodItem.appendChild(foodQuantity);
                     mealCard.appendChild(foodItem);
                     
-                    totalCalories += food.calories;
-                    totalProtein += food.protein;
-                    totalCarbs += food.carbs;
-                    totalFat += food.fat;
-                    
-                    // Marquer cet aliment comme utilisé
-                    usedFoods.add(food.name);
+                    totalCalories += foodCalories;
+                    totalProtein += foodProtein;
+                    totalCarbs += foodCarbs;
+                    totalFat += foodFat;
                 });
                 
                 // Ajouter le total du repas
@@ -1135,117 +1155,6 @@
                 
                 nutritionPlan.appendChild(mealCard);
             });
-        }
-        
-        // Générer des aliments pour un repas donné selon son type (sans doublons)
-        function generateFoodsForMeal(targetCalories, mealType, usedFoods) {
-            const foods = [];
-            let remainingCalories = targetCalories;
-            
-            // Sélectionner 3-4 aliments au maximum par repas
-            const maxFoods = Math.min(4, Math.max(3, Math.floor(targetCalories / 200)));
-            
-            // Pour le petit-déjeuner, priorité aux œufs
-            if (mealType === "breakfast" && !usedFoods.has("Œufs brouillés")) {
-                const eggs = foodDatabase.breakfast[0]; // Œufs
-                const quantity = Math.min(200, Math.floor(remainingCalories * 0.4 / eggs.calories * 100));
-                
-                if (quantity >= 50) {
-                    const ratio = quantity / 100;
-                    const foodData = {
-                        name: eggs.name,
-                        quantity: quantity,
-                        calories: eggs.calories * ratio,
-                        protein: eggs.protein * ratio,
-                        carbs: eggs.carbs * ratio,
-                        fat: eggs.fat * ratio
-                    };
-                    
-                    foods.push(foodData);
-                    remainingCalories -= foodData.calories;
-                }
-            }
-            
-            // Pour le déjeuner et dîner, priorité au poulet et riz
-            if (mealType === "lunchDinner") {
-                // Ajouter du poulet s'il n'a pas déjà été utilisé
-                if (!usedFoods.has("Poulet grillé")) {
-                    const chicken = foodDatabase.lunchDinner[0]; // Poulet
-                    const chickenQuantity = Math.min(150, Math.floor(remainingCalories * 0.4 / chicken.calories * 100));
-                    
-                    if (chickenQuantity >= 50) {
-                        const ratio = chickenQuantity / 100;
-                        const foodData = {
-                            name: chicken.name,
-                            quantity: chickenQuantity,
-                            calories: chicken.calories * ratio,
-                            protein: chicken.protein * ratio,
-                            carbs: chicken.carbs * ratio,
-                            fat: chicken.fat * ratio
-                        };
-                        
-                        foods.push(foodData);
-                        remainingCalories -= foodData.calories;
-                    }
-                }
-                
-                // Ajouter du riz s'il n'a pas déjà été utilisé
-                if (!usedFoods.has("Riz brun cuit")) {
-                    const rice = foodDatabase.lunchDinner[1]; // Riz
-                    const riceQuantity = Math.min(200, Math.floor(remainingCalories * 0.3 / rice.calories * 100));
-                    
-                    if (riceQuantity >= 50) {
-                        const ratio = riceQuantity / 100;
-                        const foodData = {
-                            name: rice.name,
-                            quantity: riceQuantity,
-                            calories: rice.calories * ratio,
-                            protein: rice.protein * ratio,
-                            carbs: rice.carbs * ratio,
-                            fat: rice.fat * ratio
-                        };
-                        
-                        foods.push(foodData);
-                        remainingCalories -= foodData.calories;
-                    }
-                }
-            }
-            
-            // Ajouter d'autres aliments selon le type de repas (sans doublons)
-            const foodPool = mealType === "breakfast" ? foodDatabase.breakfast : 
-                            mealType === "lunchDinner" ? foodDatabase.lunchDinner : 
-                            foodDatabase.snack;
-            
-            // Commencer à l'index 1 pour éviter de répéter les aliments prioritaires
-            const startIndex = mealType === "breakfast" || mealType === "lunchDinner" ? 1 : 0;
-            
-            for (let i = startIndex; i < foodPool.length && foods.length < maxFoods && remainingCalories > 50; i++) {
-                const food = foodPool[i];
-                
-                // Vérifier si cet aliment n'a pas déjà été utilisé
-                if (usedFoods.has(food.name)) continue;
-                
-                const maxQuantity = Math.min(200, Math.floor(remainingCalories / food.calories * 100));
-                const minQuantity = 30;
-                
-                if (maxQuantity < minQuantity) continue;
-                
-                const quantity = Math.floor(Math.random() * (maxQuantity - minQuantity + 1)) + minQuantity;
-                const ratio = quantity / 100;
-                const foodData = {
-                    name: food.name,
-                    quantity: quantity,
-                    calories: food.calories * ratio,
-                    protein: food.protein * ratio,
-                    carbs: food.carbs * ratio,
-                    fat: food.fat * ratio
-                };
-                
-                foods.push(foodData);
-                remainingCalories -= foodData.calories;
-            }
-            
-            return foods;
         }
         
         // Changer la langue de l'application
