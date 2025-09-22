@@ -541,12 +541,12 @@
         nextToGoalBtn.addEventListener('click', goToGoalSection);
         backToPersonalBtn.addEventListener('click', goToPersonalSection);
         nextToResultsBtn.addEventListener('click', goToResultsSection);
-        backToGoalBtn.addEventListener('click', goToGoalSection);
+        backToGoalBtn.addEventListener('click', backToGoalSection); // CORRIGÉ
         nextToPlanBtn.addEventListener('click', goToPlanSection);
         backToResultsBtn.addEventListener('click', goToResultsSection);
         restartBtn.addEventListener('click', restartApp);
         
-        // Navigation entre les sections
+        // Navigation entre les sections - CORRIGÉ
         function goToGoalSection() {
             if (!validatePersonalInfo()) return;
             
@@ -570,7 +570,8 @@
             updateSteps(3);
         }
         
-        function goToGoalSection() {
+        // CORRECTION : Nom de fonction changé
+        function backToGoalSection() {
             resultsSection.classList.add('hidden');
             goalSection.classList.remove('hidden');
             updateSteps(2);
@@ -583,7 +584,7 @@
             updateSteps(4);
         }
         
-        function goToResultsSection() {
+        function backToResultsSection() {
             planSection.classList.add('hidden');
             resultsSection.classList.remove('hidden');
             updateSteps(3);
@@ -609,7 +610,7 @@
             });
         }
         
-        // Validation des informations personnelles - CORRIGÉE
+        // Validation des informations personnelles
         function validatePersonalInfo() {
             const age = document.getElementById('age').value;
             const gender = document.getElementById('gender').value;
@@ -617,40 +618,17 @@
             const height = document.getElementById('height').value;
             const activityLevel = document.getElementById('activityLevel').value;
             
-            // Vérification plus robuste des valeurs
-            if (!age || age < 15 || age > 100) {
-                alert('Veuillez entrer un âge valide (entre 15 et 100 ans)');
+            if (!age || !gender || !weight || !height || !activityLevel) {
+                alert('Veuillez remplir tous les champs');
                 return false;
             }
             
-            if (!gender) {
-                alert('Veuillez sélectionner votre genre');
-                return false;
-            }
-            
-            if (!weight || weight < 30 || weight > 200) {
-                alert('Veuillez entrer un poids valide (entre 30 et 200 kg)');
-                return false;
-            }
-            
-            if (!height || height < 100 || height > 250) {
-                alert('Veuillez entrer une taille valide (entre 100 et 250 cm)');
-                return false;
-            }
-            
-            if (!activityLevel) {
-                alert('Veuillez sélectionner votre niveau d\'activité');
-                return false;
-            }
-            
-            // Conversion et stockage des valeurs
             userData.age = parseInt(age);
             userData.gender = gender;
             userData.weight = parseFloat(weight);
             userData.height = parseInt(height);
             userData.activityLevel = parseFloat(activityLevel);
             
-            console.log('Données utilisateur enregistrées:', userData);
             return true;
         }
         
@@ -659,34 +637,20 @@
             const goal = document.querySelector('input[name="goal"]:checked');
             const intensity = document.getElementById('intensity').value;
             
-            if (!goal) {
-                alert('Veuillez sélectionner un objectif');
-                return false;
-            }
-            
-            if (!intensity) {
-                alert('Veuillez sélectionner une intensité');
+            if (!goal || !intensity) {
+                alert('Veuillez sélectionner un objectif et une intensité');
                 return false;
             }
             
             userData.goal = goal.value;
             userData.intensity = parseInt(intensity);
             
-            console.log('Objectif utilisateur:', userData.goal, 'Intensité:', userData.intensity);
             return true;
         }
         
-        // Calcul des résultats - CORRIGÉE
+        // Calcul des résultats
         function calculateResults() {
-            console.log('Calcul des résultats avec:', userData);
-            
-            // Vérification que les données sont valides
-            if (userData.weight === 0 || userData.height === 0 || userData.age === 0) {
-                alert('Erreur: Les données personnelles ne sont pas valides');
-                return;
-            }
-            
-            // Calcul du BMR (Métabolisme de base) - Formule de Mifflin-St Jeor
+            // Calcul du BMR (Métabolisme de base)
             if (userData.gender === 'male') {
                 userData.bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age + 5;
             } else {
@@ -716,7 +680,7 @@
             const proteinCalories = userData.protein * 4;
             const fatCalories = userData.fat * 9;
             const remainingCalories = userData.goalCalories - proteinCalories - fatCalories;
-            userData.carbs = Math.max(0, Math.round(remainingCalories / 4)); // Éviter les valeurs négatives
+            userData.carbs = Math.round(remainingCalories / 4);
             
             // Affichage des résultats
             bmrResult.textContent = `${Math.round(userData.bmr)} calories`;
@@ -727,15 +691,6 @@
             carbsResult.textContent = `${userData.carbs}g`;
             
             dailyCaloriesPlan.textContent = userData.goalCalories;
-            
-            console.log('Résultats calculés:', {
-                bmr: userData.bmr,
-                tdee: userData.tdee,
-                goalCalories: userData.goalCalories,
-                protein: userData.protein,
-                fat: userData.fat,
-                carbs: userData.carbs
-            });
         }
         
         // Génération du plan nutritionnel
