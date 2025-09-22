@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarrakFit – Votre coach calories & macros made in Morocco</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
     <style>
         :root {
             --primary-color: #C1272D; /* Rouge Marrakech */
@@ -262,6 +264,17 @@
             box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
         }
 
+        .btn-pdf {
+            background-color: #D32F2F;
+            color: white;
+        }
+
+        .btn-pdf:hover {
+            background-color: #B71C1C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
+        }
+
         .result-card {
             background: linear-gradient(135deg, #FDF6E3, #F4E4A9);
             border-left: 5px solid var(--primary-color);
@@ -421,6 +434,35 @@
             margin-bottom: 15px;
         }
 
+        .plan-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .plan-table th, .plan-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+        }
+
+        .plan-table th {
+            background-color: var(--primary-light);
+            font-weight: bold;
+        }
+
+        .plan-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .pdf-section {
+            margin-top: 30px;
+            text-align: center;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -446,6 +488,14 @@
                 margin-bottom: 20px;
                 display: flex;
                 justify-content: center;
+            }
+            
+            .plan-table {
+                font-size: 0.8rem;
+            }
+            
+            .plan-table th, .plan-table td {
+                padding: 5px;
             }
         }
     </style>
@@ -605,8 +655,12 @@
                 <h2 class="section-title" id="planTitle">Votre Plan Nutritionnel Quotidien</h2>
                 <p id="planDescription">Basé sur vos besoins de <span id="dailyCaloriesPlan">0</span> calories</p>
                 
-                <div class="nutrition-plan" id="nutritionPlan">
-                    <!-- Le plan sera généré ici dynamiquement -->
+                <div id="planTableContainer">
+                    <!-- Le tableau du plan sera généré ici dynamiquement -->
+                </div>
+                
+                <div class="pdf-section">
+                    <button type="button" id="exportPdfBtn" class="btn-pdf">Exporter en PDF</button>
                 </div>
                 
                 <div class="form-actions">
@@ -666,7 +720,17 @@
                 viewPlanButton: "Voir mon plan nutritionnel",
                 planTitle: "Votre Plan Nutritionnel Quotidien",
                 planDescription: "Basé sur vos besoins de",
-                restartButton: "Recommencer"
+                restartButton: "Recommencer",
+                exportPdfButton: "Exporter en PDF",
+                meal: "Repas",
+                food: "Aliment",
+                weight: "Poids",
+                calories: "Calories",
+                nutrition: "Apports approximatifs",
+                breakfast: "Petit-déjeuner",
+                lunch: "Déjeuner",
+                snack: "Collation",
+                dinner: "Dîner"
             },
             en: {
                 appTitle: "MarrakFit – Your calories & macros coach made in Morocco",
@@ -714,7 +778,17 @@
                 viewPlanButton: "View my nutrition plan",
                 planTitle: "Your Daily Nutrition Plan",
                 planDescription: "Based on your needs of",
-                restartButton: "Restart"
+                restartButton: "Restart",
+                exportPdfButton: "Export to PDF",
+                meal: "Meal",
+                food: "Food",
+                weight: "Weight",
+                calories: "Calories",
+                nutrition: "Approximate intake",
+                breakfast: "Breakfast",
+                lunch: "Lunch",
+                snack: "Snack",
+                dinner: "Dinner"
             },
             ar: {
                 appTitle: "MarrakFit – مدرب السعرات والماكرو من المغرب",
@@ -762,7 +836,17 @@
                 viewPlanButton: "عرض خطتي الغذائية",
                 planTitle: "خطتك الغذائية اليومية",
                 planDescription: "بناءً على احتياجاتك من",
-                restartButton: "إعادة البدء"
+                restartButton: "إعادة البدء",
+                exportPdfButton: "تصدير إلى PDF",
+                meal: "الوجبة",
+                food: "الغذاء",
+                weight: "الوزن",
+                calories: "السعرات",
+                nutrition: "المدخول التقريبي",
+                breakfast: "الإفطار",
+                lunch: "الغداء",
+                snack: "وجبة خفيفة",
+                dinner: "العشاء"
             }
         };
 
@@ -779,6 +863,7 @@
         const nextToPlanBtn = document.getElementById('nextToPlanBtn');
         const backToResultsBtn = document.getElementById('backToResultsBtn');
         const restartBtn = document.getElementById('restartBtn');
+        const exportPdfBtn = document.getElementById('exportPdfBtn');
         
         const steps = document.querySelectorAll('.step');
         
@@ -791,7 +876,7 @@
         const fatResult = document.getElementById('fatResult');
         const carbsResult = document.getElementById('carbsResult');
         const dailyCaloriesPlan = document.getElementById('dailyCaloriesPlan');
-        const nutritionPlan = document.getElementById('nutritionPlan');
+        const planTableContainer = document.getElementById('planTableContainer');
         const proteinInfo = document.getElementById('proteinInfo');
         const fatInfo = document.getElementById('fatInfo');
         
@@ -821,55 +906,30 @@
         let currentLang = 'fr';
         
         // Structure fixe du plan nutritionnel (adaptatif selon les calories)
-        const mealStructure = {
-            breakfast: {
-                name: { fr: "Petit-déjeuner", en: "Breakfast", ar: "الإفطار" },
-                baseCalories: 500,
-                foods: [
-                    { name: { fr: "Œufs (3 moyens)", en: "Eggs (3 medium)", ar: "بيض (3 حبات متوسطة)" }, baseQuantity: 150, calories: 149, protein: 10, carbs: 1.6, fat: 11 },
-                    { name: { fr: "Pain complet (2 tranches)", en: "Whole wheat bread (2 slices)", ar: "خبز القمح الكامل (2 شريحة)" }, baseQuantity: 50, calories: 265, protein: 13, carbs: 44, fat: 3.4 },
-                    { name: { fr: "Avocat (50g)", en: "Avocado (50g)", ar: "أفوكادو (50 جرام)" }, baseQuantity: 50, calories: 160, protein: 2, carbs: 9, fat: 15 },
-                    { name: { fr: "Orange ou pomme", en: "Orange or apple", ar: "برتقال أو تفاحة" }, baseQuantity: 100, calories: 52, protein: 0.3, carbs: 14, fat: 0.2 }
-                ]
-            },
-            morningSnack: {
-                name: { fr: "Collation du matin", en: "Morning snack", ar: "وجبة خفيفة صباحية" },
-                baseCalories: 200,
-                foods: [
-                    { name: { fr: "Yaourt nature", en: "Plain yogurt", ar: "زبادي طبيعي" }, baseQuantity: 150, calories: 59, protein: 10, carbs: 3.6, fat: 0.4 },
-                    { name: { fr: "Amandes (15g)", en: "Almonds (15g)", ar: "لوز (15 جرام)" }, baseQuantity: 15, calories: 579, protein: 21, carbs: 22, fat: 50 },
-                    { name: { fr: "Fruits rouges ou banane", en: "Berries or banana", ar: "فواكه حمراء أو موز" }, baseQuantity: 100, calories: 89, protein: 1.1, carbs: 23, fat: 0.3 }
-                ]
-            },
-            lunch: {
-                name: { fr: "Déjeuner", en: "Lunch", ar: "الغداء" },
-                baseCalories: 600,
-                foods: [
-                    { name: { fr: "Poulet grillé (150g)", en: "Grilled chicken (150g)", ar: "دجاج مشوي (150 جرام)" }, baseQuantity: 150, calories: 165, protein: 31, carbs: 0, fat: 3.6 },
-                    { name: { fr: "Riz complet (100g cuit)", en: "Brown rice (100g cooked)", ar: "أرز بني (100 جرام مطبوخ)" }, baseQuantity: 100, calories: 111, protein: 2.6, carbs: 23, fat: 0.9 },
-                    { name: { fr: "Légumes vapeur (200g)", en: "Steamed vegetables (200g)", ar: "خضروات مطهوة على البخار (200 جرام)" }, baseQuantity: 200, calories: 55, protein: 3.7, carbs: 11, fat: 0.6 },
-                    { name: { fr: "Huile d'olive (1 c. à soupe)", en: "Olive oil (1 tbsp)", ar: "زيت زيتون (1 ملعقة طعام)" }, baseQuantity: 15, calories: 884, protein: 0, carbs: 0, fat: 100 }
-                ]
-            },
-            afternoonSnack: {
-                name: { fr: "Collation de l'après-midi", en: "Afternoon snack", ar: "وجبة خفيفة بعد الظهر" },
-                baseCalories: 200,
-                foods: [
-                    { name: { fr: "Pomme ou poire", en: "Apple or pear", ar: "تفاحة أو إجاص" }, baseQuantity: 100, calories: 52, protein: 0.3, carbs: 14, fat: 0.2 },
-                    { name: { fr: "Noix (20g)", en: "Nuts (20g)", ar: "مكسرات (20 جرام)" }, baseQuantity: 20, calories: 607, protein: 20, carbs: 21, fat: 54 }
-                ]
-            },
-            dinner: {
-                name: { fr: "Dîner", en: "Dinner", ar: "العشاء" },
-                baseCalories: 500,
-                foods: [
-                    { name: { fr: "Poulet grillé (120g)", en: "Grilled chicken (120g)", ar: "دجاج مشوي (120 جرام)" }, baseQuantity: 120, calories: 165, protein: 31, carbs: 0, fat: 3.6 },
-                    { name: { fr: "Riz complet (100g cuit)", en: "Brown rice (100g cooked)", ar: "أرز بني (100 جرام مطبوخ)" }, baseQuantity: 100, calories: 111, protein: 2.6, carbs: 23, fat: 0.9 },
-                    { name: { fr: "Salade verte (150g)", en: "Green salad (150g)", ar: "سلطة خضراء (150 جرام)" }, baseQuantity: 150, calories: 15, protein: 1, carbs: 3, fat: 0.2 },
-                    { name: { fr: "Huile d'olive (1 c. à soupe)", en: "Olive oil (1 tbsp)", ar: "زيت زيتون (1 ملعقة طعام)" }, baseQuantity: 15, calories: 884, protein: 0, carbs: 0, fat: 100 }
-                ]
-            }
-        };
+        const mealStructure = [
+            // Petit-déjeuner
+            { meal: "breakfast", food: "Œufs", baseWeight: 150, calories: 210, protein: 18, carbs: 0, fat: 15 },
+            { meal: "breakfast", food: "Pain complet", baseWeight: 50, calories: 130, protein: 5, carbs: 25, fat: 2 },
+            { meal: "breakfast", food: "Avocat", baseWeight: 50, calories: 80, protein: 0, carbs: 4, fat: 7 },
+            { meal: "breakfast", food: "Fruit", baseWeight: 100, calories: 80, protein: 0, carbs: 20, fat: 0 },
+            { meal: "breakfast", food: "Huile d'olive", baseWeight: 5, calories: 40, protein: 0, carbs: 0, fat: 5 },
+            
+            // Déjeuner
+            { meal: "lunch", food: "Poulet grillé", baseWeight: 180, calories: 330, protein: 40, carbs: 0, fat: 15 },
+            { meal: "lunch", food: "Riz complet cuit", baseWeight: 120, calories: 150, protein: 3, carbs: 35, fat: 0 },
+            { meal: "lunch", food: "Légumes vapeur", baseWeight: 200, calories: 70, protein: 0, carbs: 15, fat: 0 },
+            { meal: "lunch", food: "Huile d'olive", baseWeight: 15, calories: 120, protein: 0, carbs: 0, fat: 14 },
+            
+            // Collation après-midi
+            { meal: "snack", food: "Fruit", baseWeight: 100, calories: 80, protein: 0, carbs: 20, fat: 0 },
+            { meal: "snack", food: "Noix", baseWeight: 20, calories: 120, protein: 5, carbs: 0, fat: 12 },
+            
+            // Dîner
+            { meal: "dinner", food: "Poulet grillé", baseWeight: 150, calories: 275, protein: 35, carbs: 0, fat: 12 },
+            { meal: "dinner", food: "Riz complet cuit", baseWeight: 100, calories: 130, protein: 2, carbs: 28, fat: 0 },
+            { meal: "dinner", food: "Salade verte", baseWeight: 150, calories: 40, protein: 0, carbs: 8, fat: 0 },
+            { meal: "dinner", food: "Huile d'olive", baseWeight: 15, calories: 120, protein: 0, carbs: 0, fat: 14 }
+        ];
         
         // Écouteurs d'événements
         nextToGoalBtn.addEventListener('click', goToGoalSection);
@@ -879,6 +939,7 @@
         nextToPlanBtn.addEventListener('click', goToPlanSection);
         backToResultsBtn.addEventListener('click', backToResultsSection);
         restartBtn.addEventListener('click', restartApp);
+        exportPdfBtn.addEventListener('click', exportToPdf);
         
         // Gestionnaire de langue
         languageBtn.addEventListener('click', () => {
@@ -1086,75 +1147,164 @@
         
         // Génération du plan nutritionnel adaptatif
         function generateNutritionPlan() {
-            nutritionPlan.innerHTML = '';
+            planTableContainer.innerHTML = '';
             
             // Facteur d'ajustement selon les calories totales
             const baseCalories = 2000; // Calories de référence du plan de base
             const adjustmentFactor = userData.goalCalories / baseCalories;
             
-            // Générer chaque repas
-            Object.values(mealStructure).forEach(meal => {
-                const mealCard = document.createElement('div');
-                mealCard.className = 'meal-card';
-                
-                const mealTitle = document.createElement('div');
-                mealTitle.className = 'meal-title';
-                mealTitle.textContent = meal.name[currentLang] || meal.name.fr;
-                mealCard.appendChild(mealTitle);
-                
-                let totalCalories = 0;
-                let totalProtein = 0;
-                let totalCarbs = 0;
-                let totalFat = 0;
-                
-                // Ajouter chaque aliment du repas
-                meal.foods.forEach(food => {
-                    // Ajuster la quantité selon les calories nécessaires
-                    const adjustedQuantity = Math.round(food.baseQuantity * adjustmentFactor);
-                    const ratio = adjustedQuantity / 100;
-                    
-                    const foodCalories = food.calories * ratio;
-                    const foodProtein = food.protein * ratio;
-                    const foodCarbs = food.carbs * ratio;
-                    const foodFat = food.fat * ratio;
-                    
-                    const foodItem = document.createElement('div');
-                    foodItem.className = 'food-item';
-                    
-                    const foodName = document.createElement('span');
-                    foodName.className = 'food-name';
-                    foodName.textContent = food.name[currentLang] || food.name.fr;
-                    
-                    const foodQuantity = document.createElement('span');
-                    foodQuantity.className = 'food-quantity';
-                    foodQuantity.textContent = `${adjustedQuantity}g`;
-                    
-                    foodItem.appendChild(foodName);
-                    foodItem.appendChild(foodQuantity);
-                    mealCard.appendChild(foodItem);
-                    
-                    totalCalories += foodCalories;
-                    totalProtein += foodProtein;
-                    totalCarbs += foodCarbs;
-                    totalFat += foodFat;
-                });
-                
-                // Ajouter le total du repas
-                const mealTotal = document.createElement('div');
-                mealTotal.className = 'meal-total';
-                
-                const totalLabel = document.createElement('span');
-                totalLabel.textContent = currentLang === 'fr' ? 'Total:' : currentLang === 'en' ? 'Total:' : 'المجموع:';
-                
-                const totalValue = document.createElement('span');
-                totalValue.textContent = `${Math.round(totalCalories)} ${currentLang === 'fr' ? 'cal' : currentLang === 'en' ? 'cal' : 'سعرة'}, ${totalProtein.toFixed(1)}g ${currentLang === 'fr' ? 'protéines' : currentLang === 'en' ? 'protein' : 'بروتين'}, ${totalCarbs.toFixed(1)}g ${currentLang === 'fr' ? 'glucides' : currentLang === 'en' ? 'carbs' : 'كربوهيدرات'}, ${totalFat.toFixed(1)}g ${currentLang === 'fr' ? 'lipides' : currentLang === 'en' ? 'fat' : 'دهون'}`;
-                
-                mealTotal.appendChild(totalLabel);
-                mealTotal.appendChild(totalValue);
-                mealCard.appendChild(mealTotal);
-                
-                nutritionPlan.appendChild(mealCard);
+            // Créer le tableau
+            const table = document.createElement('table');
+            table.className = 'plan-table';
+            
+            // En-tête du tableau
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            
+            const headers = [
+                translations[currentLang].meal,
+                translations[currentLang].food,
+                translations[currentLang].weight,
+                translations[currentLang].calories,
+                translations[currentLang].nutrition
+            ];
+            
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
             });
+            
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            
+            // Corps du tableau
+            const tbody = document.createElement('tbody');
+            
+            mealStructure.forEach(item => {
+                const row = document.createElement('tr');
+                
+                // Ajuster la quantité selon les calories nécessaires
+                const adjustedWeight = Math.round(item.baseWeight * adjustmentFactor);
+                const adjustedCalories = Math.round(item.calories * adjustmentFactor);
+                const adjustedProtein = Math.round(item.protein * adjustmentFactor);
+                const adjustedCarbs = Math.round(item.carbs * adjustmentFactor);
+                const adjustedFat = Math.round(item.fat * adjustmentFactor);
+                
+                // Colonne Repas
+                const mealCell = document.createElement('td');
+                mealCell.textContent = translations[currentLang][item.meal];
+                row.appendChild(mealCell);
+                
+                // Colonne Aliment
+                const foodCell = document.createElement('td');
+                foodCell.textContent = item.food;
+                row.appendChild(foodCell);
+                
+                // Colonne Poids
+                const weightCell = document.createElement('td');
+                weightCell.textContent = `${adjustedWeight}g`;
+                row.appendChild(weightCell);
+                
+                // Colonne Calories
+                const caloriesCell = document.createElement('td');
+                caloriesCell.textContent = `${adjustedCalories} kcal`;
+                row.appendChild(caloriesCell);
+                
+                // Colonne Apports nutritionnels
+                const nutritionCell = document.createElement('td');
+                let nutritionText = '';
+                
+                if (adjustedProtein > 0) {
+                    nutritionText += `${translations[currentLang].proteinLabel} ${adjustedProtein}g`;
+                }
+                if (adjustedCarbs > 0) {
+                    if (nutritionText) nutritionText += ', ';
+                    nutritionText += `${translations[currentLang].carbsLabel} ${adjustedCarbs}g`;
+                }
+                if (adjustedFat > 0) {
+                    if (nutritionText) nutritionText += ', ';
+                    nutritionText += `${translations[currentLang].fatLabel} ${adjustedFat}g`;
+                }
+                
+                nutritionCell.textContent = nutritionText;
+                row.appendChild(nutritionCell);
+                
+                tbody.appendChild(row);
+            });
+            
+            table.appendChild(tbody);
+            planTableContainer.appendChild(table);
+        }
+        
+        // Exportation en PDF
+        function exportToPdf() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Titre du document
+            doc.setFontSize(20);
+            doc.setTextColor(193, 39, 45); // Rouge Marrakech
+            doc.text(translations[currentLang].appTitle, 105, 20, { align: 'center' });
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`${translations[currentLang].planDescription} ${userData.goalCalories} ${translations[currentLang].calories}`, 105, 30, { align: 'center' });
+            
+            // En-têtes du tableau
+            const headers = [
+                translations[currentLang].meal,
+                translations[currentLang].food,
+                translations[currentLang].weight,
+                translations[currentLang].calories,
+                translations[currentLang].nutrition
+            ];
+            
+            // Données du tableau
+            const tableData = [];
+            
+            mealStructure.forEach(item => {
+                const adjustedWeight = Math.round(item.baseWeight * (userData.goalCalories / 2000));
+                const adjustedCalories = Math.round(item.calories * (userData.goalCalories / 2000));
+                const adjustedProtein = Math.round(item.protein * (userData.goalCalories / 2000));
+                const adjustedCarbs = Math.round(item.carbs * (userData.goalCalories / 2000));
+                const adjustedFat = Math.round(item.fat * (userData.goalCalories / 2000));
+                
+                let nutritionText = '';
+                if (adjustedProtein > 0) nutritionText += `Prot: ${adjustedProtein}g`;
+                if (adjustedCarbs > 0) nutritionText += (nutritionText ? ', ' : '') + `Gluc: ${adjustedCarbs}g`;
+                if (adjustedFat > 0) nutritionText += (nutritionText ? ', ' : '') + `Lip: ${adjustedFat}g`;
+                
+                tableData.push([
+                    translations[currentLang][item.meal],
+                    item.food,
+                    `${adjustedWeight}g`,
+                    `${adjustedCalories} kcal`,
+                    nutritionText
+                ]);
+            });
+            
+            // Générer le tableau
+            doc.autoTable({
+                head: [headers],
+                body: tableData,
+                startY: 40,
+                theme: 'grid',
+                styles: { fontSize: 9, cellPadding: 3 },
+                headStyles: { fillColor: [193, 39, 45] }, // Rouge Marrakech
+                alternateRowStyles: { fillColor: [248, 246, 227] } // Beige sable
+            });
+            
+            // Pied de page
+            const pageCount = doc.internal.getNumberOfPages();
+            for (let i = 1; i <= pageCount; i++) {
+                doc.setPage(i);
+                doc.setFontSize(10);
+                doc.text(`Page ${i} sur ${pageCount}`, 105, doc.internal.pageSize.height - 10, { align: 'center' });
+            }
+            
+            // Sauvegarder le PDF
+            doc.save(`Plan_Nutritionnel_MarrakFit_${userData.goalCalories}cal.pdf`);
         }
         
         // Changer la langue de l'application
@@ -1210,6 +1360,7 @@
             document.getElementById('planDescription').textContent = `${translations[lang].planDescription} `;
             document.getElementById('backToResultsBtn').textContent = translations[lang].previousButton;
             document.getElementById('restartBtn').textContent = translations[lang].restartButton;
+            document.getElementById('exportPdfBtn').textContent = translations[lang].exportPdfButton;
             
             // Si nous sommes sur la page des résultats, recalculer pour mettre à jour les textes
             if (!resultsSection.classList.contains('hidden')) {
