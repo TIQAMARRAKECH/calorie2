@@ -267,6 +267,10 @@
         .btn-pdf {
             background-color: #D32F2F;
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-pdf:hover {
@@ -455,12 +459,37 @@
             background-color: #f9f9f9;
         }
 
+        .plan-table .meal-header {
+            background-color: var(--secondary-light);
+            font-weight: bold;
+        }
+
+        .plan-table .meal-total-row {
+            background-color: #e8f5e9;
+            font-weight: bold;
+        }
+
+        .plan-table .daily-total-row {
+            background-color: var(--primary-light);
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
         .pdf-section {
             margin-top: 30px;
             text-align: center;
             padding: 20px;
             background-color: #f5f5f5;
             border-radius: 8px;
+        }
+
+        .mobile-pdf-info {
+            display: none;
+            background-color: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 0.9em;
         }
 
         @media (max-width: 768px) {
@@ -496,6 +525,18 @@
             
             .plan-table th, .plan-table td {
                 padding: 5px;
+            }
+            
+            .mobile-pdf-info {
+                display: block;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .plan-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
             }
         }
     </style>
@@ -660,7 +701,12 @@
                 </div>
                 
                 <div class="pdf-section">
-                    <button type="button" id="exportPdfBtn" class="btn-pdf">Exporter en PDF</button>
+                    <button type="button" id="exportPdfBtn" class="btn-pdf">
+                        <span>📄</span> Exporter en PDF
+                    </button>
+                    <div class="mobile-pdf-info" id="mobilePdfInfo">
+                        Sur mobile, le PDF peut prendre quelques secondes à générer. Vérifiez vos téléchargements.
+                    </div>
                 </div>
                 
                 <div class="form-actions">
@@ -730,7 +776,12 @@
                 breakfast: "Petit-déjeuner",
                 lunch: "Déjeuner",
                 snack: "Collation",
-                dinner: "Dîner"
+                dinner: "Dîner",
+                total: "Total",
+                dailyTotal: "Total quotidien",
+                protein: "Protéines",
+                carbs: "Glucides",
+                fat: "Lipides"
             },
             en: {
                 appTitle: "MarrakFit – Your calories & macros coach made in Morocco",
@@ -788,7 +839,12 @@
                 breakfast: "Breakfast",
                 lunch: "Lunch",
                 snack: "Snack",
-                dinner: "Dinner"
+                dinner: "Dinner",
+                total: "Total",
+                dailyTotal: "Daily total",
+                protein: "Protein",
+                carbs: "Carbs",
+                fat: "Fat"
             },
             ar: {
                 appTitle: "MarrakFit – مدرب السعرات والماكرو من المغرب",
@@ -846,7 +902,12 @@
                 breakfast: "الإفطار",
                 lunch: "الغداء",
                 snack: "وجبة خفيفة",
-                dinner: "العشاء"
+                dinner: "العشاء",
+                total: "المجموع",
+                dailyTotal: "المجموع اليومي",
+                protein: "البروتين",
+                carbs: "الكربوهيدرات",
+                fat: "الدهون"
             }
         };
 
@@ -864,6 +925,7 @@
         const backToResultsBtn = document.getElementById('backToResultsBtn');
         const restartBtn = document.getElementById('restartBtn');
         const exportPdfBtn = document.getElementById('exportPdfBtn');
+        const mobilePdfInfo = document.getElementById('mobilePdfInfo');
         
         const steps = document.querySelectorAll('.step');
         
@@ -1145,7 +1207,7 @@
             dailyCaloriesPlan.textContent = userData.goalCalories;
         }
         
-        // Génération du plan nutritionnel adaptatif
+        // Génération du plan nutritionnel adaptatif avec totaux
         function generateNutritionPlan() {
             planTableContainer.innerHTML = '';
             
@@ -1181,8 +1243,44 @@
             // Corps du tableau
             const tbody = document.createElement('tbody');
             
-            mealStructure.forEach(item => {
-                const row = document.createElement('tr');
+            // Variables pour les totaux
+            let currentMeal = '';
+            let mealCalories = 0;
+            let mealProtein = 0;
+            let mealCarbs = 0;
+            let mealFat = 0;
+            
+            let dailyCalories = 0;
+            let dailyProtein = 0;
+            let dailyCarbs = 0;
+            let dailyFat = 0;
+            
+            mealStructure.forEach((item, index) => {
+                // Si on change de repas, ajouter la ligne de total du repas précédent
+                if (currentMeal !== '' && currentMeal !== item.meal) {
+                    addMealTotalRow(currentMeal, mealCalories, mealProtein, mealCarbs, mealFat);
+                    
+                    // Réinitialiser les totaux du repas
+                    mealCalories = 0;
+                    mealProtein = 0;
+                    mealCarbs = 0;
+                    mealFat = 0;
+                }
+                
+                // Si c'est le début d'un nouveau repas, ajouter l'en-tête du repas
+                if (currentMeal !== item.meal) {
+                    currentMeal = item.meal;
+                    
+                    const mealHeaderRow = document.createElement('tr');
+                    mealHeaderRow.className = 'meal-header';
+                    
+                    const mealHeaderCell = document.createElement('td');
+                    mealHeaderCell.colSpan = 5;
+                    mealHeaderCell.textContent = translations[currentLang][item.meal];
+                    mealHeaderRow.appendChild(mealHeaderCell);
+                    
+                    tbody.appendChild(mealHeaderRow);
+                }
                 
                 // Ajuster la quantité selon les calories nécessaires
                 const adjustedWeight = Math.round(item.baseWeight * adjustmentFactor);
@@ -1191,9 +1289,23 @@
                 const adjustedCarbs = Math.round(item.carbs * adjustmentFactor);
                 const adjustedFat = Math.round(item.fat * adjustmentFactor);
                 
-                // Colonne Repas
+                // Ajouter les valeurs aux totaux
+                mealCalories += adjustedCalories;
+                mealProtein += adjustedProtein;
+                mealCarbs += adjustedCarbs;
+                mealFat += adjustedFat;
+                
+                dailyCalories += adjustedCalories;
+                dailyProtein += adjustedProtein;
+                dailyCarbs += adjustedCarbs;
+                dailyFat += adjustedFat;
+                
+                // Ligne de l'aliment
+                const row = document.createElement('tr');
+                
+                // Colonne Repas (vide car fusionnée)
                 const mealCell = document.createElement('td');
-                mealCell.textContent = translations[currentLang][item.meal];
+                mealCell.textContent = '';
                 row.appendChild(mealCell);
                 
                 // Colonne Aliment
@@ -1216,29 +1328,111 @@
                 let nutritionText = '';
                 
                 if (adjustedProtein > 0) {
-                    nutritionText += `${translations[currentLang].proteinLabel} ${adjustedProtein}g`;
+                    nutritionText += `${translations[currentLang].protein} ${adjustedProtein}g`;
                 }
                 if (adjustedCarbs > 0) {
                     if (nutritionText) nutritionText += ', ';
-                    nutritionText += `${translations[currentLang].carbsLabel} ${adjustedCarbs}g`;
+                    nutritionText += `${translations[currentLang].carbs} ${adjustedCarbs}g`;
                 }
                 if (adjustedFat > 0) {
                     if (nutritionText) nutritionText += ', ';
-                    nutritionText += `${translations[currentLang].fatLabel} ${adjustedFat}g`;
+                    nutritionText += `${translations[currentLang].fat} ${adjustedFat}g`;
                 }
                 
                 nutritionCell.textContent = nutritionText;
                 row.appendChild(nutritionCell);
                 
                 tbody.appendChild(row);
+                
+                // Si c'est le dernier aliment, ajouter le total du repas
+                if (index === mealStructure.length - 1) {
+                    addMealTotalRow(currentMeal, mealCalories, mealProtein, mealCarbs, mealFat);
+                }
             });
+            
+            // Fonction pour ajouter une ligne de total de repas
+            function addMealTotalRow(meal, calories, protein, carbs, fat) {
+                const totalRow = document.createElement('tr');
+                totalRow.className = 'meal-total-row';
+                
+                const totalCell = document.createElement('td');
+                totalCell.colSpan = 2;
+                totalCell.textContent = `${translations[currentLang][meal]} - ${translations[currentLang].total}`;
+                totalRow.appendChild(totalCell);
+                
+                const emptyCell = document.createElement('td');
+                emptyCell.textContent = '';
+                totalRow.appendChild(emptyCell);
+                
+                const caloriesCell = document.createElement('td');
+                caloriesCell.textContent = `${calories} kcal`;
+                totalRow.appendChild(caloriesCell);
+                
+                const nutritionCell = document.createElement('td');
+                let nutritionText = '';
+                
+                if (protein > 0) nutritionText += `${translations[currentLang].protein} ${protein}g`;
+                if (carbs > 0) nutritionText += (nutritionText ? ', ' : '') + `${translations[currentLang].carbs} ${carbs}g`;
+                if (fat > 0) nutritionText += (nutritionText ? ', ' : '') + `${translations[currentLang].fat} ${fat}g`;
+                
+                nutritionCell.textContent = nutritionText;
+                totalRow.appendChild(nutritionCell);
+                
+                tbody.appendChild(totalRow);
+            }
+            
+            // Ajouter la ligne de total quotidien
+            const dailyTotalRow = document.createElement('tr');
+            dailyTotalRow.className = 'daily-total-row';
+            
+            const dailyTotalCell = document.createElement('td');
+            dailyTotalCell.colSpan = 2;
+            dailyTotalCell.textContent = translations[currentLang].dailyTotal;
+            dailyTotalRow.appendChild(dailyTotalCell);
+            
+            const emptyCell = document.createElement('td');
+            emptyCell.textContent = '';
+            dailyTotalRow.appendChild(emptyCell);
+            
+            const dailyCaloriesCell = document.createElement('td');
+            dailyCaloriesCell.textContent = `${dailyCalories} kcal`;
+            dailyTotalRow.appendChild(dailyCaloriesCell);
+            
+            const dailyNutritionCell = document.createElement('td');
+            let dailyNutritionText = '';
+            
+            if (dailyProtein > 0) dailyNutritionText += `${translations[currentLang].protein} ${dailyProtein}g`;
+            if (dailyCarbs > 0) dailyNutritionText += (dailyNutritionText ? ', ' : '') + `${translations[currentLang].carbs} ${dailyCarbs}g`;
+            if (dailyFat > 0) dailyNutritionText += (dailyNutritionText ? ', ' : '') + `${translations[currentLang].fat} ${dailyFat}g`;
+            
+            dailyNutritionCell.textContent = dailyNutritionText;
+            dailyTotalRow.appendChild(dailyNutritionCell);
+            
+            tbody.appendChild(dailyTotalRow);
             
             table.appendChild(tbody);
             planTableContainer.appendChild(table);
         }
         
-        // Exportation en PDF
+        // Exportation en PDF améliorée pour mobile
         function exportToPdf() {
+            // Afficher un message d'attente sur mobile
+            if (window.innerWidth <= 768) {
+                mobilePdfInfo.style.display = 'block';
+                mobilePdfInfo.textContent = currentLang === 'fr' 
+                    ? 'Génération du PDF en cours...' 
+                    : currentLang === 'en' 
+                    ? 'Generating PDF...' 
+                    : 'جارٍ إنشاء PDF...';
+                
+                // Simuler un délai pour permettre à l'utilisateur de voir le message
+                setTimeout(generatePdf, 500);
+            } else {
+                generatePdf();
+            }
+        }
+        
+        function generatePdf() {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             
@@ -1262,27 +1456,87 @@
             
             // Données du tableau
             const tableData = [];
+            let currentMeal = '';
+            let mealCalories = 0;
+            let mealProtein = 0;
+            let mealCarbs = 0;
+            let mealFat = 0;
             
-            mealStructure.forEach(item => {
+            let dailyCalories = 0;
+            let dailyProtein = 0;
+            let dailyCarbs = 0;
+            let dailyFat = 0;
+            
+            mealStructure.forEach((item, index) => {
+                // Si on change de repas, ajouter la ligne de total du repas précédent
+                if (currentMeal !== '' && currentMeal !== item.meal) {
+                    tableData.push([
+                        { content: `${translations[currentLang][currentMeal]} - ${translations[currentLang].total}`, colSpan: 2, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } },
+                        '',
+                        `${mealCalories} kcal`,
+                        `${translations[currentLang].protein} ${mealProtein}g, ${translations[currentLang].carbs} ${mealCarbs}g, ${translations[currentLang].fat} ${mealFat}g`
+                    ]);
+                    
+                    // Réinitialiser les totaux du repas
+                    mealCalories = 0;
+                    mealProtein = 0;
+                    mealCarbs = 0;
+                    mealFat = 0;
+                }
+                
+                // Si c'est le début d'un nouveau repas, ajouter l'en-tête du repas
+                if (currentMeal !== item.meal) {
+                    currentMeal = item.meal;
+                    tableData.push([
+                        { content: translations[currentLang][item.meal], colSpan: 5, styles: { fontStyle: 'bold', fillColor: [212, 175, 55] } }
+                    ]);
+                }
+                
+                // Ajuster la quantité selon les calories nécessaires
                 const adjustedWeight = Math.round(item.baseWeight * (userData.goalCalories / 2000));
                 const adjustedCalories = Math.round(item.calories * (userData.goalCalories / 2000));
                 const adjustedProtein = Math.round(item.protein * (userData.goalCalories / 2000));
                 const adjustedCarbs = Math.round(item.carbs * (userData.goalCalories / 2000));
                 const adjustedFat = Math.round(item.fat * (userData.goalCalories / 2000));
                 
-                let nutritionText = '';
-                if (adjustedProtein > 0) nutritionText += `Prot: ${adjustedProtein}g`;
-                if (adjustedCarbs > 0) nutritionText += (nutritionText ? ', ' : '') + `Gluc: ${adjustedCarbs}g`;
-                if (adjustedFat > 0) nutritionText += (nutritionText ? ', ' : '') + `Lip: ${adjustedFat}g`;
+                // Ajouter les valeurs aux totaux
+                mealCalories += adjustedCalories;
+                mealProtein += adjustedProtein;
+                mealCarbs += adjustedCarbs;
+                mealFat += adjustedFat;
                 
+                dailyCalories += adjustedCalories;
+                dailyProtein += adjustedProtein;
+                dailyCarbs += adjustedCarbs;
+                dailyFat += adjustedFat;
+                
+                // Ligne de l'aliment
                 tableData.push([
-                    translations[currentLang][item.meal],
+                    '',
                     item.food,
                     `${adjustedWeight}g`,
                     `${adjustedCalories} kcal`,
-                    nutritionText
+                    `${adjustedProtein > 0 ? `${translations[currentLang].protein} ${adjustedProtein}g` : ''}${adjustedCarbs > 0 ? `, ${translations[currentLang].carbs} ${adjustedCarbs}g` : ''}${adjustedFat > 0 ? `, ${translations[currentLang].fat} ${adjustedFat}g` : ''}`
                 ]);
+                
+                // Si c'est le dernier aliment, ajouter le total du repas
+                if (index === mealStructure.length - 1) {
+                    tableData.push([
+                        { content: `${translations[currentLang][currentMeal]} - ${translations[currentLang].total}`, colSpan: 2, styles: { fontStyle: 'bold', fillColor: [200, 200, 200] } },
+                        '',
+                        `${mealCalories} kcal`,
+                        `${translations[currentLang].protein} ${mealProtein}g, ${translations[currentLang].carbs} ${mealCarbs}g, ${translations[currentLang].fat} ${mealFat}g`
+                    ]);
+                }
             });
+            
+            // Ajouter la ligne de total quotidien
+            tableData.push([
+                { content: translations[currentLang].dailyTotal, colSpan: 2, styles: { fontStyle: 'bold', fillColor: [193, 39, 45], textColor: [255, 255, 255] } },
+                '',
+                `${dailyCalories} kcal`,
+                `${translations[currentLang].protein} ${dailyProtein}g, ${translations[currentLang].carbs} ${dailyCarbs}g, ${translations[currentLang].fat} ${dailyFat}g`
+            ]);
             
             // Générer le tableau
             doc.autoTable({
@@ -1305,6 +1559,19 @@
             
             // Sauvegarder le PDF
             doc.save(`Plan_Nutritionnel_MarrakFit_${userData.goalCalories}cal.pdf`);
+            
+            // Cacher le message d'information sur mobile
+            if (window.innerWidth <= 768) {
+                mobilePdfInfo.textContent = currentLang === 'fr' 
+                    ? 'PDF généré avec succès! Vérifiez vos téléchargements.' 
+                    : currentLang === 'en' 
+                    ? 'PDF generated successfully! Check your downloads.' 
+                    : 'تم إنشاء PDF بنجاح! تحقق من التنزيلات.';
+                
+                setTimeout(() => {
+                    mobilePdfInfo.style.display = 'none';
+                }, 3000);
+            }
         }
         
         // Changer la langue de l'application
