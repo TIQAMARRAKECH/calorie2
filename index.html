@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur de Calories & Plan Nutritionnel</title>
+    <title>MarrakFit – Votre coach calories & macros made in Morocco</title>
     <style>
         :root {
-            --primary-color: #4CAF50;
-            --primary-dark: #388E3C;
-            --primary-light: #C8E6C9;
-            --secondary-color: #2196F3;
-            --secondary-dark: #1976D2;
-            --secondary-light: #BBDEFB;
-            --accent-color: #FF9800;
-            --text-color: #333;
+            --primary-color: #C1272D; /* Rouge Marrakech */
+            --primary-dark: #A02025;
+            --primary-light: #E8B4B6;
+            --secondary-color: #D4AF37; /* Or marocain */
+            --secondary-dark: #B8941F;
+            --secondary-light: #F4E4A9;
+            --accent-color: #228B22; /* Vert palmier */
+            --text-color: #2F2F2F;
             --text-light: #666;
-            --background-color: #f9f9f9;
-            --card-background: #fff;
-            --border-color: #e0e0e0;
-            --error-color: #f44336;
-            --success-color: #4CAF50;
+            --background-color: #FDF6E3; /* Beige sable */
+            --card-background: #FFFFFF;
+            --border-color: #E0D6C3;
+            --error-color: #C1272D;
+            --success-color: #228B22;
         }
 
         * {
@@ -33,14 +33,84 @@
             line-height: 1.6;
             color: var(--text-color);
             background-color: var(--background-color);
-            background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        /* Arrière-plan avec palmiers */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M50,10 C60,20 65,30 60,40 C55,50 45,55 50,65 C55,75 60,80 50,90 C40,80 45,75 50,65 C55,55 45,50 40,40 C35,30 40,20 50,10 Z" fill="%23228B22" opacity="0.1"/></svg>');
+            background-size: 200px;
+            opacity: 0.3;
+            z-index: -1;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .language-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .language-btn:hover {
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .language-options {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            margin-top: 5px;
+            display: none;
+            min-width: 150px;
+        }
+
+        .language-options.show {
+            display: block;
+        }
+
+        .language-option {
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .language-option:hover {
+            background: var(--primary-light);
         }
 
         header {
@@ -51,11 +121,27 @@
             border-radius: 10px;
             margin-bottom: 30px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Motif marocain décoratif */
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M50,10 C60,20 65,30 60,40 C55,50 45,55 50,65 C55,75 60,80 50,90 C40,80 45,75 50,65 C55,55 45,50 40,40 C35,30 40,20 50,10 Z" fill="white" opacity="0.1"/></svg>');
+            background-size: 150px;
+            opacity: 0.2;
         }
 
         header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
         }
 
         header p {
@@ -75,6 +161,8 @@
             padding: 25px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             transition: transform 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
         }
 
         .section:hover {
@@ -87,6 +175,15 @@
             color: var(--primary-dark);
             border-bottom: 2px solid var(--primary-light);
             padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::before {
+            content: "✦";
+            color: var(--secondary-color);
+            font-size: 1.8rem;
         }
 
         .form-group {
@@ -107,12 +204,13 @@
             border-radius: 5px;
             font-size: 1rem;
             transition: border 0.3s;
+            background-color: #FFF;
         }
 
         input:focus, select:focus {
             border-color: var(--primary-color);
             outline: none;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+            box-shadow: 0 0 0 2px rgba(193, 39, 45, 0.2);
         }
 
         .radio-group {
@@ -125,6 +223,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex: 1;
         }
 
         .radio-option input {
@@ -149,6 +248,7 @@
         .btn-primary:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(193, 39, 45, 0.3);
         }
 
         .btn-secondary {
@@ -159,14 +259,16 @@
         .btn-secondary:hover {
             background-color: var(--secondary-dark);
             transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
         }
 
         .result-card {
-            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            background: linear-gradient(135deg, #FDF6E3, #F4E4A9);
             border-left: 5px solid var(--primary-color);
             padding: 20px;
             border-radius: 5px;
             margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .result-title {
@@ -195,10 +297,12 @@
             padding: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             transition: transform 0.3s;
+            border: 1px solid var(--border-color);
         }
 
         .meal-card:hover {
             transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
         .meal-title {
@@ -208,6 +312,13 @@
             margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meal-title::before {
+            content: "🍽️";
         }
 
         .food-item {
@@ -236,6 +347,9 @@
             font-weight: bold;
             display: flex;
             justify-content: space-between;
+            background-color: #F9F5EB;
+            padding: 10px;
+            border-radius: 5px;
         }
 
         .hidden {
@@ -274,11 +388,13 @@
             justify-content: center;
             font-weight: bold;
             z-index: 2;
+            transition: all 0.3s ease;
         }
 
         .step.active {
             background-color: var(--primary-color);
             color: white;
+            box-shadow: 0 2px 5px rgba(193, 39, 45, 0.3);
         }
 
         .step.completed {
@@ -322,14 +438,37 @@
             header h1 {
                 font-size: 2rem;
             }
+            
+            .language-selector {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 20px;
+                display: flex;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Sélecteur de langue -->
+        <div class="language-selector">
+            <div class="language-btn" id="languageBtn">
+                <span>🌐</span>
+                <span id="currentLanguage">Français</span>
+                <span>▼</span>
+            </div>
+            <div class="language-options" id="languageOptions">
+                <div class="language-option" data-lang="fr">Français</div>
+                <div class="language-option" data-lang="en">English</div>
+                <div class="language-option" data-lang="ar">العربية</div>
+            </div>
+        </div>
+
         <header>
-            <h1>Calculateur de Calories & Plan Nutritionnel</h1>
-            <p>Obtenez votre plan alimentaire personnalisé selon vos objectifs</p>
+            <h1 id="appTitle">MarrakFit – Votre coach calories & macros made in Morocco</h1>
+            <p id="appSubtitle">Obtenez votre plan alimentaire personnalisé selon vos objectifs</p>
         </header>
 
         <div class="app-container">
@@ -343,41 +482,41 @@
 
             <!-- Étape 1: Informations personnelles -->
             <section id="personalInfoSection" class="section">
-                <h2 class="section-title">Informations Personnelles</h2>
+                <h2 class="section-title" id="personalInfoTitle">Informations Personnelles</h2>
                 <form id="personalInfoForm">
                     <div class="form-group">
-                        <label for="age">Âge</label>
+                        <label for="age" id="ageLabel">Âge</label>
                         <input type="number" id="age" min="15" max="100" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="gender">Genre</label>
+                        <label for="gender" id="genderLabel">Genre</label>
                         <select id="gender" required>
-                            <option value="">Sélectionnez votre genre</option>
-                            <option value="male">Homme</option>
-                            <option value="female">Femme</option>
+                            <option value="" id="genderDefault">Sélectionnez votre genre</option>
+                            <option value="male" id="genderMale">Homme</option>
+                            <option value="female" id="genderFemale">Femme</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
-                        <label for="weight">Poids (kg)</label>
+                        <label for="weight" id="weightLabel">Poids (kg)</label>
                         <input type="number" id="weight" min="30" max="200" step="0.1" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="height">Taille (cm)</label>
+                        <label for="height" id="heightLabel">Taille (cm)</label>
                         <input type="number" id="height" min="100" max="250" required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="activityLevel">Niveau d'activité</label>
+                        <label for="activityLevel" id="activityLabel">Niveau d'activité</label>
                         <select id="activityLevel" required>
-                            <option value="">Sélectionnez votre niveau d'activité</option>
-                            <option value="1.2">Sédentaire (peu ou pas d'exercice)</option>
-                            <option value="1.375">Légèrement actif (1-3 jours/semaine)</option>
-                            <option value="1.55">Modérément actif (3-5 jours/semaine)</option>
-                            <option value="1.725">Très actif (6-7 jours/semaine)</option>
-                            <option value="1.9">Extrêmement actif (entraînement intense quotidien)</option>
+                            <option value="" id="activityDefault">Sélectionnez votre niveau d'activité</option>
+                            <option value="1.2" id="activitySedentary">Sédentaire (peu ou pas d'exercice)</option>
+                            <option value="1.375" id="activityLight">Légèrement actif (1-3 jours/semaine)</option>
+                            <option value="1.55" id="activityModerate">Modérément actif (3-5 jours/semaine)</option>
+                            <option value="1.725" id="activityActive">Très actif (6-7 jours/semaine)</option>
+                            <option value="1.9" id="activityExtreme">Extrêmement actif (entraînement intense quotidien)</option>
                         </select>
                     </div>
                     
@@ -387,33 +526,33 @@
 
             <!-- Étape 2: Objectif -->
             <section id="goalSection" class="section hidden">
-                <h2 class="section-title">Votre Objectif</h2>
+                <h2 class="section-title" id="goalTitle">Votre Objectif</h2>
                 <form id="goalForm">
                     <div class="form-group">
-                        <label>Que souhaitez-vous atteindre ?</label>
+                        <label id="goalQuestion">Que souhaitez-vous atteindre ?</label>
                         <div class="radio-group">
                             <div class="radio-option">
                                 <input type="radio" id="goalMuscle" name="goal" value="muscle" required>
-                                <label for="goalMuscle">Prendre du muscle</label>
+                                <label for="goalMuscle" id="goalMuscleLabel">Prendre du muscle</label>
                             </div>
                             <div class="radio-option">
                                 <input type="radio" id="goalWeightLoss" name="goal" value="weightLoss">
-                                <label for="goalWeightLoss">Perdre du poids</label>
+                                <label for="goalWeightLoss" id="goalWeightLossLabel">Perdre du poids</label>
                             </div>
                             <div class="radio-option">
                                 <input type="radio" id="goalMaintain" name="goal" value="maintain">
-                                <label for="goalMaintain">Maintenir mon poids</label>
+                                <label for="goalMaintain" id="goalMaintainLabel">Maintenir mon poids</label>
                             </div>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="intensity">Intensité de l'objectif</label>
+                        <label for="intensity" id="intensityLabel">Intensité de l'objectif</label>
                         <select id="intensity" required>
-                            <option value="">Sélectionnez l'intensité</option>
-                            <option value="250">Léger (+/- 250 kcal)</option>
-                            <option value="500" selected>Modéré (+/- 500 kcal)</option>
-                            <option value="750">Intense (+/- 750 kcal)</option>
+                            <option value="" id="intensityDefault">Sélectionnez l'intensité</option>
+                            <option value="250" id="intensityLight">Léger (+/- 250 kcal)</option>
+                            <option value="500" selected id="intensityModerate">Modéré (+/- 500 kcal)</option>
+                            <option value="750" id="intensityIntense">Intense (+/- 750 kcal)</option>
                         </select>
                     </div>
                     
@@ -426,32 +565,32 @@
 
             <!-- Étape 3: Résultats des calculs -->
             <section id="resultsSection" class="section hidden">
-                <h2 class="section-title">Vos Besins Nutritionnels</h2>
+                <h2 class="section-title" id="resultsTitle">Vos Besoins Nutritionnels</h2>
                 
                 <div class="result-card">
-                    <h3 class="result-title">Votre métabolisme de base (BMR)</h3>
+                    <h3 class="result-title" id="bmrTitle">Votre métabolisme de base (BMR)</h3>
                     <div class="result-value" id="bmrResult">0 calories</div>
-                    <p>Calories nécessaires au repos pour maintenir les fonctions vitales</p>
+                    <p id="bmrDescription">Calories nécessaires au repos pour maintenir les fonctions vitales</p>
                 </div>
                 
                 <div class="result-card">
-                    <h3 class="result-title">Votre dépense énergétique totale (TDEE)</h3>
+                    <h3 class="result-title" id="tdeeTitle">Votre dépense énergétique totale (TDEE)</h3>
                     <div class="result-value" id="tdeeResult">0 calories</div>
-                    <p>Calories nécessaires en fonction de votre niveau d'activité</p>
+                    <p id="tdeeDescription">Calories nécessaires en fonction de votre niveau d'activité</p>
                 </div>
                 
                 <div class="result-card">
-                    <h3 class="result-title">Calories recommandées pour votre objectif</h3>
+                    <h3 class="result-title" id="goalCaloriesTitle">Calories recommandées pour votre objectif</h3>
                     <div class="result-value" id="goalCaloriesResult">0 calories</div>
                     <p id="goalDescription"></p>
                 </div>
                 
                 <div class="result-card">
-                    <h3 class="result-title">Répartition des macronutriments</h3>
+                    <h3 class="result-title" id="macrosTitle">Répartition des macronutriments</h3>
                     <div class="macronutrients">
-                        <p><strong>Protéines:</strong> <span id="proteinResult">0g</span> (1.5g par kg de poids)</p>
-                        <p><strong>Lipides:</strong> <span id="fatResult">0g</span> (1g par kg de poids)</p>
-                        <p><strong>Glucides:</strong> <span id="carbsResult">0g</span> (reste des calories)</p>
+                        <p><strong id="proteinLabel">Protéines:</strong> <span id="proteinResult">0g</span> <span id="proteinInfo"></span></p>
+                        <p><strong id="fatLabel">Lipides:</strong> <span id="fatResult">0g</span> <span id="fatInfo"></span></p>
+                        <p><strong id="carbsLabel">Glucides:</strong> <span id="carbsResult">0g</span> <span id="carbsInfo">(reste des calories)</span></p>
                     </div>
                 </div>
                 
@@ -463,8 +602,8 @@
 
             <!-- Étape 4: Plan nutritionnel -->
             <section id="planSection" class="section hidden">
-                <h2 class="section-title">Votre Plan Nutritionnel Quotidien</h2>
-                <p>Basé sur vos besoins de <span id="dailyCaloriesPlan">0</span> calories</p>
+                <h2 class="section-title" id="planTitle">Votre Plan Nutritionnel Quotidien</h2>
+                <p id="planDescription">Basé sur vos besoins de <span id="dailyCaloriesPlan">0</span> calories</p>
                 
                 <div class="nutrition-plan" id="nutritionPlan">
                     <!-- Le plan sera généré ici dynamiquement -->
@@ -479,6 +618,154 @@
     </div>
 
     <script>
+        // Textes multilingues
+        const translations = {
+            fr: {
+                appTitle: "MarrakFit – Votre coach calories & macros made in Morocco",
+                appSubtitle: "Obtenez votre plan alimentaire personnalisé selon vos objectifs",
+                currentLanguage: "Français",
+                personalInfoTitle: "Informations Personnelles",
+                ageLabel: "Âge",
+                genderLabel: "Genre",
+                genderDefault: "Sélectionnez votre genre",
+                genderMale: "Homme",
+                genderFemale: "Femme",
+                weightLabel: "Poids (kg)",
+                heightLabel: "Taille (cm)",
+                activityLabel: "Niveau d'activité",
+                activityDefault: "Sélectionnez votre niveau d'activité",
+                activitySedentary: "Sédentaire (peu ou pas d'exercice)",
+                activityLight: "Légèrement actif (1-3 jours/semaine)",
+                activityModerate: "Modérément actif (3-5 jours/semaine)",
+                activityActive: "Très actif (6-7 jours/semaine)",
+                activityExtreme: "Extrêmement actif (entraînement intense quotidien)",
+                nextButton: "Suivant",
+                goalTitle: "Votre Objectif",
+                goalQuestion: "Que souhaitez-vous atteindre ?",
+                goalMuscleLabel: "Prendre du muscle",
+                goalWeightLossLabel: "Perdre du poids",
+                goalMaintainLabel: "Maintenir mon poids",
+                intensityLabel: "Intensité de l'objectif",
+                intensityDefault: "Sélectionnez l'intensité",
+                intensityLight: "Léger (+/- 250 kcal)",
+                intensityModerate: "Modéré (+/- 500 kcal)",
+                intensityIntense: "Intense (+/- 750 kcal)",
+                previousButton: "Précédent",
+                calculateButton: "Calculer mes besoins",
+                resultsTitle: "Vos Besoins Nutritionnels",
+                bmrTitle: "Votre métabolisme de base (BMR)",
+                bmrDescription: "Calories nécessaires au repos pour maintenir les fonctions vitales",
+                tdeeTitle: "Votre dépense énergétique totale (TDEE)",
+                tdeeDescription: "Calories nécessaires en fonction de votre niveau d'activité",
+                goalCaloriesTitle: "Calories recommandées pour votre objectif",
+                macrosTitle: "Répartition des macronutriments",
+                proteinLabel: "Protéines:",
+                fatLabel: "Lipides:",
+                carbsLabel: "Glucides:",
+                carbsInfo: "(reste des calories)",
+                viewPlanButton: "Voir mon plan nutritionnel",
+                planTitle: "Votre Plan Nutritionnel Quotidien",
+                planDescription: "Basé sur vos besoins de",
+                restartButton: "Recommencer"
+            },
+            en: {
+                appTitle: "MarrakFit – Your calories & macros coach made in Morocco",
+                appSubtitle: "Get your personalized meal plan according to your goals",
+                currentLanguage: "English",
+                personalInfoTitle: "Personal Information",
+                ageLabel: "Age",
+                genderLabel: "Gender",
+                genderDefault: "Select your gender",
+                genderMale: "Male",
+                genderFemale: "Female",
+                weightLabel: "Weight (kg)",
+                heightLabel: "Height (cm)",
+                activityLabel: "Activity Level",
+                activityDefault: "Select your activity level",
+                activitySedentary: "Sedentary (little or no exercise)",
+                activityLight: "Lightly active (1-3 days/week)",
+                activityModerate: "Moderately active (3-5 days/week)",
+                activityActive: "Very active (6-7 days/week)",
+                activityExtreme: "Extremely active (intense daily training)",
+                nextButton: "Next",
+                goalTitle: "Your Goal",
+                goalQuestion: "What do you want to achieve?",
+                goalMuscleLabel: "Gain muscle",
+                goalWeightLossLabel: "Lose weight",
+                goalMaintainLabel: "Maintain my weight",
+                intensityLabel: "Goal intensity",
+                intensityDefault: "Select the intensity",
+                intensityLight: "Light (+/- 250 kcal)",
+                intensityModerate: "Moderate (+/- 500 kcal)",
+                intensityIntense: "Intense (+/- 750 kcal)",
+                previousButton: "Previous",
+                calculateButton: "Calculate my needs",
+                resultsTitle: "Your Nutritional Needs",
+                bmrTitle: "Your Basal Metabolic Rate (BMR)",
+                bmrDescription: "Calories needed at rest to maintain vital functions",
+                tdeeTitle: "Your Total Daily Energy Expenditure (TDEE)",
+                tdeeDescription: "Calories needed based on your activity level",
+                goalCaloriesTitle: "Recommended calories for your goal",
+                macrosTitle: "Macronutrient distribution",
+                proteinLabel: "Protein:",
+                fatLabel: "Fat:",
+                carbsLabel: "Carbs:",
+                carbsInfo: "(remaining calories)",
+                viewPlanButton: "View my nutrition plan",
+                planTitle: "Your Daily Nutrition Plan",
+                planDescription: "Based on your needs of",
+                restartButton: "Restart"
+            },
+            ar: {
+                appTitle: "MarrakFit – مدرب السعرات والماكرو من المغرب",
+                appSubtitle: "احصل على خطة وجباتك الشخصية وفقًا لأهدافك",
+                currentLanguage: "العربية",
+                personalInfoTitle: "المعلومات الشخصية",
+                ageLabel: "العمر",
+                genderLabel: "الجنس",
+                genderDefault: "اختر جنسك",
+                genderMale: "رجل",
+                genderFemale: "امرأة",
+                weightLabel: "الوزن (كجم)",
+                heightLabel: "الطول (سم)",
+                activityLabel: "مستوى النشاط",
+                activityDefault: "اختر مستوى نشاطك",
+                activitySedentary: "قليل الحركة (قليل أو بدون تمارين)",
+                activityLight: "نشاط خفيف (1-3 أيام/أسبوع)",
+                activityModerate: "نشاط معتدل (3-5 أيام/أسبوع)",
+                activityActive: "نشط جدًا (6-7 أيام/أسبوع)",
+                activityExtreme: "نشط للغاية (تدريب مكثف يومي)",
+                nextButton: "التالي",
+                goalTitle: "هدفك",
+                goalQuestion: "ماذا تريد أن تحقق؟",
+                goalMuscleLabel: "اكتساب العضلات",
+                goalWeightLossLabel: "فقدان الوزن",
+                goalMaintainLabel: "الحفاظ على وزني",
+                intensityLabel: "شدة الهدف",
+                intensityDefault: "اختر الشدة",
+                intensityLight: "خفيف (+/- 250 سعرة)",
+                intensityModerate: "معتدل (+/- 500 سعرة)",
+                intensityIntense: "مكثف (+/- 750 سعرة)",
+                previousButton: "السابق",
+                calculateButton: "حساب احتياجاتي",
+                resultsTitle: "احتياجاتك الغذائية",
+                bmrTitle: "معدل الأيض الأساسي (BMR)",
+                bmrDescription: "السعرات الحرارية اللازمة في الراحة للحفاظ على الوظائف الحيوية",
+                tdeeTitle: "إجمالي إنفاق الطاقة اليومي (TDEE)",
+                tdeeDescription: "السعرات الحرارية اللازمة بناءً على مستوى نشاطك",
+                goalCaloriesTitle: "السعرات الحرارية الموصى بها لهدفك",
+                macrosTitle: "توزيع المغذيات الكبرى",
+                proteinLabel: "البروتين:",
+                fatLabel: "الدهون:",
+                carbsLabel: "الكربوهيدرات:",
+                carbsInfo: "(السعرات المتبقية)",
+                viewPlanButton: "عرض خطتي الغذائية",
+                planTitle: "خطتك الغذائية اليومية",
+                planDescription: "بناءً على احتياجاتك من",
+                restartButton: "إعادة البدء"
+            }
+        };
+
         // Éléments DOM
         const personalInfoSection = document.getElementById('personalInfoSection');
         const goalSection = document.getElementById('goalSection');
@@ -505,6 +792,13 @@
         const carbsResult = document.getElementById('carbsResult');
         const dailyCaloriesPlan = document.getElementById('dailyCaloriesPlan');
         const nutritionPlan = document.getElementById('nutritionPlan');
+        const proteinInfo = document.getElementById('proteinInfo');
+        const fatInfo = document.getElementById('fatInfo');
+        
+        // Sélecteur de langue
+        const languageBtn = document.getElementById('languageBtn');
+        const languageOptions = document.getElementById('languageOptions');
+        const currentLanguage = document.getElementById('currentLanguage');
         
         // Données de l'utilisateur
         let userData = {
@@ -523,30 +817,58 @@
             carbs: 0
         };
         
-        // Base d'aliments avec images (simulées via CSS)
-        const foodDatabase = [
-            { name: "Poulet grillé", calories: 165, protein: 31, carbs: 0, fat: 3.6, image: "poulet" },
-            { name: "Riz brun cuit", calories: 111, protein: 2.6, carbs: 23, fat: 0.9, image: "riz" },
-            { name: "Brocoli cuit", calories: 55, protein: 3.7, carbs: 11, fat: 0.6, image: "brocoli" },
-            { name: "Œufs brouillés", calories: 149, protein: 10, carbs: 1.6, fat: 11, image: "oeufs" },
-            { name: "Pomme", calories: 52, protein: 0.3, carbs: 14, fat: 0.2, image: "pomme" },
-            { name: "Yaourt grec", calories: 59, protein: 10, carbs: 3.6, fat: 0.4, image: "yaourt" },
-            { name: "Flocons d'avoine", calories: 68, protein: 2.4, carbs: 12, fat: 1.4, image: "avoine" },
-            { name: "Saumon grillé", calories: 206, protein: 22, carbs: 0, fat: 13, image: "saumon" },
-            { name: "Patate douce cuite", calories: 86, protein: 1.6, carbs: 20, fat: 0.1, image: "patate" },
-            { name: "Amandes", calories: 579, protein: 21, carbs: 22, fat: 50, image: "amandes" }
-        ];
+        // Langue actuelle
+        let currentLang = 'fr';
+        
+        // Base d'aliments avec priorités selon les repas (sans doublons)
+        const foodDatabase = {
+            // Aliments pour petit-déjeuner (priorité aux œufs)
+            breakfast: [
+                { name: "Œufs brouillés", calories: 149, protein: 10, carbs: 1.6, fat: 11 },
+                { name: "Flocons d'avoine", calories: 68, protein: 2.4, carbs: 12, fat: 1.4 },
+                { name: "Yaourt grec", calories: 59, protein: 10, carbs: 3.6, fat: 0.4 },
+                { name: "Pain complet", calories: 265, protein: 13, carbs: 44, fat: 3.4 }
+            ],
+            // Aliments pour déjeuner et dîner (priorité au poulet et riz)
+            lunchDinner: [
+                { name: "Poulet grillé", calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+                { name: "Riz brun cuit", calories: 111, protein: 2.6, carbs: 23, fat: 0.9 },
+                { name: "Brocoli cuit", calories: 55, protein: 3.7, carbs: 11, fat: 0.6 },
+                { name: "Salade marocaine", calories: 80, protein: 2, carbs: 10, fat: 4 },
+                { name: "Poivrons grillés", calories: 40, protein: 1, carbs: 9, fat: 0.5 }
+            ],
+            // Aliments pour collation
+            snack: [
+                { name: "Amandes", calories: 579, protein: 21, carbs: 22, fat: 50 },
+                { name: "Banane", calories: 89, protein: 1.1, carbs: 23, fat: 0.3 },
+                { name: "Pomme", calories: 52, protein: 0.3, carbs: 14, fat: 0.2 },
+                { name: "Dattes", calories: 282, protein: 2, carbs: 75, fat: 0.4 }
+            ]
+        };
         
         // Écouteurs d'événements
         nextToGoalBtn.addEventListener('click', goToGoalSection);
         backToPersonalBtn.addEventListener('click', goToPersonalSection);
         nextToResultsBtn.addEventListener('click', goToResultsSection);
-        backToGoalBtn.addEventListener('click', backToGoalSection); // CORRIGÉ
+        backToGoalBtn.addEventListener('click', backToGoalSection);
         nextToPlanBtn.addEventListener('click', goToPlanSection);
-        backToResultsBtn.addEventListener('click', goToResultsSection);
+        backToResultsBtn.addEventListener('click', backToResultsSection);
         restartBtn.addEventListener('click', restartApp);
         
-        // Navigation entre les sections - CORRIGÉ
+        // Gestionnaire de langue
+        languageBtn.addEventListener('click', () => {
+            languageOptions.classList.toggle('show');
+        });
+        
+        document.querySelectorAll('.language-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const lang = option.getAttribute('data-lang');
+                setLanguage(lang);
+                languageOptions.classList.remove('show');
+            });
+        });
+        
+        // Navigation entre les sections
         function goToGoalSection() {
             if (!validatePersonalInfo()) return;
             
@@ -570,7 +892,6 @@
             updateSteps(3);
         }
         
-        // CORRECTION : Nom de fonction changé
         function backToGoalSection() {
             resultsSection.classList.add('hidden');
             goalSection.classList.remove('hidden');
@@ -619,7 +940,9 @@
             const activityLevel = document.getElementById('activityLevel').value;
             
             if (!age || !gender || !weight || !height || !activityLevel) {
-                alert('Veuillez remplir tous les champs');
+                alert(currentLang === 'fr' ? 'Veuillez remplir tous les champs' : 
+                      currentLang === 'en' ? 'Please fill in all fields' : 
+                      'يرجى ملء جميع الحقول');
                 return false;
             }
             
@@ -638,7 +961,9 @@
             const intensity = document.getElementById('intensity').value;
             
             if (!goal || !intensity) {
-                alert('Veuillez sélectionner un objectif et une intensité');
+                alert(currentLang === 'fr' ? 'Veuillez sélectionner un objectif et une intensité' : 
+                      currentLang === 'en' ? 'Please select a goal and intensity' : 
+                      'يرجى اختيار هدف وشدة');
                 return false;
             }
             
@@ -648,7 +973,7 @@
             return true;
         }
         
-        // Calcul des résultats
+        // Calcul des résultats avec les nouvelles règles de protéines et lipides
         function calculateResults() {
             // Calcul du BMR (Métabolisme de base)
             if (userData.gender === 'male') {
@@ -663,29 +988,70 @@
             // Calcul des calories selon l'objectif
             if (userData.goal === 'muscle') {
                 userData.goalCalories = Math.round(userData.tdee + userData.intensity);
-                goalDescription.textContent = `Pour prendre du muscle, vous devez consommer ${userData.intensity} calories de plus que votre dépense énergétique.`;
+                goalDescription.textContent = currentLang === 'fr' ? 
+                    `Pour prendre du muscle, vous devez consommer ${userData.intensity} calories de plus que votre dépense énergétique.` :
+                    currentLang === 'en' ?
+                    `To gain muscle, you need to consume ${userData.intensity} calories more than your energy expenditure.` :
+                    `لاكتساب العضلات، تحتاج إلى استهلاك ${userData.intensity} سعرة حرارية أكثر من إنفاقك للطاقة.`;
             } else if (userData.goal === 'weightLoss') {
                 userData.goalCalories = Math.round(userData.tdee - userData.intensity);
-                goalDescription.textContent = `Pour perdre du poids, vous devez consommer ${userData.intensity} calories de moins que votre dépense énergétique.`;
+                goalDescription.textContent = currentLang === 'fr' ? 
+                    `Pour perdre du poids, vous devez consommer ${userData.intensity} calories de moins que votre dépense énergétique.` :
+                    currentLang === 'en' ?
+                    `To lose weight, you need to consume ${userData.intensity} calories less than your energy expenditure.` :
+                    `لفقدان الوزن، تحتاج إلى استهلاك ${userData.intensity} سعرة حرارية أقل من إنفاقك للطاقة.`;
             } else {
                 userData.goalCalories = Math.round(userData.tdee);
-                goalDescription.textContent = `Pour maintenir votre poids, vous devez consommer l'équivalent de votre dépense énergétique.`;
+                goalDescription.textContent = currentLang === 'fr' ? 
+                    `Pour maintenir votre poids, vous devez consommer l'équivalent de votre dépense énergétique.` :
+                    currentLang === 'en' ?
+                    `To maintain your weight, you need to consume the equivalent of your energy expenditure.` :
+                    `للحفاظ على وزنك، تحتاج إلى استهلاك ما يعادل إنفاقك للطاقة.`;
             }
             
-            // Calcul des macronutriments
-            userData.protein = Math.round(userData.weight * 1.5); // 1.5g par kg de poids
-            userData.fat = Math.round(userData.weight * 1); // 1g par kg de poids
+            // Calcul des protéines selon les nouvelles règles
+            if (userData.goal === 'muscle') {
+                userData.protein = userData.gender === 'male' ? 
+                    Math.round(userData.weight * 1.5) : 
+                    Math.round(userData.weight * 1.2);
+                proteinInfo.textContent = userData.gender === 'male' ? 
+                    "(1.5g par kg de poids)" : "(1.2g par kg de poids)";
+            } else if (userData.goal === 'weightLoss') {
+                userData.protein = userData.gender === 'male' ? 
+                    Math.round(userData.weight * 2) : 
+                    Math.round(userData.weight * 1.5);
+                proteinInfo.textContent = userData.gender === 'male' ? 
+                    "(2g par kg de poids)" : "(1.5g par kg de poids)";
+            } else {
+                userData.protein = Math.round(userData.weight * 1.2);
+                proteinInfo.textContent = "(1.2g par kg de poids)";
+            }
+            
+            // Calcul des lipides selon les nouvelles règles
+            if (userData.goal === 'muscle') {
+                userData.fat = Math.round(userData.weight * 1);
+                fatInfo.textContent = "(1g par kg de poids)";
+            } else if (userData.goal === 'weightLoss') {
+                userData.fat = userData.gender === 'male' ? 
+                    Math.round(userData.weight * 0.7) : 
+                    Math.round(userData.weight * 0.8);
+                fatInfo.textContent = userData.gender === 'male' ? 
+                    "(0.7g par kg de poids)" : "(0.8g par kg de poids)";
+            } else {
+                userData.fat = Math.round(userData.weight * 1);
+                fatInfo.textContent = "(1g par kg de poids)";
+            }
             
             // Les glucides représentent le reste des calories
             const proteinCalories = userData.protein * 4;
             const fatCalories = userData.fat * 9;
             const remainingCalories = userData.goalCalories - proteinCalories - fatCalories;
-            userData.carbs = Math.round(remainingCalories / 4);
+            userData.carbs = Math.max(0, Math.round(remainingCalories / 4));
             
             // Affichage des résultats
-            bmrResult.textContent = `${Math.round(userData.bmr)} calories`;
-            tdeeResult.textContent = `${Math.round(userData.tdee)} calories`;
-            goalCaloriesResult.textContent = `${userData.goalCalories} calories`;
+            bmrResult.textContent = `${Math.round(userData.bmr)} ${currentLang === 'fr' ? 'calories' : currentLang === 'en' ? 'calories' : 'سعرة'}`;
+            tdeeResult.textContent = `${Math.round(userData.tdee)} ${currentLang === 'fr' ? 'calories' : currentLang === 'en' ? 'calories' : 'سعرة'}`;
+            goalCaloriesResult.textContent = `${userData.goalCalories} ${currentLang === 'fr' ? 'calories' : currentLang === 'en' ? 'calories' : 'سعرة'}`;
             proteinResult.textContent = `${userData.protein}g`;
             fatResult.textContent = `${userData.fat}g`;
             carbsResult.textContent = `${userData.carbs}g`;
@@ -693,17 +1059,24 @@
             dailyCaloriesPlan.textContent = userData.goalCalories;
         }
         
-        // Génération du plan nutritionnel
+        // Génération du plan nutritionnel avec priorités alimentaires (sans doublons)
         function generateNutritionPlan() {
             nutritionPlan.innerHTML = '';
             
             // Repas de la journée
             const meals = [
-                { name: "Petit-déjeuner", targetCalories: userData.goalCalories * 0.25 },
-                { name: "Déjeuner", targetCalories: userData.goalCalories * 0.35 },
-                { name: "Collation", targetCalories: userData.goalCalories * 0.15 },
-                { name: "Dîner", targetCalories: userData.goalCalories * 0.25 }
+                { name: currentLang === 'fr' ? "Petit-déjeuner" : currentLang === 'en' ? "Breakfast" : "الإفطار", 
+                  type: "breakfast", targetCalories: userData.goalCalories * 0.25 },
+                { name: currentLang === 'fr' ? "Déjeuner" : currentLang === 'en' ? "Lunch" : "الغداء", 
+                  type: "lunchDinner", targetCalories: userData.goalCalories * 0.35 },
+                { name: currentLang === 'fr' ? "Collation" : currentLang === 'en' ? "Snack" : "وجبة خفيفة", 
+                  type: "snack", targetCalories: userData.goalCalories * 0.15 },
+                { name: currentLang === 'fr' ? "Dîner" : currentLang === 'en' ? "Dinner" : "العشاء", 
+                  type: "lunchDinner", targetCalories: userData.goalCalories * 0.25 }
             ];
+            
+            // Pour éviter les doublons entre repas
+            const usedFoods = new Set();
             
             meals.forEach(meal => {
                 const mealCard = document.createElement('div');
@@ -714,8 +1087,8 @@
                 mealTitle.textContent = meal.name;
                 mealCard.appendChild(mealTitle);
                 
-                // Générer des aliments aléatoires pour ce repas
-                const foods = generateFoodsForMeal(meal.targetCalories);
+                // Générer des aliments pour ce repas selon son type (sans doublons)
+                const foods = generateFoodsForMeal(meal.targetCalories, meal.type, usedFoods);
                 let totalCalories = 0;
                 let totalProtein = 0;
                 let totalCarbs = 0;
@@ -741,6 +1114,9 @@
                     totalProtein += food.protein;
                     totalCarbs += food.carbs;
                     totalFat += food.fat;
+                    
+                    // Marquer cet aliment comme utilisé
+                    usedFoods.add(food.name);
                 });
                 
                 // Ajouter le total du repas
@@ -748,10 +1124,10 @@
                 mealTotal.className = 'meal-total';
                 
                 const totalLabel = document.createElement('span');
-                totalLabel.textContent = 'Total:';
+                totalLabel.textContent = currentLang === 'fr' ? 'Total:' : currentLang === 'en' ? 'Total:' : 'المجموع:';
                 
                 const totalValue = document.createElement('span');
-                totalValue.textContent = `${Math.round(totalCalories)} cal, ${totalProtein.toFixed(1)}g protéines, ${totalCarbs.toFixed(1)}g glucides, ${totalFat.toFixed(1)}g lipides`;
+                totalValue.textContent = `${Math.round(totalCalories)} ${currentLang === 'fr' ? 'cal' : currentLang === 'en' ? 'cal' : 'سعرة'}, ${totalProtein.toFixed(1)}g ${currentLang === 'fr' ? 'protéines' : currentLang === 'en' ? 'protein' : 'بروتين'}, ${totalCarbs.toFixed(1)}g ${currentLang === 'fr' ? 'glucides' : currentLang === 'en' ? 'carbs' : 'كربوهيدرات'}, ${totalFat.toFixed(1)}g ${currentLang === 'fr' ? 'lipides' : currentLang === 'en' ? 'fat' : 'دهون'}`;
                 
                 mealTotal.appendChild(totalLabel);
                 mealTotal.appendChild(totalValue);
@@ -761,35 +1137,108 @@
             });
         }
         
-        // Générer des aliments pour un repas donné
-        function generateFoodsForMeal(targetCalories) {
+        // Générer des aliments pour un repas donné selon son type (sans doublons)
+        function generateFoodsForMeal(targetCalories, mealType, usedFoods) {
             const foods = [];
             let remainingCalories = targetCalories;
             
             // Sélectionner 3-4 aliments au maximum par repas
             const maxFoods = Math.min(4, Math.max(3, Math.floor(targetCalories / 200)));
             
-            for (let i = 0; i < maxFoods && remainingCalories > 50; i++) {
-                // Choisir un aliment aléatoire
-                const randomFood = foodDatabase[Math.floor(Math.random() * foodDatabase.length)];
+            // Pour le petit-déjeuner, priorité aux œufs
+            if (mealType === "breakfast" && !usedFoods.has("Œufs brouillés")) {
+                const eggs = foodDatabase.breakfast[0]; // Œufs
+                const quantity = Math.min(200, Math.floor(remainingCalories * 0.4 / eggs.calories * 100));
                 
-                // Déterminer une quantité raisonnable (entre 50g et 200g)
-                const maxQuantity = Math.min(200, Math.floor(remainingCalories / randomFood.calories * 100));
-                const minQuantity = 50;
+                if (quantity >= 50) {
+                    const ratio = quantity / 100;
+                    const foodData = {
+                        name: eggs.name,
+                        quantity: quantity,
+                        calories: eggs.calories * ratio,
+                        protein: eggs.protein * ratio,
+                        carbs: eggs.carbs * ratio,
+                        fat: eggs.fat * ratio
+                    };
+                    
+                    foods.push(foodData);
+                    remainingCalories -= foodData.calories;
+                }
+            }
+            
+            // Pour le déjeuner et dîner, priorité au poulet et riz
+            if (mealType === "lunchDinner") {
+                // Ajouter du poulet s'il n'a pas déjà été utilisé
+                if (!usedFoods.has("Poulet grillé")) {
+                    const chicken = foodDatabase.lunchDinner[0]; // Poulet
+                    const chickenQuantity = Math.min(150, Math.floor(remainingCalories * 0.4 / chicken.calories * 100));
+                    
+                    if (chickenQuantity >= 50) {
+                        const ratio = chickenQuantity / 100;
+                        const foodData = {
+                            name: chicken.name,
+                            quantity: chickenQuantity,
+                            calories: chicken.calories * ratio,
+                            protein: chicken.protein * ratio,
+                            carbs: chicken.carbs * ratio,
+                            fat: chicken.fat * ratio
+                        };
+                        
+                        foods.push(foodData);
+                        remainingCalories -= foodData.calories;
+                    }
+                }
+                
+                // Ajouter du riz s'il n'a pas déjà été utilisé
+                if (!usedFoods.has("Riz brun cuit")) {
+                    const rice = foodDatabase.lunchDinner[1]; // Riz
+                    const riceQuantity = Math.min(200, Math.floor(remainingCalories * 0.3 / rice.calories * 100));
+                    
+                    if (riceQuantity >= 50) {
+                        const ratio = riceQuantity / 100;
+                        const foodData = {
+                            name: rice.name,
+                            quantity: riceQuantity,
+                            calories: rice.calories * ratio,
+                            protein: rice.protein * ratio,
+                            carbs: rice.carbs * ratio,
+                            fat: rice.fat * ratio
+                        };
+                        
+                        foods.push(foodData);
+                        remainingCalories -= foodData.calories;
+                    }
+                }
+            }
+            
+            // Ajouter d'autres aliments selon le type de repas (sans doublons)
+            const foodPool = mealType === "breakfast" ? foodDatabase.breakfast : 
+                            mealType === "lunchDinner" ? foodDatabase.lunchDinner : 
+                            foodDatabase.snack;
+            
+            // Commencer à l'index 1 pour éviter de répéter les aliments prioritaires
+            const startIndex = mealType === "breakfast" || mealType === "lunchDinner" ? 1 : 0;
+            
+            for (let i = startIndex; i < foodPool.length && foods.length < maxFoods && remainingCalories > 50; i++) {
+                const food = foodPool[i];
+                
+                // Vérifier si cet aliment n'a pas déjà été utilisé
+                if (usedFoods.has(food.name)) continue;
+                
+                const maxQuantity = Math.min(200, Math.floor(remainingCalories / food.calories * 100));
+                const minQuantity = 30;
                 
                 if (maxQuantity < minQuantity) continue;
                 
                 const quantity = Math.floor(Math.random() * (maxQuantity - minQuantity + 1)) + minQuantity;
-                
-                // Calculer les valeurs nutritionnelles pour cette quantité
                 const ratio = quantity / 100;
                 const foodData = {
-                    name: randomFood.name,
+                    name: food.name,
                     quantity: quantity,
-                    calories: randomFood.calories * ratio,
-                    protein: randomFood.protein * ratio,
-                    carbs: randomFood.carbs * ratio,
-                    fat: randomFood.fat * ratio
+                    calories: food.calories * ratio,
+                    protein: food.protein * ratio,
+                    carbs: food.carbs * ratio,
+                    fat: food.fat * ratio
                 };
                 
                 foods.push(foodData);
@@ -799,8 +1248,83 @@
             return foods;
         }
         
+        // Changer la langue de l'application
+        function setLanguage(lang) {
+            currentLang = lang;
+            currentLanguage.textContent = translations[lang].currentLanguage;
+            
+            // Mettre à jour tous les textes de l'interface
+            document.getElementById('appTitle').textContent = translations[lang].appTitle;
+            document.getElementById('appSubtitle').textContent = translations[lang].appSubtitle;
+            document.getElementById('personalInfoTitle').textContent = translations[lang].personalInfoTitle;
+            document.getElementById('ageLabel').textContent = translations[lang].ageLabel;
+            document.getElementById('genderLabel').textContent = translations[lang].genderLabel;
+            document.getElementById('genderDefault').textContent = translations[lang].genderDefault;
+            document.getElementById('genderMale').textContent = translations[lang].genderMale;
+            document.getElementById('genderFemale').textContent = translations[lang].genderFemale;
+            document.getElementById('weightLabel').textContent = translations[lang].weightLabel;
+            document.getElementById('heightLabel').textContent = translations[lang].heightLabel;
+            document.getElementById('activityLabel').textContent = translations[lang].activityLabel;
+            document.getElementById('activityDefault').textContent = translations[lang].activityDefault;
+            document.getElementById('activitySedentary').textContent = translations[lang].activitySedentary;
+            document.getElementById('activityLight').textContent = translations[lang].activityLight;
+            document.getElementById('activityModerate').textContent = translations[lang].activityModerate;
+            document.getElementById('activityActive').textContent = translations[lang].activityActive;
+            document.getElementById('activityExtreme').textContent = translations[lang].activityExtreme;
+            document.getElementById('nextToGoalBtn').textContent = translations[lang].nextButton;
+            document.getElementById('goalTitle').textContent = translations[lang].goalTitle;
+            document.getElementById('goalQuestion').textContent = translations[lang].goalQuestion;
+            document.getElementById('goalMuscleLabel').textContent = translations[lang].goalMuscleLabel;
+            document.getElementById('goalWeightLossLabel').textContent = translations[lang].goalWeightLossLabel;
+            document.getElementById('goalMaintainLabel').textContent = translations[lang].goalMaintainLabel;
+            document.getElementById('intensityLabel').textContent = translations[lang].intensityLabel;
+            document.getElementById('intensityDefault').textContent = translations[lang].intensityDefault;
+            document.getElementById('intensityLight').textContent = translations[lang].intensityLight;
+            document.getElementById('intensityModerate').textContent = translations[lang].intensityModerate;
+            document.getElementById('intensityIntense').textContent = translations[lang].intensityIntense;
+            document.getElementById('backToPersonalBtn').textContent = translations[lang].previousButton;
+            document.getElementById('nextToResultsBtn').textContent = translations[lang].calculateButton;
+            document.getElementById('resultsTitle').textContent = translations[lang].resultsTitle;
+            document.getElementById('bmrTitle').textContent = translations[lang].bmrTitle;
+            document.getElementById('bmrDescription').textContent = translations[lang].bmrDescription;
+            document.getElementById('tdeeTitle').textContent = translations[lang].tdeeTitle;
+            document.getElementById('tdeeDescription').textContent = translations[lang].tdeeDescription;
+            document.getElementById('goalCaloriesTitle').textContent = translations[lang].goalCaloriesTitle;
+            document.getElementById('macrosTitle').textContent = translations[lang].macrosTitle;
+            document.getElementById('proteinLabel').textContent = translations[lang].proteinLabel;
+            document.getElementById('fatLabel').textContent = translations[lang].fatLabel;
+            document.getElementById('carbsLabel').textContent = translations[lang].carbsLabel;
+            document.getElementById('carbsInfo').textContent = translations[lang].carbsInfo;
+            document.getElementById('backToGoalBtn').textContent = translations[lang].previousButton;
+            document.getElementById('nextToPlanBtn').textContent = translations[lang].viewPlanButton;
+            document.getElementById('planTitle').textContent = translations[lang].planTitle;
+            document.getElementById('planDescription').textContent = `${translations[lang].planDescription} `;
+            document.getElementById('backToResultsBtn').textContent = translations[lang].previousButton;
+            document.getElementById('restartBtn').textContent = translations[lang].restartButton;
+            
+            // Si nous sommes sur la page des résultats, recalculer pour mettre à jour les textes
+            if (!resultsSection.classList.contains('hidden')) {
+                calculateResults();
+            }
+            
+            // Si nous sommes sur la page du plan, regénérer le plan
+            if (!planSection.classList.contains('hidden')) {
+                generateNutritionPlan();
+            }
+            
+            // Ajuster la direction du texte pour l'arabe
+            if (lang === 'ar') {
+                document.body.style.direction = 'rtl';
+                document.body.style.textAlign = 'right';
+            } else {
+                document.body.style.direction = 'ltr';
+                document.body.style.textAlign = 'left';
+            }
+        }
+        
         // Initialisation
         updateSteps(1);
+        setLanguage('fr'); // Langue par défaut
     </script>
 </body>
 </html>
