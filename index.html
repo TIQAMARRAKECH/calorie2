@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MarrakFit – Votre coach calories & macros made in Morocco</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary-color: #C1272D; /* Rouge Marrakech */
@@ -263,34 +262,11 @@
             box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
         }
 
-        .btn-export {
-            background-color: #D32F2F;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-export:hover {
-            background-color: #B71C1C;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(211, 47, 47, 0.3);
-        }
-
-        .btn-print {
-            background-color: #1976D2;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-print:hover {
-            background-color: #1565C0;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(25, 118, 210, 0.3);
+        .btn-large {
+            font-size: 1.2rem;
+            padding: 20px 30px;
+            width: 100%;
+            margin-bottom: 20px;
         }
 
         .result-card {
@@ -444,14 +420,6 @@
             z-index: 1;
         }
 
-        .food-image {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
         .plan-table {
             width: 100%;
             border-collapse: collapse;
@@ -489,59 +457,77 @@
             font-size: 1.1em;
         }
 
-        .export-section {
+        .home-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
             margin-top: 30px;
+        }
+
+        .home-option {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
             text-align: center;
-            padding: 20px;
-            background-color: #f5f5f5;
-            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            border: 1px solid var(--border-color);
         }
 
-        .export-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
+        .home-option:hover {
+            transform: translateY(-5px);
         }
 
-        .mobile-info {
-            display: none;
-            background-color: #e3f2fd;
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            font-size: 0.9em;
-        }
-
-        .loading-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            flex-direction: column;
-            color: white;
-            display: none;
-        }
-
-        .spinner {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid var(--primary-color);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
+        .home-option h3 {
+            font-size: 1.5rem;
             margin-bottom: 15px;
+            color: var(--primary-dark);
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .home-option p {
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        .history-list {
+            margin-top: 20px;
+        }
+
+        .history-item {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .history-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: var(--primary-dark);
+        }
+
+        .history-item p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .empty-history {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+
+        .empty-history p {
+            margin-bottom: 20px;
         }
 
         @media (max-width: 768px) {
@@ -579,12 +565,8 @@
                 padding: 5px;
             }
             
-            .mobile-info {
-                display: block;
-            }
-            
-            .export-buttons {
-                flex-direction: column;
+            .home-options {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -595,36 +577,9 @@
                 white-space: nowrap;
             }
         }
-
-        /* Styles pour l'impression */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            
-            #planSection, #planSection * {
-                visibility: visible;
-            }
-            
-            #planSection {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-            }
-            
-            .export-section, .form-actions {
-                display: none;
-            }
-        }
     </style>
 </head>
 <body>
-    <div class="loading-overlay" id="loadingOverlay">
-        <div class="spinner"></div>
-        <p id="loadingText">Génération de l'image en cours...</p>
-    </div>
-
     <div class="container">
         <!-- Sélecteur de langue -->
         <div class="language-selector">
@@ -646,8 +601,41 @@
         </header>
 
         <div class="app-container">
-            <!-- Indicateur de progression -->
-            <div class="step-indicator">
+            <!-- Page d'accueil -->
+            <section id="homeSection" class="section">
+                <h2 class="section-title">Bienvenue sur MarrakFit</h2>
+                <p>Choisissez une option pour commencer :</p>
+                
+                <div class="home-options">
+                    <div class="home-option">
+                        <h3>Nouveau plan</h3>
+                        <p>Créez un nouveau plan nutritionnel personnalisé selon vos objectifs</p>
+                        <button id="newPlanBtn" class="btn-primary btn-large">Créer un nouveau plan</button>
+                    </div>
+                    
+                    <div class="home-option">
+                        <h3>Historique</h3>
+                        <p>Consultez vos plans précédemment créés</p>
+                        <button id="historyBtn" class="btn-secondary btn-large">Voir l'historique</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section Historique -->
+            <section id="historySection" class="section hidden">
+                <h2 class="section-title">Historique des plans</h2>
+                
+                <div id="historyList" class="history-list">
+                    <!-- Les plans sauvegardés seront affichés ici -->
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" id="backToHomeFromHistoryBtn" class="btn-secondary">Retour à l'accueil</button>
+                </div>
+            </section>
+
+            <!-- Indicateur de progression (pour le formulaire) -->
+            <div id="stepIndicator" class="step-indicator hidden">
                 <div class="step active" id="step1">1</div>
                 <div class="step" id="step2">2</div>
                 <div class="step" id="step3">3</div>
@@ -655,7 +643,7 @@
             </div>
 
             <!-- Étape 1: Informations personnelles -->
-            <section id="personalInfoSection" class="section">
+            <section id="personalInfoSection" class="section hidden">
                 <h2 class="section-title" id="personalInfoTitle">Informations Personnelles</h2>
                 <form id="personalInfoForm">
                     <div class="form-group">
@@ -694,7 +682,10 @@
                         </select>
                     </div>
                     
-                    <button type="button" id="nextToGoalBtn" class="btn-primary">Suivant</button>
+                    <div class="form-actions">
+                        <button type="button" id="backToHomeFromFormBtn" class="btn-secondary">Retour à l'accueil</button>
+                        <button type="button" id="nextToGoalBtn" class="btn-primary">Suivant</button>
+                    </div>
                 </form>
             </section>
 
@@ -783,23 +774,10 @@
                     <!-- Le tableau du plan sera généré ici dynamiquement -->
                 </div>
                 
-                <div class="export-section">
-                    <div class="export-buttons">
-                        <button type="button" id="exportImageBtn" class="btn-export">
-                            <span>🖼️</span> Télécharger l'image
-                        </button>
-                        <button type="button" id="printPlanBtn" class="btn-print">
-                            <span>🖨️</span> Imprimer le plan
-                        </button>
-                    </div>
-                    <div class="mobile-info" id="mobileInfo">
-                        Sur mobile, utilisez "Télécharger l'image" pour sauvegarder votre plan.
-                    </div>
-                </div>
-                
                 <div class="form-actions">
                     <button type="button" id="backToResultsBtn" class="btn-secondary">Précédent</button>
-                    <button type="button" id="restartBtn" class="btn-primary">Recommencer</button>
+                    <button type="button" id="savePlanBtn" class="btn-primary">Sauvegarder ce plan</button>
+                    <button type="button" id="restartBtn" class="btn-primary">Créer un nouveau plan</button>
                 </div>
             </section>
         </div>
@@ -854,9 +832,8 @@
                 viewPlanButton: "Voir mon plan nutritionnel",
                 planTitle: "Votre Plan Nutritionnel Quotidien",
                 planDescription: "Basé sur vos besoins de",
-                restartButton: "Recommencer",
-                exportImageButton: "Télécharger l'image",
-                printButton: "Imprimer le plan",
+                restartButton: "Créer un nouveau plan",
+                savePlanButton: "Sauvegarder ce plan",
                 meal: "Repas",
                 food: "Aliment",
                 weight: "Poids",
@@ -871,9 +848,18 @@
                 protein: "Protéines",
                 carbs: "Glucides",
                 fat: "Lipides",
-                generatingImage: "Génération de l'image en cours...",
-                imageReady: "Image générée avec succès!",
-                mobileInfo: "Sur mobile, utilisez 'Télécharger l'image' pour sauvegarder votre plan."
+                backToHome: "Retour à l'accueil",
+                historyTitle: "Historique des plans",
+                newPlan: "Nouveau plan",
+                history: "Historique",
+                welcome: "Bienvenue sur MarrakFit",
+                chooseOption: "Choisissez une option pour commencer :",
+                createNewPlan: "Créez un nouveau plan nutritionnel personnalisé selon vos objectifs",
+                viewHistory: "Consultez vos plans précédemment créés",
+                noPlans: "Aucun plan sauvegardé pour le moment",
+                createFirstPlan: "Créez votre premier plan pour le voir apparaître ici",
+                planSaved: "Plan sauvegardé avec succès!",
+                viewPlans: "Voir l'historique"
             },
             en: {
                 appTitle: "MarrakFit – Your calories & macros coach made in Morocco",
@@ -921,9 +907,8 @@
                 viewPlanButton: "View my nutrition plan",
                 planTitle: "Your Daily Nutrition Plan",
                 planDescription: "Based on your needs of",
-                restartButton: "Restart",
-                exportImageButton: "Download Image",
-                printButton: "Print Plan",
+                restartButton: "Create a new plan",
+                savePlanButton: "Save this plan",
                 meal: "Meal",
                 food: "Food",
                 weight: "Weight",
@@ -938,9 +923,18 @@
                 protein: "Protein",
                 carbs: "Carbs",
                 fat: "Fat",
-                generatingImage: "Generating image...",
-                imageReady: "Image generated successfully!",
-                mobileInfo: "On mobile, use 'Download Image' to save your plan."
+                backToHome: "Back to home",
+                historyTitle: "Plan History",
+                newPlan: "New plan",
+                history: "History",
+                welcome: "Welcome to MarrakFit",
+                chooseOption: "Choose an option to get started:",
+                createNewPlan: "Create a new personalized nutrition plan according to your goals",
+                viewHistory: "View your previously created plans",
+                noPlans: "No saved plans yet",
+                createFirstPlan: "Create your first plan to see it appear here",
+                planSaved: "Plan saved successfully!",
+                viewPlans: "View history"
             },
             ar: {
                 appTitle: "MarrakFit – مدرب السعرات والماكرو من المغرب",
@@ -950,17 +944,17 @@
                 ageLabel: "العمر",
                 genderLabel: "الجنس",
                 genderDefault: "اختر جنسك",
-                genderMale: "رجل",
-                genderFemale: "امرأة",
-                weightLabel: "الوزن (كجم)",
+                genderMale: "ذكر",
+                genderFemale: "أنثى",
+                weightLabel: "الوزن (كغ)",
                 heightLabel: "الطول (سم)",
                 activityLabel: "مستوى النشاط",
                 activityDefault: "اختر مستوى نشاطك",
                 activitySedentary: "قليل الحركة (قليل أو بدون تمارين)",
-                activityLight: "نشاط خفيف (1-3 أيام/أسبوع)",
-                activityModerate: "نشاط معتدل (3-5 أيام/أسبوع)",
-                activityActive: "نشط جدًا (6-7 أيام/أسبوع)",
-                activityExtreme: "نشط للغاية (تدريب مكثف يومي)",
+                activityLight: "نشاط خفيف (1-3 أيام/الأسبوع)",
+                activityModerate: "نشاط متوسط (3-5 أيام/الأسبوع)",
+                activityActive: "نشيط جدًا (6-7 أيام/الأسبوع)",
+                activityExtreme: "نشيط للغاية (تدريب مكثف يومي)",
                 nextButton: "التالي",
                 goalTitle: "هدفك",
                 goalQuestion: "ماذا تريد أن تحقق؟",
@@ -970,14 +964,14 @@
                 intensityLabel: "شدة الهدف",
                 intensityDefault: "اختر الشدة",
                 intensityLight: "خفيف (+/- 250 سعرة)",
-                intensityModerate: "معتدل (+/- 500 سعرة)",
+                intensityModerate: "متوسط (+/- 500 سعرة)",
                 intensityIntense: "مكثف (+/- 750 سعرة)",
                 previousButton: "السابق",
                 calculateButton: "حساب احتياجاتي",
                 resultsTitle: "احتياجاتك الغذائية",
                 bmrTitle: "معدل الأيض الأساسي (BMR)",
-                bmrDescription: "السعرات الحرارية اللازمة في الراحة للحفاظ على الوظائف الحيوية",
-                tdeeTitle: "إجمالي إنفاق الطاقة اليومي (TDEE)",
+                bmrDescription: "السعرات الحرارية اللازمة في حالة الراحة للحفاظ على الوظائف الحيوية",
+                tdeeTitle: "إجمالي استهلاك الطاقة اليومي (TDEE)",
                 tdeeDescription: "السعرات الحرارية اللازمة بناءً على مستوى نشاطك",
                 goalCaloriesTitle: "السعرات الحرارية الموصى بها لهدفك",
                 macrosTitle: "توزيع المغذيات الكبرى",
@@ -988,15 +982,14 @@
                 viewPlanButton: "عرض خطتي الغذائية",
                 planTitle: "خطتك الغذائية اليومية",
                 planDescription: "بناءً على احتياجاتك من",
-                restartButton: "إعادة البدء",
-                exportImageButton: "تحميل الصورة",
-                printButton: "طباعة الخطة",
+                restartButton: "إنشاء خطة جديدة",
+                savePlanButton: "حفظ هذه الخطة",
                 meal: "الوجبة",
-                food: "الغذاء",
+                food: "الطعام",
                 weight: "الوزن",
                 calories: "السعرات",
                 nutrition: "المدخول التقريبي",
-                breakfast: "الإفطار",
+                breakfast: "الفطور",
                 lunch: "الغداء",
                 snack: "وجبة خفيفة",
                 dinner: "العشاء",
@@ -1005,645 +998,530 @@
                 protein: "البروتين",
                 carbs: "الكربوهيدرات",
                 fat: "الدهون",
-                generatingImage: "جارٍ إنشاء الصورة...",
-                imageReady: "تم إنشاء الصورة بنجاح!",
-                mobileInfo: "على الهاتف، استخدم 'تحميل الصورة' لحفظ خطتك."
+                backToHome: "العودة إلى الرئيسية",
+                historyTitle: "سجل الخطط",
+                newPlan: "خطة جديدة",
+                history: "السجل",
+                welcome: "مرحبًا بك في MarrakFit",
+                chooseOption: "اختر خيارًا للبدء:",
+                createNewPlan: "إنشاء خطة تغذية شخصية جديدة وفقًا لأهدافك",
+                viewHistory: "عرض الخطط التي أنشأتها سابقًا",
+                noPlans: "لا توجد خطط محفوظة بعد",
+                createFirstPlan: "أنشئ خطتك الأولى لتظهر هنا",
+                planSaved: "تم حفظ الخطة بنجاح!",
+                viewPlans: "عرض السجل"
             }
         };
 
+        // État de l'application
+        let currentLanguage = 'fr';
+        let currentStep = 1;
+        let userData = {};
+        let nutritionPlan = {};
+
         // Éléments DOM
+        const homeSection = document.getElementById('homeSection');
+        const historySection = document.getElementById('historySection');
         const personalInfoSection = document.getElementById('personalInfoSection');
         const goalSection = document.getElementById('goalSection');
         const resultsSection = document.getElementById('resultsSection');
         const planSection = document.getElementById('planSection');
-        
-        const nextToGoalBtn = document.getElementById('nextToGoalBtn');
-        const backToPersonalBtn = document.getElementById('backToPersonalBtn');
-        const nextToResultsBtn = document.getElementById('nextToResultsBtn');
-        const backToGoalBtn = document.getElementById('backToGoalBtn');
-        const nextToPlanBtn = document.getElementById('nextToPlanBtn');
-        const backToResultsBtn = document.getElementById('backToResultsBtn');
-        const restartBtn = document.getElementById('restartBtn');
-        const exportImageBtn = document.getElementById('exportImageBtn');
-        const printPlanBtn = document.getElementById('printPlanBtn');
-        const mobileInfo = document.getElementById('mobileInfo');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        const loadingText = document.getElementById('loadingText');
-        
-        const steps = document.querySelectorAll('.step');
-        
-        // Résultats
-        const bmrResult = document.getElementById('bmrResult');
-        const tdeeResult = document.getElementById('tdeeResult');
-        const goalCaloriesResult = document.getElementById('goalCaloriesResult');
-        const goalDescription = document.getElementById('goalDescription');
-        const proteinResult = document.getElementById('proteinResult');
-        const fatResult = document.getElementById('fatResult');
-        const carbsResult = document.getElementById('carbsResult');
-        const dailyCaloriesPlan = document.getElementById('dailyCaloriesPlan');
-        const planTableContainer = document.getElementById('planTableContainer');
-        const proteinInfo = document.getElementById('proteinInfo');
-        const fatInfo = document.getElementById('fatInfo');
-        
-        // Sélecteur de langue
-        const languageBtn = document.getElementById('languageBtn');
-        const languageOptions = document.getElementById('languageOptions');
-        const currentLanguage = document.getElementById('currentLanguage');
-        
-        // Données de l'utilisateur
-        let userData = {
-            age: 0,
-            gender: '',
-            weight: 0,
-            height: 0,
-            activityLevel: 0,
-            goal: '',
-            intensity: 0,
-            bmr: 0,
-            tdee: 0,
-            goalCalories: 0,
-            protein: 0,
-            fat: 0,
-            carbs: 0
-        };
-        
-        // Langue actuelle
-        let currentLang = 'fr';
-        
-        // Structure fixe du plan nutritionnel (adaptatif selon les calories)
-        const mealStructure = [
-            // Petit-déjeuner
-            { meal: "breakfast", food: "Œufs", baseWeight: 150, calories: 210, protein: 18, carbs: 0, fat: 15 },
-            { meal: "breakfast", food: "Pain complet", baseWeight: 50, calories: 130, protein: 5, carbs: 25, fat: 2 },
-            { meal: "breakfast", food: "Avocat", baseWeight: 50, calories: 80, protein: 0, carbs: 4, fat: 7 },
-            { meal: "breakfast", food: "Fruit", baseWeight: 100, calories: 80, protein: 0, carbs: 20, fat: 0 },
-            { meal: "breakfast", food: "Huile d'olive", baseWeight: 5, calories: 40, protein: 0, carbs: 0, fat: 5 },
-            
-            // Déjeuner
-            { meal: "lunch", food: "Poulet grillé", baseWeight: 180, calories: 330, protein: 40, carbs: 0, fat: 15 },
-            { meal: "lunch", food: "Riz complet cuit", baseWeight: 120, calories: 150, protein: 3, carbs: 35, fat: 0 },
-            { meal: "lunch", food: "Légumes vapeur", baseWeight: 200, calories: 70, protein: 0, carbs: 15, fat: 0 },
-            { meal: "lunch", food: "Huile d'olive", baseWeight: 15, calories: 120, protein: 0, carbs: 0, fat: 14 },
-            
-            // Collation après-midi
-            { meal: "snack", food: "Fruit", baseWeight: 100, calories: 80, protein: 0, carbs: 20, fat: 0 },
-            { meal: "snack", food: "Noix", baseWeight: 20, calories: 120, protein: 5, carbs: 0, fat: 12 },
-            
-            // Dîner
-            { meal: "dinner", food: "Poulet grillé", baseWeight: 150, calories: 275, protein: 35, carbs: 0, fat: 12 },
-            { meal: "dinner", food: "Riz complet cuit", baseWeight: 100, calories: 130, protein: 2, carbs: 28, fat: 0 },
-            { meal: "dinner", food: "Salade verte", baseWeight: 150, calories: 40, protein: 0, carbs: 8, fat: 0 },
-            { meal: "dinner", food: "Huile d'olive", baseWeight: 15, calories: 120, protein: 0, carbs: 0, fat: 14 }
-        ];
-        
-        // Écouteurs d'événements
-        nextToGoalBtn.addEventListener('click', goToGoalSection);
-        backToPersonalBtn.addEventListener('click', goToPersonalSection);
-        nextToResultsBtn.addEventListener('click', goToResultsSection);
-        backToGoalBtn.addEventListener('click', backToGoalSection);
-        nextToPlanBtn.addEventListener('click', goToPlanSection);
-        backToResultsBtn.addEventListener('click', backToResultsSection);
-        restartBtn.addEventListener('click', restartApp);
-        exportImageBtn.addEventListener('click', exportToImage);
-        printPlanBtn.addEventListener('click', printPlan);
-        
+        const stepIndicator = document.getElementById('stepIndicator');
+        const historyList = document.getElementById('historyList');
+
+        // Boutons de navigation
+        document.getElementById('newPlanBtn').addEventListener('click', showPersonalInfo);
+        document.getElementById('historyBtn').addEventListener('click', showHistory);
+        document.getElementById('backToHomeFromHistoryBtn').addEventListener('click', showHome);
+        document.getElementById('backToHomeFromFormBtn').addEventListener('click', showHome);
+        document.getElementById('nextToGoalBtn').addEventListener('click', showGoal);
+        document.getElementById('backToPersonalBtn').addEventListener('click', showPersonalInfo);
+        document.getElementById('nextToResultsBtn').addEventListener('click', calculateResults);
+        document.getElementById('backToGoalBtn').addEventListener('click', showGoal);
+        document.getElementById('nextToPlanBtn').addEventListener('click', showPlan);
+        document.getElementById('backToResultsBtn').addEventListener('click', showResults);
+        document.getElementById('savePlanBtn').addEventListener('click', savePlan);
+        document.getElementById('restartBtn').addEventListener('click', restartApp);
+
         // Gestionnaire de langue
-        languageBtn.addEventListener('click', () => {
-            languageOptions.classList.toggle('show');
+        document.getElementById('languageBtn').addEventListener('click', function() {
+            document.getElementById('languageOptions').classList.toggle('show');
         });
-        
+
         document.querySelectorAll('.language-option').forEach(option => {
-            option.addEventListener('click', () => {
-                const lang = option.getAttribute('data-lang');
-                setLanguage(lang);
-                languageOptions.classList.remove('show');
+            option.addEventListener('click', function() {
+                currentLanguage = this.getAttribute('data-lang');
+                updateLanguage();
+                document.getElementById('languageOptions').classList.remove('show');
             });
         });
-        
-        // Navigation entre les sections
-        function goToGoalSection() {
-            if (!validatePersonalInfo()) return;
-            
-            personalInfoSection.classList.add('hidden');
-            goalSection.classList.remove('hidden');
-            updateSteps(2);
+
+        // Fonctions de navigation
+        function showHome() {
+            hideAllSections();
+            homeSection.classList.remove('hidden');
+            stepIndicator.classList.add('hidden');
+            loadHistory();
         }
-        
-        function goToPersonalSection() {
-            goalSection.classList.add('hidden');
+
+        function showHistory() {
+            hideAllSections();
+            historySection.classList.remove('hidden');
+            stepIndicator.classList.add('hidden');
+            loadHistory();
+        }
+
+        function showPersonalInfo() {
+            hideAllSections();
             personalInfoSection.classList.remove('hidden');
-            updateSteps(1);
+            stepIndicator.classList.remove('hidden');
+            updateStepIndicator(1);
         }
-        
-        function goToResultsSection() {
-            if (!validateGoal()) return;
-            
-            goalSection.classList.add('hidden');
-            resultsSection.classList.remove('hidden');
-            calculateResults();
-            updateSteps(3);
-        }
-        
-        function backToGoalSection() {
-            resultsSection.classList.add('hidden');
+
+        function showGoal() {
+            hideAllSections();
             goalSection.classList.remove('hidden');
-            updateSteps(2);
+            stepIndicator.classList.remove('hidden');
+            updateStepIndicator(2);
         }
-        
-        function goToPlanSection() {
-            resultsSection.classList.add('hidden');
+
+        function showResults() {
+            hideAllSections();
+            resultsSection.classList.remove('hidden');
+            stepIndicator.classList.remove('hidden');
+            updateStepIndicator(3);
+        }
+
+        function showPlan() {
+            hideAllSections();
             planSection.classList.remove('hidden');
+            stepIndicator.classList.remove('hidden');
+            updateStepIndicator(4);
             generateNutritionPlan();
-            updateSteps(4);
         }
-        
-        function backToResultsSection() {
+
+        function hideAllSections() {
+            homeSection.classList.add('hidden');
+            historySection.classList.add('hidden');
+            personalInfoSection.classList.add('hidden');
+            goalSection.classList.add('hidden');
+            resultsSection.classList.add('hidden');
             planSection.classList.add('hidden');
-            resultsSection.classList.remove('hidden');
-            updateSteps(3);
         }
-        
+
+        function updateStepIndicator(step) {
+            document.querySelectorAll('.step').forEach((s, index) => {
+                if (index + 1 < step) {
+                    s.classList.remove('active');
+                    s.classList.add('completed');
+                } else if (index + 1 === step) {
+                    s.classList.add('active');
+                    s.classList.remove('completed');
+                } else {
+                    s.classList.remove('active', 'completed');
+                }
+            });
+        }
+
+        // Calculs nutritionnels
+        function calculateResults() {
+            // Récupérer les données du formulaire
+            userData = {
+                age: parseInt(document.getElementById('age').value),
+                gender: document.getElementById('gender').value,
+                weight: parseFloat(document.getElementById('weight').value),
+                height: parseInt(document.getElementById('height').value),
+                activityLevel: parseFloat(document.getElementById('activityLevel').value),
+                goal: document.querySelector('input[name="goal"]:checked').value,
+                intensity: parseInt(document.getElementById('intensity').value)
+            };
+
+            // Calcul du BMR (Métabolisme de base)
+            let bmr;
+            if (userData.gender === 'male') {
+                bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age + 5;
+            } else {
+                bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age - 161;
+            }
+
+            // Calcul du TDEE (Dépense énergétique totale)
+            const tdee = bmr * userData.activityLevel;
+
+            // Calcul des calories selon l'objectif
+            let goalCalories;
+            if (userData.goal === 'muscle') {
+                goalCalories = tdee + userData.intensity;
+            } else if (userData.goal === 'weightLoss') {
+                goalCalories = tdee - userData.intensity;
+            } else {
+                goalCalories = tdee;
+            }
+
+            // Calcul des macronutriments
+            const proteinGrams = userData.weight * 2; // 2g/kg de poids corporel
+            const proteinCalories = proteinGrams * 4;
+            
+            const fatCalories = goalCalories * 0.25; // 25% des calories
+            const fatGrams = fatCalories / 9;
+            
+            const carbsCalories = goalCalories - proteinCalories - fatCalories;
+            const carbsGrams = carbsCalories / 4;
+
+            // Mettre à jour l'interface avec les résultats
+            document.getElementById('bmrResult').textContent = Math.round(bmr) + ' calories';
+            document.getElementById('tdeeResult').textContent = Math.round(tdee) + ' calories';
+            document.getElementById('goalCaloriesResult').textContent = Math.round(goalCalories) + ' calories';
+            
+            // Mettre à jour la description selon l'objectif
+            let goalDescription = '';
+            if (userData.goal === 'muscle') {
+                goalDescription = 'Surplus calorique pour la prise de muscle';
+            } else if (userData.goal === 'weightLoss') {
+                goalDescription = 'Déficit calorique pour la perte de poids';
+            } else {
+                goalDescription = 'Maintien calorique pour stabiliser votre poids';
+            }
+            document.getElementById('goalDescription').textContent = goalDescription;
+
+            // Mettre à jour les macronutriments
+            document.getElementById('proteinResult').textContent = Math.round(proteinGrams) + 'g';
+            document.getElementById('proteinInfo').textContent = `(${Math.round(proteinCalories)} calories)`;
+            
+            document.getElementById('fatResult').textContent = Math.round(fatGrams) + 'g';
+            document.getElementById('fatInfo').textContent = `(${Math.round(fatCalories)} calories)`;
+            
+            document.getElementById('carbsResult').textContent = Math.round(carbsGrams) + 'g';
+            document.getElementById('carbsInfo').textContent = `(${Math.round(carbsCalories)} calories)`;
+
+            // Stocker les résultats pour le plan nutritionnel
+            nutritionPlan = {
+                goalCalories: Math.round(goalCalories),
+                protein: Math.round(proteinGrams),
+                carbs: Math.round(carbsGrams),
+                fat: Math.round(fatGrams)
+            };
+
+            showResults();
+        }
+
+        // Génération du plan nutritionnel
+        function generateNutritionPlan() {
+            const planTableContainer = document.getElementById('planTableContainer');
+            const dailyCaloriesPlan = document.getElementById('dailyCaloriesPlan');
+            
+            dailyCaloriesPlan.textContent = nutritionPlan.goalCalories;
+            
+            // Aliments typiques marocains avec leurs valeurs nutritionnelles (pour 100g)
+            const moroccanFoods = {
+                // Protéines
+                'Poulet': { calories: 165, protein: 31, carbs: 0, fat: 3.6 },
+                'Poisson (Sardine)': { calories: 208, protein: 25, carbs: 0, fat: 11 },
+                'Bœuf maigre': { calories: 250, protein: 26, carbs: 0, fat: 15 },
+                'Lentilles': { calories: 116, protein: 9, carbs: 20, fat: 0.4 },
+                'Pois chiches': { calories: 139, protein: 7, carbs: 22, fat: 2.4 },
+                'Œufs': { calories: 155, protein: 13, carbs: 1.1, fat: 11 },
+                
+                // Glucides
+                'Couscous': { calories: 112, protein: 3.8, carbs: 23, fat: 0.2 },
+                'Pain complet': { calories: 265, protein: 9, carbs: 49, fat: 3.5 },
+                'Riz brun': { calories: 111, protein: 2.6, carbs: 23, fat: 0.9 },
+                'Pâtes complètes': { calories: 124, protein: 5, carbs: 25, fat: 1 },
+                'Pomme de terre': { calories: 77, protein: 2, carbs: 17, fat: 0.1 },
+                'Patate douce': { calories: 86, protein: 1.6, carbs: 20, fat: 0.1 },
+                
+                // Légumes
+                'Salade marocaine': { calories: 35, protein: 1.5, carbs: 7, fat: 0.2 },
+                'Tomates': { calories: 18, protein: 0.9, carbs: 3.9, fat: 0.2 },
+                'Concombres': { calories: 15, protein: 0.7, carbs: 3.6, fat: 0.1 },
+                'Poivrons': { calories: 31, protein: 1, carbs: 6, fat: 0.3 },
+                'Courgettes': { calories: 17, protein: 1.2, carbs: 3.1, fat: 0.3 },
+                
+                // Fruits
+                'Oranges': { calories: 47, protein: 0.9, carbs: 12, fat: 0.1 },
+                'Pommes': { calories: 52, protein: 0.3, carbs: 14, fat: 0.2 },
+                'Bananes': { calories: 89, protein: 1.1, carbs: 23, fat: 0.3 },
+                'Dattes': { calories: 282, protein: 2.5, carbs: 75, fat: 0.4 },
+                
+                // Lipides
+                'Huile d\'olive': { calories: 884, protein: 0, carbs: 0, fat: 100 },
+                'Amandes': { calories: 579, protein: 21, carbs: 22, fat: 49 },
+                'Noix': { calories: 654, protein: 15, carbs: 14, fat: 65 },
+                'Avocat': { calories: 160, protein: 2, carbs: 9, fat: 15 }
+            };
+
+            // Structure des repas avec pourcentages de calories quotidiennes
+            const mealStructure = [
+                { name: 'breakfast', percentage: 0.25, translationKey: 'breakfast' }, // 25%
+                { name: 'lunch', percentage: 0.35, translationKey: 'lunch' },       // 35%
+                { name: 'snack', percentage: 0.15, translationKey: 'snack' },       // 15%
+                { name: 'dinner', percentage: 0.25, translationKey: 'dinner' }      // 25%
+            ];
+
+            let planHTML = `
+                <table class="plan-table">
+                    <thead>
+                        <tr>
+                            <th>${translations[currentLanguage].meal}</th>
+                            <th>${translations[currentLanguage].food}</th>
+                            <th>${translations[currentLanguage].weight} (g)</th>
+                            <th>${translations[currentLanguage].calories}</th>
+                            <th>${translations[currentLanguage].nutrition}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            let dailyTotals = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+
+            mealStructure.forEach(meal => {
+                const mealCalories = Math.round(nutritionPlan.goalCalories * meal.percentage);
+                const mealProtein = Math.round(nutritionPlan.protein * meal.percentage);
+                const mealCarbs = Math.round(nutritionPlan.carbs * meal.percentage);
+                const mealFat = Math.round(nutritionPlan.fat * meal.percentage);
+
+                // Sélectionner des aliments pour ce repas
+                const mealFoods = selectFoodsForMeal(meal.name, mealCalories, moroccanFoods);
+                
+                planHTML += `
+                    <tr class="meal-header">
+                        <td colspan="5">${translations[currentLanguage][meal.translationKey]} (${mealCalories} ${translations[currentLanguage].calories.toLowerCase()})</td>
+                    </tr>
+                `;
+
+                let mealTotals = { calories: 0, protein: 0, carbs: 0, fat: 0 };
+
+                mealFoods.forEach(food => {
+                    const foodItem = moroccanFoods[food.name];
+                    const calories = Math.round((foodItem.calories * food.quantity) / 100);
+                    const protein = Math.round((foodItem.protein * food.quantity) / 100);
+                    const carbs = Math.round((foodItem.carbs * food.quantity) / 100);
+                    const fat = Math.round((foodItem.fat * food.quantity) / 100);
+
+                    mealTotals.calories += calories;
+                    mealTotals.protein += protein;
+                    mealTotals.carbs += carbs;
+                    mealTotals.fat += fat;
+
+                    planHTML += `
+                        <tr>
+                            <td></td>
+                            <td>${food.name}</td>
+                            <td>${food.quantity}</td>
+                            <td>${calories}</td>
+                            <td>P: ${protein}g | C: ${carbs}g | L: ${fat}g</td>
+                        </tr>
+                    `;
+                });
+
+                // Total du repas
+                planHTML += `
+                    <tr class="meal-total-row">
+                        <td colspan="2">${translations[currentLanguage].total} ${translations[currentLanguage][meal.translationKey].toLowerCase()}</td>
+                        <td></td>
+                        <td>${mealTotals.calories}</td>
+                        <td>${translations[currentLanguage].protein}: ${mealTotals.protein}g | ${translations[currentLanguage].carbs}: ${mealTotals.carbs}g | ${translations[currentLanguage].fat}: ${mealTotals.fat}g</td>
+                    </tr>
+                `;
+
+                // Ajouter au total quotidien
+                dailyTotals.calories += mealTotals.calories;
+                dailyTotals.protein += mealTotals.protein;
+                dailyTotals.carbs += mealTotals.carbs;
+                dailyTotals.fat += mealTotals.fat;
+            });
+
+            // Total quotidien
+            planHTML += `
+                <tr class="daily-total-row">
+                    <td colspan="2">${translations[currentLanguage].dailyTotal}</td>
+                    <td></td>
+                    <td>${dailyTotals.calories}</td>
+                    <td>${translations[currentLanguage].protein}: ${dailyTotals.protein}g | ${translations[currentLanguage].carbs}: ${dailyTotals.carbs}g | ${translations[currentLanguage].fat}: ${dailyTotals.fat}g</td>
+                </tr>
+            `;
+
+            planHTML += `</tbody></table>`;
+            planTableContainer.innerHTML = planHTML;
+        }
+
+        function selectFoodsForMeal(mealType, targetCalories, foods) {
+            let selectedFoods = [];
+            let currentCalories = 0;
+            
+            // Définir les types d'aliments par repas
+            const mealPreferences = {
+                breakfast: ['Pain complet', 'Œufs', 'Amandes', 'Oranges', 'Pommes'],
+                lunch: ['Couscous', 'Poulet', 'Poisson (Sardine)', 'Salade marocaine', 'Tomates'],
+                snack: ['Bananes', 'Noix', 'Pommes', 'Yaourt'],
+                dinner: ['Poisson (Sardine)', 'Poulet', 'Lentilles', 'Courgettes', 'Riz brun']
+            };
+
+            const availableFoods = mealPreferences[mealType] || Object.keys(foods);
+            
+            // Ajouter des aliments jusqu'à atteindre les calories cibles
+            while (currentCalories < targetCalories * 0.8) { // 80% pour laisser de la marge
+                const randomFood = availableFoods[Math.floor(Math.random() * availableFoods.length)];
+                const food = foods[randomFood];
+                
+                // Quantité aléatoire entre 50g et 200g
+                const quantity = Math.floor(Math.random() * 151) + 50;
+                const foodCalories = (food.calories * quantity) / 100;
+                
+                // Vérifier que cela ne dépasse pas trop les calories cibles
+                if (currentCalories + foodCalories <= targetCalories * 1.2) {
+                    selectedFoods.push({ name: randomFood, quantity: quantity });
+                    currentCalories += foodCalories;
+                }
+                
+                // Éviter les boucles infinies
+                if (selectedFoods.length > 10) break;
+            }
+            
+            return selectedFoods;
+        }
+
+        // Sauvegarde du plan
+        function savePlan() {
+            const planData = {
+                id: Date.now(),
+                title: `Plan du ${new Date().toLocaleDateString()} à ${new Date().toLocaleTimeString()}`,
+                date: new Date().toISOString(),
+                userData: userData,
+                nutritionPlan: nutritionPlan
+            };
+
+            // Récupérer les plans existants
+            const savedPlans = JSON.parse(localStorage.getItem('marrakfit_plans') || '[]');
+            
+            // Ajouter le nouveau plan
+            savedPlans.unshift(planData);
+            
+            // Sauvegarder dans le localStorage
+            localStorage.setItem('marrakfit_plans', JSON.stringify(savedPlans));
+            
+            alert(translations[currentLanguage].planSaved);
+            showHome();
+        }
+
+        // Chargement de l'historique
+        function loadHistory() {
+            const savedPlans = JSON.parse(localStorage.getItem('marrakfit_plans') || '[]');
+            const historyList = document.getElementById('historyList');
+            
+            if (savedPlans.length === 0) {
+                historyList.innerHTML = `
+                    <div class="empty-history">
+                        <p>${translations[currentLanguage].noPlans}</p>
+                        <p>${translations[currentLanguage].createFirstPlan}</p>
+                        <button id="createFirstPlanBtn" class="btn-primary">${translations[currentLanguage].newPlan}</button>
+                    </div>
+                `;
+                
+                document.getElementById('createFirstPlanBtn').addEventListener('click', showPersonalInfo);
+            } else {
+                historyList.innerHTML = savedPlans.map(plan => `
+                    <div class="history-item" data-plan-id="${plan.id}">
+                        <h4>${plan.title}</h4>
+                        <p>${new Date(plan.date).toLocaleString()}</p>
+                        <p>Objectif: ${plan.userData.goal === 'muscle' ? 'Prise de muscle' : 
+                                      plan.userData.goal === 'weightLoss' ? 'Perte de poids' : 'Maintien'}</p>
+                        <p>Calories: ${plan.nutritionPlan.goalCalories} kcal/jour</p>
+                    </div>
+                `).join('');
+                
+                // Ajouter les événements de clic pour charger les plans
+                document.querySelectorAll('.history-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        const planId = this.getAttribute('data-plan-id');
+                        loadPlan(planId);
+                    });
+                });
+            }
+        }
+
+        function loadPlan(planId) {
+            const savedPlans = JSON.parse(localStorage.getItem('marrakfit_plans') || '[]');
+            const plan = savedPlans.find(p => p.id == planId);
+            
+            if (plan) {
+                userData = plan.userData;
+                nutritionPlan = plan.nutritionPlan;
+                
+                // Remplir le formulaire avec les données sauvegardées
+                document.getElementById('age').value = userData.age;
+                document.getElementById('gender').value = userData.gender;
+                document.getElementById('weight').value = userData.weight;
+                document.getElementById('height').value = userData.height;
+                document.getElementById('activityLevel').value = userData.activityLevel;
+                
+                // Sélectionner le bon objectif
+                document.querySelectorAll('input[name="goal"]').forEach(radio => {
+                    if (radio.value === userData.goal) {
+                        radio.checked = true;
+                    }
+                });
+                
+                document.getElementById('intensity').value = userData.intensity;
+                
+                // Afficher les résultats
+                calculateResults();
+                showPlan();
+            }
+        }
+
         function restartApp() {
-            planSection.classList.add('hidden');
-            personalInfoSection.classList.remove('hidden');
+            // Réinitialiser le formulaire
             document.getElementById('personalInfoForm').reset();
             document.getElementById('goalForm').reset();
-            updateSteps(1);
+            
+            // Réinitialiser les données
+            userData = {};
+            nutritionPlan = {};
+            
+            // Retourner à l'accueil
+            showHome();
         }
-        
-        // Mise à jour de l'indicateur de progression
-        function updateSteps(activeStep) {
-            steps.forEach((step, index) => {
-                step.classList.remove('active', 'completed');
-                if (index + 1 < activeStep) {
-                    step.classList.add('completed');
-                } else if (index + 1 === activeStep) {
-                    step.classList.add('active');
-                }
-            });
-        }
-        
-        // Validation des informations personnelles
-        function validatePersonalInfo() {
-            const age = document.getElementById('age').value;
-            const gender = document.getElementById('gender').value;
-            const weight = document.getElementById('weight').value;
-            const height = document.getElementById('height').value;
-            const activityLevel = document.getElementById('activityLevel').value;
-            
-            if (!age || !gender || !weight || !height || !activityLevel) {
-                alert(currentLang === 'fr' ? 'Veuillez remplir tous les champs' : 
-                      currentLang === 'en' ? 'Please fill in all fields' : 
-                      'يرجى ملء جميع الحقول');
-                return false;
-            }
-            
-            userData.age = parseInt(age);
-            userData.gender = gender;
-            userData.weight = parseFloat(weight);
-            userData.height = parseInt(height);
-            userData.activityLevel = parseFloat(activityLevel);
-            
-            return true;
-        }
-        
-        // Validation de l'objectif
-        function validateGoal() {
-            const goal = document.querySelector('input[name="goal"]:checked');
-            const intensity = document.getElementById('intensity').value;
-            
-            if (!goal || !intensity) {
-                alert(currentLang === 'fr' ? 'Veuillez sélectionner un objectif et une intensité' : 
-                      currentLang === 'en' ? 'Please select a goal and intensity' : 
-                      'يرجى اختيار هدف وشدة');
-                return false;
-            }
-            
-            userData.goal = goal.value;
-            userData.intensity = parseInt(intensity);
-            
-            return true;
-        }
-        
-        // Calcul des résultats avec les nouvelles règles de protéines et lipides
-        function calculateResults() {
-            // Calcul du BMR (Métabolisme de base)
-            if (userData.gender === 'male') {
-                userData.bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age + 5;
-            } else {
-                userData.bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age - 161;
-            }
-            
-            // Calcul du TDEE (Dépense énergétique totale)
-            userData.tdee = userData.bmr * userData.activityLevel;
-            
-            // Calcul des calories selon l'objectif
-            if (userData.goal === 'muscle') {
-                userData.goalCalories = Math.round(userData.tdee + userData.intensity);
-                goalDescription.textContent = currentLang === 'fr' ? 
-                    `Pour prendre du muscle, vous devez consommer ${userData.intensity} calories de plus que votre dépense énergétique.` :
-                    currentLang === 'en' ?
-                    `To gain muscle, you need to consume ${userData.intensity} calories more than your energy expenditure.` :
-                    `لاكتساب العضلات، تحتاج إلى استهلاك ${userData.intensity} سعرة حرارية أكثر من إنفاقك للطاقة.`;
-            } else if (userData.goal === 'weightLoss') {
-                userData.goalCalories = Math.round(userData.tdee - userData.intensity);
-                goalDescription.textContent = currentLang === 'fr' ? 
-                    `Pour perdre du poids, vous devez consommer ${userData.intensity} calories de moins que votre dépense énergétique.` :
-                    currentLang === 'en' ?
-                    `To lose weight, you need to consume ${userData.intensity} calories less than your energy expenditure.` :
-                    `لفقدان الوزن، تحتاج إلى استهلاك ${userData.intensity} سعرة حرارية أقل من إنفاقك للطاقة.`;
-            } else {
-                userData.goalCalories = Math.round(userData.tdee);
-                goalDescription.textContent = currentLang === 'fr' ? 
-                    `Pour maintenir votre poids, vous devez consommer l'équivalent de votre dépense énergétique.` :
-                    currentLang === 'en' ?
-                    `To maintain your weight, you need to consume the equivalent of your energy expenditure.` :
-                    `للحفاظ على وزنك، تحتاج إلى استهلاك ما يعادل إنفاقك للطاقة.`;
-            }
-            
-            // Calcul des protéines selon les nouvelles règles
-            if (userData.goal === 'muscle') {
-                userData.protein = userData.gender === 'male' ? 
-                    Math.round(userData.weight * 1.5) : 
-                    Math.round(userData.weight * 1.2);
-                proteinInfo.textContent = userData.gender === 'male' ? 
-                    "(1.5g par kg de poids)" : "(1.2g par kg de poids)";
-            } else if (userData.goal === 'weightLoss') {
-                userData.protein = userData.gender === 'male' ? 
-                    Math.round(userData.weight * 2) : 
-                    Math.round(userData.weight * 1.5);
-                proteinInfo.textContent = userData.gender === 'male' ? 
-                    "(2g par kg de poids)" : "(1.5g par kg de poids)";
-            } else {
-                userData.protein = Math.round(userData.weight * 1.2);
-                proteinInfo.textContent = "(1.2g par kg de poids)";
-            }
-            
-            // Calcul des lipides selon les nouvelles règles
-            if (userData.goal === 'muscle') {
-                userData.fat = Math.round(userData.weight * 1);
-                fatInfo.textContent = "(1g par kg de poids)";
-            } else if (userData.goal === 'weightLoss') {
-                userData.fat = userData.gender === 'male' ? 
-                    Math.round(userData.weight * 0.7) : 
-                    Math.round(userData.weight * 0.8);
-                fatInfo.textContent = userData.gender === 'male' ? 
-                    "(0.7g par kg de poids)" : "(0.8g par kg de poids)";
-            } else {
-                userData.fat = Math.round(userData.weight * 1);
-                fatInfo.textContent = "(1g par kg de poids)";
-            }
-            
-            // Les glucides représentent le reste des calories
-            const proteinCalories = userData.protein * 4;
-            const fatCalories = userData.fat * 9;
-            const remainingCalories = userData.goalCalories - proteinCalories - fatCalories;
-            userData.carbs = Math.max(0, Math.round(remainingCalories / 4));
-            
-            // Affichage des résultats
-            bmrResult.textContent = `${Math.round(userData.bmr)} ${currentLang === 'fr' ? 'calories' : currentLang === 'en' ? 'calories' : 'سعرة'}`;
-            tdeeResult.textContent = `${Math.round(userData.tdee)} ${currentLang === 'fr' ? 'calories' : currentLang === 'en' ? 'calories' : 'سعرة'}`;
-            goalCaloriesResult.textContent = `${userData.goalCalories} ${currentLang === 'fr' ? 'calories' : currentLang === 'en' ? 'calories' : 'سعرة'}`;
-            proteinResult.textContent = `${userData.protein}g`;
-            fatResult.textContent = `${userData.fat}g`;
-            carbsResult.textContent = `${userData.carbs}g`;
-            
-            dailyCaloriesPlan.textContent = userData.goalCalories;
-        }
-        
-        // Génération du plan nutritionnel adaptatif avec totaux
-        function generateNutritionPlan() {
-            planTableContainer.innerHTML = '';
-            
-            // Facteur d'ajustement selon les calories totales
-            const baseCalories = 2000; // Calories de référence du plan de base
-            const adjustmentFactor = userData.goalCalories / baseCalories;
-            
-            // Créer le tableau
-            const table = document.createElement('table');
-            table.className = 'plan-table';
-            
-            // En-tête du tableau
-            const thead = document.createElement('thead');
-            const headerRow = document.createElement('tr');
-            
-            const headers = [
-                translations[currentLang].meal,
-                translations[currentLang].food,
-                translations[currentLang].weight,
-                translations[currentLang].calories,
-                translations[currentLang].nutrition
-            ];
-            
-            headers.forEach(headerText => {
-                const th = document.createElement('th');
-                th.textContent = headerText;
-                headerRow.appendChild(th);
-            });
-            
-            thead.appendChild(headerRow);
-            table.appendChild(thead);
-            
-            // Corps du tableau
-            const tbody = document.createElement('tbody');
-            
-            // Variables pour les totaux
-            let currentMeal = '';
-            let mealCalories = 0;
-            let mealProtein = 0;
-            let mealCarbs = 0;
-            let mealFat = 0;
-            
-            let dailyCalories = 0;
-            let dailyProtein = 0;
-            let dailyCarbs = 0;
-            let dailyFat = 0;
-            
-            mealStructure.forEach((item, index) => {
-                // Si on change de repas, ajouter la ligne de total du repas précédent
-                if (currentMeal !== '' && currentMeal !== item.meal) {
-                    addMealTotalRow(currentMeal, mealCalories, mealProtein, mealCarbs, mealFat);
-                    
-                    // Réinitialiser les totaux du repas
-                    mealCalories = 0;
-                    mealProtein = 0;
-                    mealCarbs = 0;
-                    mealFat = 0;
-                }
-                
-                // Si c'est le début d'un nouveau repas, ajouter l'en-tête du repas
-                if (currentMeal !== item.meal) {
-                    currentMeal = item.meal;
-                    
-                    const mealHeaderRow = document.createElement('tr');
-                    mealHeaderRow.className = 'meal-header';
-                    
-                    const mealHeaderCell = document.createElement('td');
-                    mealHeaderCell.colSpan = 5;
-                    mealHeaderCell.textContent = translations[currentLang][item.meal];
-                    mealHeaderRow.appendChild(mealHeaderCell);
-                    
-                    tbody.appendChild(mealHeaderRow);
-                }
-                
-                // Ajuster la quantité selon les calories nécessaires
-                const adjustedWeight = Math.round(item.baseWeight * adjustmentFactor);
-                const adjustedCalories = Math.round(item.calories * adjustmentFactor);
-                const adjustedProtein = Math.round(item.protein * adjustmentFactor);
-                const adjustedCarbs = Math.round(item.carbs * adjustmentFactor);
-                const adjustedFat = Math.round(item.fat * adjustmentFactor);
-                
-                // Ajouter les valeurs aux totaux
-                mealCalories += adjustedCalories;
-                mealProtein += adjustedProtein;
-                mealCarbs += adjustedCarbs;
-                mealFat += adjustedFat;
-                
-                dailyCalories += adjustedCalories;
-                dailyProtein += adjustedProtein;
-                dailyCarbs += adjustedCarbs;
-                dailyFat += adjustedFat;
-                
-                // Ligne de l'aliment
-                const row = document.createElement('tr');
-                
-                // Colonne Repas (vide car fusionnée)
-                const mealCell = document.createElement('td');
-                mealCell.textContent = '';
-                row.appendChild(mealCell);
-                
-                // Colonne Aliment
-                const foodCell = document.createElement('td');
-                foodCell.textContent = item.food;
-                row.appendChild(foodCell);
-                
-                // Colonne Poids
-                const weightCell = document.createElement('td');
-                weightCell.textContent = `${adjustedWeight}g`;
-                row.appendChild(weightCell);
-                
-                // Colonne Calories
-                const caloriesCell = document.createElement('td');
-                caloriesCell.textContent = `${adjustedCalories} kcal`;
-                row.appendChild(caloriesCell);
-                
-                // Colonne Apports nutritionnels
-                const nutritionCell = document.createElement('td');
-                let nutritionText = '';
-                
-                if (adjustedProtein > 0) {
-                    nutritionText += `${translations[currentLang].protein} ${adjustedProtein}g`;
-                }
-                if (adjustedCarbs > 0) {
-                    if (nutritionText) nutritionText += ', ';
-                    nutritionText += `${translations[currentLang].carbs} ${adjustedCarbs}g`;
-                }
-                if (adjustedFat > 0) {
-                    if (nutritionText) nutritionText += ', ';
-                    nutritionText += `${translations[currentLang].fat} ${adjustedFat}g`;
-                }
-                
-                nutritionCell.textContent = nutritionText;
-                row.appendChild(nutritionCell);
-                
-                tbody.appendChild(row);
-                
-                // Si c'est le dernier aliment, ajouter le total du repas
-                if (index === mealStructure.length - 1) {
-                    addMealTotalRow(currentMeal, mealCalories, mealProtein, mealCarbs, mealFat);
+
+        // Mise à jour de la langue
+        function updateLanguage() {
+            const elements = document.querySelectorAll('[id]');
+            elements.forEach(element => {
+                const id = element.id;
+                if (translations[currentLanguage][id]) {
+                    if (element.tagName === 'INPUT' || element.tagName === 'SELECT') {
+                        if (element.placeholder !== undefined) {
+                            element.placeholder = translations[currentLanguage][id];
+                        } else if (element.options && element.options.length > 0) {
+                            // Pour les selects, on met à jour les options
+                            if (id === 'gender' || id === 'activityLevel' || id === 'intensity') {
+                                // Les options sont mises à jour via leurs propres IDs
+                            }
+                        }
+                    } else {
+                        element.textContent = translations[currentLanguage][id];
+                    }
                 }
             });
             
-            // Fonction pour ajouter une ligne de total de repas
-            function addMealTotalRow(meal, calories, protein, carbs, fat) {
-                const totalRow = document.createElement('tr');
-                totalRow.className = 'meal-total-row';
-                
-                const totalCell = document.createElement('td');
-                totalCell.colSpan = 2;
-                totalCell.textContent = `${translations[currentLang][meal]} - ${translations[currentLang].total}`;
-                totalRow.appendChild(totalCell);
-                
-                const emptyCell = document.createElement('td');
-                emptyCell.textContent = '';
-                totalRow.appendChild(emptyCell);
-                
-                const caloriesCell = document.createElement('td');
-                caloriesCell.textContent = `${calories} kcal`;
-                totalRow.appendChild(caloriesCell);
-                
-                const nutritionCell = document.createElement('td');
-                let nutritionText = '';
-                
-                if (protein > 0) nutritionText += `${translations[currentLang].protein} ${protein}g`;
-                if (carbs > 0) nutritionText += (nutritionText ? ', ' : '') + `${translations[currentLang].carbs} ${carbs}g`;
-                if (fat > 0) nutritionText += (nutritionText ? ', ' : '') + `${translations[currentLang].fat} ${fat}g`;
-                
-                nutritionCell.textContent = nutritionText;
-                totalRow.appendChild(nutritionCell);
-                
-                tbody.appendChild(totalRow);
-            }
+            // Mettre à jour le texte du bouton de langue
+            document.getElementById('currentLanguage').textContent = translations[currentLanguage].currentLanguage;
             
-            // Ajouter la ligne de total quotidien
-            const dailyTotalRow = document.createElement('tr');
-            dailyTotalRow.className = 'daily-total-row';
-            
-            const dailyTotalCell = document.createElement('td');
-            dailyTotalCell.colSpan = 2;
-            dailyTotalCell.textContent = translations[currentLang].dailyTotal;
-            dailyTotalRow.appendChild(dailyTotalCell);
-            
-            const emptyCell = document.createElement('td');
-            emptyCell.textContent = '';
-            dailyTotalRow.appendChild(emptyCell);
-            
-            const dailyCaloriesCell = document.createElement('td');
-            dailyCaloriesCell.textContent = `${dailyCalories} kcal`;
-            dailyTotalRow.appendChild(dailyCaloriesCell);
-            
-            const dailyNutritionCell = document.createElement('td');
-            let dailyNutritionText = '';
-            
-            if (dailyProtein > 0) dailyNutritionText += `${translations[currentLang].protein} ${dailyProtein}g`;
-            if (dailyCarbs > 0) dailyNutritionText += (dailyNutritionText ? ', ' : '') + `${translations[currentLang].carbs} ${dailyCarbs}g`;
-            if (dailyFat > 0) dailyNutritionText += (dailyNutritionText ? ', ' : '') + `${translations[currentLang].fat} ${dailyFat}g`;
-            
-            dailyNutritionCell.textContent = dailyNutritionText;
-            dailyTotalRow.appendChild(dailyNutritionCell);
-            
-            tbody.appendChild(dailyTotalRow);
-            
-            table.appendChild(tbody);
-            planTableContainer.appendChild(table);
-        }
-        
-        // Exportation en image (solution pour mobile)
-        function exportToImage() {
-            loadingText.textContent = translations[currentLang].generatingImage;
-            loadingOverlay.style.display = 'flex';
-            
-            // Capturer le tableau avec html2canvas
-            html2canvas(planTableContainer, {
-                scale: 2, // Qualité plus élevée
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#FFFFFF'
-            }).then(canvas => {
-                // Convertir le canvas en image
-                const image = canvas.toDataURL('image/png');
-                
-                // Créer un lien de téléchargement
-                const link = document.createElement('a');
-                link.download = `Plan_Nutritionnel_MarrakFit_${userData.goalCalories}cal.png`;
-                link.href = image;
-                
-                // Simuler le clic pour télécharger
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                // Cacher l'overlay de chargement
-                loadingOverlay.style.display = 'none';
-                
-                // Afficher un message de confirmation
-                alert(translations[currentLang].imageReady);
-            }).catch(error => {
-                console.error('Erreur lors de la génération de l\'image:', error);
-                loadingOverlay.style.display = 'none';
-                alert(currentLang === 'fr' 
-                    ? 'Erreur lors de la génération de l\'image. Essayez l\'impression.' 
-                    : currentLang === 'en' 
-                    ? 'Error generating image. Try printing instead.' 
-                    : 'خطأ في إنشاء الصورة. جرب الطباعة بدلاً من ذلك.');
-            });
-        }
-        
-        // Impression du plan
-        function printPlan() {
-            window.print();
-        }
-        
-        // Changer la langue de l'application
-        function setLanguage(lang) {
-            currentLang = lang;
-            currentLanguage.textContent = translations[lang].currentLanguage;
-            
-            // Mettre à jour tous les textes de l'interface
-            document.getElementById('appTitle').textContent = translations[lang].appTitle;
-            document.getElementById('appSubtitle').textContent = translations[lang].appSubtitle;
-            document.getElementById('personalInfoTitle').textContent = translations[lang].personalInfoTitle;
-            document.getElementById('ageLabel').textContent = translations[lang].ageLabel;
-            document.getElementById('genderLabel').textContent = translations[lang].genderLabel;
-            document.getElementById('genderDefault').textContent = translations[lang].genderDefault;
-            document.getElementById('genderMale').textContent = translations[lang].genderMale;
-            document.getElementById('genderFemale').textContent = translations[lang].genderFemale;
-            document.getElementById('weightLabel').textContent = translations[lang].weightLabel;
-            document.getElementById('heightLabel').textContent = translations[lang].heightLabel;
-            document.getElementById('activityLabel').textContent = translations[lang].activityLabel;
-            document.getElementById('activityDefault').textContent = translations[lang].activityDefault;
-            document.getElementById('activitySedentary').textContent = translations[lang].activitySedentary;
-            document.getElementById('activityLight').textContent = translations[lang].activityLight;
-            document.getElementById('activityModerate').textContent = translations[lang].activityModerate;
-            document.getElementById('activityActive').textContent = translations[lang].activityActive;
-            document.getElementById('activityExtreme').textContent = translations[lang].activityExtreme;
-            document.getElementById('nextToGoalBtn').textContent = translations[lang].nextButton;
-            document.getElementById('goalTitle').textContent = translations[lang].goalTitle;
-            document.getElementById('goalQuestion').textContent = translations[lang].goalQuestion;
-            document.getElementById('goalMuscleLabel').textContent = translations[lang].goalMuscleLabel;
-            document.getElementById('goalWeightLossLabel').textContent = translations[lang].goalWeightLossLabel;
-            document.getElementById('goalMaintainLabel').textContent = translations[lang].goalMaintainLabel;
-            document.getElementById('intensityLabel').textContent = translations[lang].intensityLabel;
-            document.getElementById('intensityDefault').textContent = translations[lang].intensityDefault;
-            document.getElementById('intensityLight').textContent = translations[lang].intensityLight;
-            document.getElementById('intensityModerate').textContent = translations[lang].intensityModerate;
-            document.getElementById('intensityIntense').textContent = translations[lang].intensityIntense;
-            document.getElementById('backToPersonalBtn').textContent = translations[lang].previousButton;
-            document.getElementById('nextToResultsBtn').textContent = translations[lang].calculateButton;
-            document.getElementById('resultsTitle').textContent = translations[lang].resultsTitle;
-            document.getElementById('bmrTitle').textContent = translations[lang].bmrTitle;
-            document.getElementById('bmrDescription').textContent = translations[lang].bmrDescription;
-            document.getElementById('tdeeTitle').textContent = translations[lang].tdeeTitle;
-            document.getElementById('tdeeDescription').textContent = translations[lang].tdeeDescription;
-            document.getElementById('goalCaloriesTitle').textContent = translations[lang].goalCaloriesTitle;
-            document.getElementById('macrosTitle').textContent = translations[lang].macrosTitle;
-            document.getElementById('proteinLabel').textContent = translations[lang].proteinLabel;
-            document.getElementById('fatLabel').textContent = translations[lang].fatLabel;
-            document.getElementById('carbsLabel').textContent = translations[lang].carbsLabel;
-            document.getElementById('carbsInfo').textContent = translations[lang].carbsInfo;
-            document.getElementById('backToGoalBtn').textContent = translations[lang].previousButton;
-            document.getElementById('nextToPlanBtn').textContent = translations[lang].viewPlanButton;
-            document.getElementById('planTitle').textContent = translations[lang].planTitle;
-            document.getElementById('planDescription').textContent = `${translations[lang].planDescription} `;
-            document.getElementById('backToResultsBtn').textContent = translations[lang].previousButton;
-            document.getElementById('restartBtn').textContent = translations[lang].restartButton;
-            document.getElementById('exportImageBtn').innerHTML = `<span>🖼️</span> ${translations[lang].exportImageButton}`;
-            document.getElementById('printPlanBtn').innerHTML = `<span>🖨️</span> ${translations[lang].printButton}`;
-            document.getElementById('mobileInfo').textContent = translations[lang].mobileInfo;
-            
-            // Si nous sommes sur la page des résultats, recalculer pour mettre à jour les textes
-            if (!resultsSection.classList.contains('hidden')) {
-                calculateResults();
-            }
-            
-            // Si nous sommes sur la page du plan, regénérer le plan
+            // Regénérer le plan nutritionnel si on est sur cette page
             if (!planSection.classList.contains('hidden')) {
                 generateNutritionPlan();
             }
             
-            // Ajuster la direction du texte pour l'arabe
-            if (lang === 'ar') {
-                document.body.style.direction = 'rtl';
-                document.body.style.textAlign = 'right';
-            } else {
-                document.body.style.direction = 'ltr';
-                document.body.style.textAlign = 'left';
+            // Recharger l'historique si on est sur cette page
+            if (!historySection.classList.contains('hidden')) {
+                loadHistory();
             }
         }
-        
+
         // Initialisation
-        updateSteps(1);
-        setLanguage('fr'); // Langue par défaut
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLanguage();
+            showHome();
+        });
     </script>
 </body>
 </html>
