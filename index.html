@@ -291,74 +291,6 @@
             margin: 10px 0;
         }
 
-        .nutrition-plan {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .meal-card {
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            border: 1px solid var(--border-color);
-        }
-
-        .meal-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-
-        .meal-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--primary-dark);
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .meal-title::before {
-            content: "🍽️";
-        }
-
-        .food-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--border-color);
-        }
-
-        .food-item:last-child {
-            border-bottom: none;
-        }
-
-        .food-name {
-            font-weight: 500;
-        }
-
-        .food-quantity {
-            color: var(--text-light);
-        }
-
-        .meal-total {
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 2px solid var(--primary-light);
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            background-color: #F9F5EB;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
         .hidden {
             display: none;
         }
@@ -424,11 +356,12 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            font-size: 0.9rem;
         }
 
         .plan-table th, .plan-table td {
             border: 1px solid var(--border-color);
-            padding: 10px;
+            padding: 8px;
             text-align: left;
         }
 
@@ -437,13 +370,10 @@
             font-weight: bold;
         }
 
-        .plan-table tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
         .plan-table .meal-header {
             background-color: var(--secondary-light);
             font-weight: bold;
+            font-size: 1.1em;
         }
 
         .plan-table .meal-total-row {
@@ -538,10 +468,6 @@
             .radio-group {
                 flex-direction: column;
                 gap: 10px;
-            }
-            
-            .nutrition-plan {
-                grid-template-columns: 1fr;
             }
             
             header h1 {
@@ -1204,180 +1130,227 @@
             showResults();
         }
 
-        // Génération du plan nutritionnel
+        // Structure fixe du plan nutritionnel (identique à votre code original)
+        const mealStructure = [
+            // Petit-déjeuner
+            { meal: "breakfast", food: "Œufs", baseWeight: 150, calories: 210, protein: 18, carbs: 0, fat: 15 },
+            { meal: "breakfast", food: "Pain complet", baseWeight: 50, calories: 130, protein: 5, carbs: 25, fat: 2 },
+            { meal: "breakfast", food: "Avocat", baseWeight: 50, calories: 80, protein: 0, carbs: 4, fat: 7 },
+            { meal: "breakfast", food: "Fruit", baseWeight: 100, calories: 80, protein: 0, carbs: 20, fat: 0 },
+            { meal: "breakfast", food: "Huile d'olive", baseWeight: 5, calories: 40, protein: 0, carbs: 0, fat: 5 },
+            
+            // Déjeuner
+            { meal: "lunch", food: "Poulet grillé", baseWeight: 180, calories: 330, protein: 40, carbs: 0, fat: 15 },
+            { meal: "lunch", food: "Riz complet cuit", baseWeight: 120, calories: 150, protein: 3, carbs: 35, fat: 0 },
+            { meal: "lunch", food: "Légumes vapeur", baseWeight: 200, calories: 70, protein: 0, carbs: 15, fat: 0 },
+            { meal: "lunch", food: "Huile d'olive", baseWeight: 15, calories: 120, protein: 0, carbs: 0, fat: 14 },
+            
+            // Collation après-midi
+            { meal: "snack", food: "Fruit", baseWeight: 100, calories: 80, protein: 0, carbs: 20, fat: 0 },
+            { meal: "snack", food: "Noix", baseWeight: 20, calories: 120, protein: 5, carbs: 0, fat: 12 },
+            
+            // Dîner
+            { meal: "dinner", food: "Poulet grillé", baseWeight: 150, calories: 275, protein: 35, carbs: 0, fat: 12 },
+            { meal: "dinner", food: "Riz complet cuit", baseWeight: 100, calories: 130, protein: 2, carbs: 28, fat: 0 },
+            { meal: "dinner", food: "Salade verte", baseWeight: 150, calories: 40, protein: 0, carbs: 8, fat: 0 },
+            { meal: "dinner", food: "Huile d'olive", baseWeight: 15, calories: 120, protein: 0, carbs: 0, fat: 14 }
+        ];
+
+        // Génération du plan nutritionnel (version restaurée)
         function generateNutritionPlan() {
             const planTableContainer = document.getElementById('planTableContainer');
             const dailyCaloriesPlan = document.getElementById('dailyCaloriesPlan');
             
             dailyCaloriesPlan.textContent = nutritionPlan.goalCalories;
             
-            // Aliments typiques marocains avec leurs valeurs nutritionnelles (pour 100g)
-            const moroccanFoods = {
-                // Protéines
-                'Poulet': { calories: 165, protein: 31, carbs: 0, fat: 3.6 },
-                'Poisson (Sardine)': { calories: 208, protein: 25, carbs: 0, fat: 11 },
-                'Bœuf maigre': { calories: 250, protein: 26, carbs: 0, fat: 15 },
-                'Lentilles': { calories: 116, protein: 9, carbs: 20, fat: 0.4 },
-                'Pois chiches': { calories: 139, protein: 7, carbs: 22, fat: 2.4 },
-                'Œufs': { calories: 155, protein: 13, carbs: 1.1, fat: 11 },
-                
-                // Glucides
-                'Couscous': { calories: 112, protein: 3.8, carbs: 23, fat: 0.2 },
-                'Pain complet': { calories: 265, protein: 9, carbs: 49, fat: 3.5 },
-                'Riz brun': { calories: 111, protein: 2.6, carbs: 23, fat: 0.9 },
-                'Pâtes complètes': { calories: 124, protein: 5, carbs: 25, fat: 1 },
-                'Pomme de terre': { calories: 77, protein: 2, carbs: 17, fat: 0.1 },
-                'Patate douce': { calories: 86, protein: 1.6, carbs: 20, fat: 0.1 },
-                
-                // Légumes
-                'Salade marocaine': { calories: 35, protein: 1.5, carbs: 7, fat: 0.2 },
-                'Tomates': { calories: 18, protein: 0.9, carbs: 3.9, fat: 0.2 },
-                'Concombres': { calories: 15, protein: 0.7, carbs: 3.6, fat: 0.1 },
-                'Poivrons': { calories: 31, protein: 1, carbs: 6, fat: 0.3 },
-                'Courgettes': { calories: 17, protein: 1.2, carbs: 3.1, fat: 0.3 },
-                
-                // Fruits
-                'Oranges': { calories: 47, protein: 0.9, carbs: 12, fat: 0.1 },
-                'Pommes': { calories: 52, protein: 0.3, carbs: 14, fat: 0.2 },
-                'Bananes': { calories: 89, protein: 1.1, carbs: 23, fat: 0.3 },
-                'Dattes': { calories: 282, protein: 2.5, carbs: 75, fat: 0.4 },
-                
-                // Lipides
-                'Huile d\'olive': { calories: 884, protein: 0, carbs: 0, fat: 100 },
-                'Amandes': { calories: 579, protein: 21, carbs: 22, fat: 49 },
-                'Noix': { calories: 654, protein: 15, carbs: 14, fat: 65 },
-                'Avocat': { calories: 160, protein: 2, carbs: 9, fat: 15 }
-            };
-
-            // Structure des repas avec pourcentages de calories quotidiennes
-            const mealStructure = [
-                { name: 'breakfast', percentage: 0.25, translationKey: 'breakfast' }, // 25%
-                { name: 'lunch', percentage: 0.35, translationKey: 'lunch' },       // 35%
-                { name: 'snack', percentage: 0.15, translationKey: 'snack' },       // 15%
-                { name: 'dinner', percentage: 0.25, translationKey: 'dinner' }      // 25%
+            // Facteur d'ajustement selon les calories totales
+            const baseCalories = 2000; // Calories de référence du plan de base
+            const adjustmentFactor = nutritionPlan.goalCalories / baseCalories;
+            
+            // Créer le tableau
+            const table = document.createElement('table');
+            table.className = 'plan-table';
+            
+            // En-tête du tableau
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            
+            const headers = [
+                translations[currentLanguage].food,
+                translations[currentLanguage].weight,
+                translations[currentLanguage].calories,
+                translations[currentLanguage].nutrition
             ];
-
-            let planHTML = `
-                <table class="plan-table">
-                    <thead>
-                        <tr>
-                            <th>${translations[currentLanguage].meal}</th>
-                            <th>${translations[currentLanguage].food}</th>
-                            <th>${translations[currentLanguage].weight} (g)</th>
-                            <th>${translations[currentLanguage].calories}</th>
-                            <th>${translations[currentLanguage].nutrition}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            let dailyTotals = { calories: 0, protein: 0, carbs: 0, fat: 0 };
-
-            mealStructure.forEach(meal => {
-                const mealCalories = Math.round(nutritionPlan.goalCalories * meal.percentage);
-                const mealProtein = Math.round(nutritionPlan.protein * meal.percentage);
-                const mealCarbs = Math.round(nutritionPlan.carbs * meal.percentage);
-                const mealFat = Math.round(nutritionPlan.fat * meal.percentage);
-
-                // Sélectionner des aliments pour ce repas
-                const mealFoods = selectFoodsForMeal(meal.name, mealCalories, moroccanFoods);
-                
-                planHTML += `
-                    <tr class="meal-header">
-                        <td colspan="5">${translations[currentLanguage][meal.translationKey]} (${mealCalories} ${translations[currentLanguage].calories.toLowerCase()})</td>
-                    </tr>
-                `;
-
-                let mealTotals = { calories: 0, protein: 0, carbs: 0, fat: 0 };
-
-                mealFoods.forEach(food => {
-                    const foodItem = moroccanFoods[food.name];
-                    const calories = Math.round((foodItem.calories * food.quantity) / 100);
-                    const protein = Math.round((foodItem.protein * food.quantity) / 100);
-                    const carbs = Math.round((foodItem.carbs * food.quantity) / 100);
-                    const fat = Math.round((foodItem.fat * food.quantity) / 100);
-
-                    mealTotals.calories += calories;
-                    mealTotals.protein += protein;
-                    mealTotals.carbs += carbs;
-                    mealTotals.fat += fat;
-
-                    planHTML += `
-                        <tr>
-                            <td></td>
-                            <td>${food.name}</td>
-                            <td>${food.quantity}</td>
-                            <td>${calories}</td>
-                            <td>P: ${protein}g | C: ${carbs}g | L: ${fat}g</td>
-                        </tr>
-                    `;
-                });
-
-                // Total du repas
-                planHTML += `
-                    <tr class="meal-total-row">
-                        <td colspan="2">${translations[currentLanguage].total} ${translations[currentLanguage][meal.translationKey].toLowerCase()}</td>
-                        <td></td>
-                        <td>${mealTotals.calories}</td>
-                        <td>${translations[currentLanguage].protein}: ${mealTotals.protein}g | ${translations[currentLanguage].carbs}: ${mealTotals.carbs}g | ${translations[currentLanguage].fat}: ${mealTotals.fat}g</td>
-                    </tr>
-                `;
-
-                // Ajouter au total quotidien
-                dailyTotals.calories += mealTotals.calories;
-                dailyTotals.protein += mealTotals.protein;
-                dailyTotals.carbs += mealTotals.carbs;
-                dailyTotals.fat += mealTotals.fat;
+            
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
             });
-
-            // Total quotidien
-            planHTML += `
-                <tr class="daily-total-row">
-                    <td colspan="2">${translations[currentLanguage].dailyTotal}</td>
-                    <td></td>
-                    <td>${dailyTotals.calories}</td>
-                    <td>${translations[currentLanguage].protein}: ${dailyTotals.protein}g | ${translations[currentLanguage].carbs}: ${dailyTotals.carbs}g | ${translations[currentLanguage].fat}: ${dailyTotals.fat}g</td>
-                </tr>
-            `;
-
-            planHTML += `</tbody></table>`;
-            planTableContainer.innerHTML = planHTML;
-        }
-
-        function selectFoodsForMeal(mealType, targetCalories, foods) {
-            let selectedFoods = [];
-            let currentCalories = 0;
             
-            // Définir les types d'aliments par repas
-            const mealPreferences = {
-                breakfast: ['Pain complet', 'Œufs', 'Amandes', 'Oranges', 'Pommes'],
-                lunch: ['Couscous', 'Poulet', 'Poisson (Sardine)', 'Salade marocaine', 'Tomates'],
-                snack: ['Bananes', 'Noix', 'Pommes', 'Yaourt'],
-                dinner: ['Poisson (Sardine)', 'Poulet', 'Lentilles', 'Courgettes', 'Riz brun']
-            };
-
-            const availableFoods = mealPreferences[mealType] || Object.keys(foods);
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
             
-            // Ajouter des aliments jusqu'à atteindre les calories cibles
-            while (currentCalories < targetCalories * 0.8) { // 80% pour laisser de la marge
-                const randomFood = availableFoods[Math.floor(Math.random() * availableFoods.length)];
-                const food = foods[randomFood];
-                
-                // Quantité aléatoire entre 50g et 200g
-                const quantity = Math.floor(Math.random() * 151) + 50;
-                const foodCalories = (food.calories * quantity) / 100;
-                
-                // Vérifier que cela ne dépasse pas trop les calories cibles
-                if (currentCalories + foodCalories <= targetCalories * 1.2) {
-                    selectedFoods.push({ name: randomFood, quantity: quantity });
-                    currentCalories += foodCalories;
+            // Corps du tableau
+            const tbody = document.createElement('tbody');
+            
+            // Variables pour les totaux
+            let currentMeal = '';
+            let mealCalories = 0;
+            let mealProtein = 0;
+            let mealCarbs = 0;
+            let mealFat = 0;
+            
+            let dailyCalories = 0;
+            let dailyProtein = 0;
+            let dailyCarbs = 0;
+            let dailyFat = 0;
+            
+            mealStructure.forEach((item, index) => {
+                // Si on change de repas, ajouter la ligne de total du repas précédent
+                if (currentMeal !== '' && currentMeal !== item.meal) {
+                    addMealTotalRow(currentMeal, mealCalories, mealProtein, mealCarbs, mealFat);
+                    
+                    // Réinitialiser les totaux du repas
+                    mealCalories = 0;
+                    mealProtein = 0;
+                    mealCarbs = 0;
+                    mealFat = 0;
                 }
                 
-                // Éviter les boucles infinies
-                if (selectedFoods.length > 10) break;
+                // Si c'est le début d'un nouveau repas, ajouter l'en-tête du repas
+                if (currentMeal !== item.meal) {
+                    currentMeal = item.meal;
+                    
+                    const mealHeaderRow = document.createElement('tr');
+                    mealHeaderRow.className = 'meal-header';
+                    
+                    const mealHeaderCell = document.createElement('td');
+                    mealHeaderCell.colSpan = 4;
+                    mealHeaderCell.textContent = translations[currentLanguage][item.meal];
+                    mealHeaderRow.appendChild(mealHeaderCell);
+                    
+                    tbody.appendChild(mealHeaderRow);
+                }
+                
+                // Ajuster la quantité selon les calories nécessaires
+                const adjustedWeight = Math.round(item.baseWeight * adjustmentFactor);
+                const adjustedCalories = Math.round(item.calories * adjustmentFactor);
+                const adjustedProtein = Math.round(item.protein * adjustmentFactor);
+                const adjustedCarbs = Math.round(item.carbs * adjustmentFactor);
+                const adjustedFat = Math.round(item.fat * adjustmentFactor);
+                
+                // Ajouter les valeurs aux totaux
+                mealCalories += adjustedCalories;
+                mealProtein += adjustedProtein;
+                mealCarbs += adjustedCarbs;
+                mealFat += adjustedFat;
+                
+                dailyCalories += adjustedCalories;
+                dailyProtein += adjustedProtein;
+                dailyCarbs += adjustedCarbs;
+                dailyFat += adjustedFat;
+                
+                // Ligne de l'aliment
+                const row = document.createElement('tr');
+                
+                // Colonne Aliment
+                const foodCell = document.createElement('td');
+                foodCell.textContent = item.food;
+                row.appendChild(foodCell);
+                
+                // Colonne Poids
+                const weightCell = document.createElement('td');
+                weightCell.textContent = `${adjustedWeight}g`;
+                row.appendChild(weightCell);
+                
+                // Colonne Calories
+                const caloriesCell = document.createElement('td');
+                caloriesCell.textContent = `${adjustedCalories} kcal`;
+                row.appendChild(caloriesCell);
+                
+                // Colonne Apports nutritionnels
+                const nutritionCell = document.createElement('td');
+                let nutritionText = '';
+                
+                if (adjustedProtein > 0) {
+                    nutritionText += `${translations[currentLanguage].protein} ${adjustedProtein}g`;
+                }
+                if (adjustedCarbs > 0) {
+                    if (nutritionText) nutritionText += ', ';
+                    nutritionText += `${translations[currentLanguage].carbs} ${adjustedCarbs}g`;
+                }
+                if (adjustedFat > 0) {
+                    if (nutritionText) nutritionText += ', ';
+                    nutritionText += `${translations[currentLanguage].fat} ${adjustedFat}g`;
+                }
+                
+                nutritionCell.textContent = nutritionText;
+                row.appendChild(nutritionCell);
+                
+                tbody.appendChild(row);
+                
+                // Si c'est le dernier aliment, ajouter le total du repas
+                if (index === mealStructure.length - 1) {
+                    addMealTotalRow(currentMeal, mealCalories, mealProtein, mealCarbs, mealFat);
+                }
+            });
+            
+            // Fonction pour ajouter une ligne de total de repas
+            function addMealTotalRow(meal, calories, protein, carbs, fat) {
+                const totalRow = document.createElement('tr');
+                totalRow.className = 'meal-total-row';
+                
+                const totalCell = document.createElement('td');
+                totalCell.colSpan = 2;
+                totalCell.textContent = `${translations[currentLanguage][meal]} - ${translations[currentLanguage].total}`;
+                totalRow.appendChild(totalCell);
+                
+                const caloriesCell = document.createElement('td');
+                caloriesCell.textContent = `${calories} kcal`;
+                totalRow.appendChild(caloriesCell);
+                
+                const nutritionCell = document.createElement('td');
+                let nutritionText = '';
+                
+                if (protein > 0) nutritionText += `${translations[currentLanguage].protein} ${protein}g`;
+                if (carbs > 0) nutritionText += (nutritionText ? ', ' : '') + `${translations[currentLanguage].carbs} ${carbs}g`;
+                if (fat > 0) nutritionText += (nutritionText ? ', ' : '') + `${translations[currentLanguage].fat} ${fat}g`;
+                
+                nutritionCell.textContent = nutritionText;
+                totalRow.appendChild(nutritionCell);
+                
+                tbody.appendChild(totalRow);
             }
             
-            return selectedFoods;
+            // Ajouter la ligne de total quotidien
+            const dailyTotalRow = document.createElement('tr');
+            dailyTotalRow.className = 'daily-total-row';
+            
+            const dailyTotalCell = document.createElement('td');
+            dailyTotalCell.colSpan = 2;
+            dailyTotalCell.textContent = translations[currentLanguage].dailyTotal;
+            dailyTotalRow.appendChild(dailyTotalCell);
+            
+            const dailyCaloriesCell = document.createElement('td');
+            dailyCaloriesCell.textContent = `${dailyCalories} kcal`;
+            dailyTotalRow.appendChild(dailyCaloriesCell);
+            
+            const dailyNutritionCell = document.createElement('td');
+            let dailyNutritionText = '';
+            
+            if (dailyProtein > 0) dailyNutritionText += `${translations[currentLanguage].protein} ${dailyProtein}g`;
+            if (dailyCarbs > 0) dailyNutritionText += (dailyNutritionText ? ', ' : '') + `${translations[currentLanguage].carbs} ${dailyCarbs}g`;
+            if (dailyFat > 0) dailyNutritionText += (dailyNutritionText ? ', ' : '') + `${translations[currentLanguage].fat} ${dailyFat}g`;
+            
+            dailyNutritionCell.textContent = dailyNutritionText;
+            dailyTotalRow.appendChild(dailyNutritionCell);
+            
+            tbody.appendChild(dailyTotalRow);
+            
+            table.appendChild(tbody);
+            planTableContainer.innerHTML = '';
+            planTableContainer.appendChild(table);
         }
 
         // Sauvegarde du plan
