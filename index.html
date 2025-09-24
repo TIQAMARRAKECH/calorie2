@@ -293,6 +293,13 @@
             font-weight: bold;
             color: var(--primary-color);
             margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .result-value span:last-child {
+            font-size: 1.5rem;
         }
 
         .hidden {
@@ -512,6 +519,63 @@
             margin-bottom: 20px;
         }
 
+        /* Styles pour la modale de don */
+        .donation-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .donation-modal-content {
+            background: var(--card-background);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+
+        .donation-modal-content h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+        }
+
+        .donation-modal-content p {
+            margin-bottom: 25px;
+            color: var(--text-color);
+        }
+
+        .donation-buttons {
+            display: flex;
+            justify-content: space-around;
+            gap: 15px;
+        }
+        
+        .donation-paypal {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed var(--secondary-color);
+            border-radius: 5px;
+            background-color: var(--secondary-light);
+        }
+
+        .donation-paypal-email {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 10px;
@@ -563,7 +627,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- Sélecteur de langue -->
         <div class="language-selector">
             <div class="language-btn" id="languageBtn">
                 <span>🌐</span>
@@ -583,7 +646,6 @@
         </header>
 
         <div class="app-container">
-            <!-- Page d'accueil -->
             <section id="homeSection" class="section">
                 <h2 class="section-title" id="homeTitle">Accueil</h2>
                 
@@ -604,7 +666,6 @@
                 </div>
             </section>
 
-            <!-- Page d'historique -->
             <section id="historySection" class="section hidden">
                 <div class="back-button">
                     <button class="btn-secondary" id="backFromHistoryBtn">← Retour à l'accueil</button>
@@ -613,8 +674,7 @@
                 <h2 class="section-title" id="historyPageTitle">Historique des plans</h2>
                 
                 <div id="historyList" class="history-list">
-                    <!-- Les plans sauvegardés seront affichés ici -->
-                </div>
+                    </div>
                 
                 <div id="emptyHistory" class="empty-history hidden">
                     <div class="empty-history-icon">📋</div>
@@ -624,7 +684,6 @@
                 </div>
             </section>
 
-            <!-- Indicateur de progression (caché sur la page d'accueil) -->
             <div class="step-indicator hidden" id="stepIndicator">
                 <div class="step active" id="step1">1</div>
                 <div class="step" id="step2">2</div>
@@ -632,7 +691,6 @@
                 <div class="step" id="step4">4</div>
             </div>
 
-            <!-- Étape 1: Informations personnelles -->
             <section id="personalInfoSection" class="section hidden">
                 <h2 class="section-title" id="personalInfoTitle">Informations Personnelles</h2>
                 <form id="personalInfoForm">
@@ -679,7 +737,6 @@
                 </form>
             </section>
 
-            <!-- Étape 2: Objectif -->
             <section id="goalSection" class="section hidden">
                 <h2 class="section-title" id="goalTitle">Votre Objectif</h2>
                 <form id="goalForm">
@@ -718,16 +775,15 @@
                 </form>
             </section>
 
-            <!-- Étape 3: Résultats des calculs -->
             <section id="resultsSection" class="section hidden">
                 <h2 class="section-title" id="resultsTitle">Vos Besoins Nutritionnels</h2>
                 
                 <div class="result-card">
-                    <h3 class="result-title" id="bmrTitle">Votre métabolisme de base (BMR)</h3>
-                    <div class="result-value" id="bmrResult">0 calories</div>
-                    <p id="bmrDescription">Calories nécessaires au repos pour maintenir les fonctions vitales</p>
+                    <h3 class="result-title" id="imcTitle">Votre Indice de Masse Corporelle (IMC)</h3>
+                    <div class="result-value" id="imcResult">0.0 <span></span></div>
+                    <p id="imcDescription">L'IMC est une indication de votre corpulence</p>
                 </div>
-                
+
                 <div class="result-card">
                     <h3 class="result-title" id="tdeeTitle">Votre dépense énergétique totale (TDEE)</h3>
                     <div class="result-value" id="tdeeResult">0 calories</div>
@@ -755,14 +811,12 @@
                 </div>
             </section>
 
-            <!-- Étape 4: Plan nutritionnel -->
             <section id="planSection" class="section hidden">
                 <h2 class="section-title" id="planTitle">Votre Plan Nutritionnel Quotidien</h2>
                 <p id="planDescription">Basé sur vos besoins de <span id="dailyCaloriesPlan">0</span> calories</p>
                 
                 <div id="planTableContainer">
-                    <!-- Le tableau du plan sera généré ici dynamiquement -->
-                </div>
+                    </div>
                 
                 <div class="form-actions">
                     <button type="button" id="backToResultsBtn" class="btn-secondary">Précédent</button>
@@ -771,7 +825,6 @@
                 </div>
             </section>
 
-            <!-- Vue détaillée d'un plan sauvegardé -->
             <section id="savedPlanSection" class="section hidden">
                 <div class="back-button">
                     <button class="btn-secondary" id="backFromSavedPlanBtn">← Retour à l'historique</button>
@@ -783,26 +836,46 @@
                 <div class="result-card">
                     <h3 class="result-title">Informations personnelles</h3>
                     <div id="savedPersonalInfo">
-                        <!-- Les informations personnelles seront affichées ici -->
-                    </div>
+                        </div>
                 </div>
                 
                 <div class="result-card">
                     <h3 class="result-title">Besoins nutritionnels</h3>
                     <div id="savedNutritionalNeeds">
-                        <!-- Les besoins nutritionnels seront affichés ici -->
-                    </div>
+                        </div>
                 </div>
                 
                 <div id="savedPlanTableContainer">
-                    <!-- Le tableau du plan sauvegardé sera affiché ici -->
-                </div>
+                    </div>
                 
                 <div class="form-actions">
                     <button type="button" id="backToHistoryFromSavedBtn" class="btn-secondary">Retour à l'historique</button>
                     <button type="button" id="deleteSavedPlanBtn" class="btn-primary" style="background-color: var(--error-color);">Supprimer ce plan</button>
                 </div>
             </section>
+        </div>
+    </div>
+    
+    <div class="donation-modal-overlay" id="donationModal">
+        <div class="donation-modal-content">
+            <h3 id="donationTitle">Soutenez MarrakFit !</h3>
+            <p id="donationMessage">Si ce plan nutritionnel vous a été utile, pensez à soutenir le développeur par un petit don.</p>
+            
+            <div id="donationInitial">
+                <div class="donation-buttons">
+                    <button class="btn-primary" id="showPaypalBtn">Faire un don</button>
+                    <button class="btn-secondary" id="closeModalBtn">Plus tard</button>
+                </div>
+            </div>
+
+            <div id="donationPaypalInfo" class="hidden">
+                <div class="donation-paypal">
+                    <p id="paypalText">Adresse PayPal pour les dons :</p>
+                    <div class="donation-paypal-email" id="paypalEmail">yassineabourayan@gmail.com</div>
+                    <button class="btn-success" id="copyPaypalBtn">Copier</button>
+                </div>
+                <button class="btn-secondary" id="closePaypalInfoBtn" style="margin-top: 15px;">Fermer</button>
+            </div>
         </div>
     </div>
 
@@ -850,8 +923,15 @@
                 previousButton: "Précédent",
                 calculateButton: "Calculer mes besoins",
                 resultsTitle: "Vos Besoins Nutritionnels",
-                bmrTitle: "Votre métabolisme de base (BMR)",
-                bmrDescription: "Calories nécessaires au repos pour maintenir les fonctions vitales",
+                // Suppression du BMR
+                imcTitle: "Votre Indice de Masse Corporelle (IMC)",
+                imcDescription: "L'IMC est une indication de votre corpulence",
+                imcUnderweight: "Insuffisance pondérale",
+                imcNormal: "Poids normal",
+                imcOverweight: "Surpoids",
+                imcObesity1: "Obésité classe I",
+                imcObesity2: "Obésité classe II",
+                imcObesity3: "Obésité classe III",
                 tdeeTitle: "Votre dépense énergétique totale (TDEE)",
                 tdeeDescription: "Calories nécessaires en fonction de votre niveau d'activité",
                 goalCaloriesTitle: "Calories recommandées pour votre objectif",
@@ -886,7 +966,15 @@
                 createFirstPlan: "Créer un nouveau plan",
                 planSaved: "Plan sauvegardé avec succès!",
                 planDeleted: "Plan supprimé avec succès!",
-                confirmDelete: "Êtes-vous sûr de vouloir supprimer ce plan ?"
+                confirmDelete: "Êtes-vous sûr de vouloir supprimer ce plan ?",
+                // Donation
+                donationTitle: "Soutenez MarrakFit !",
+                donationMessage: "Si ce plan nutritionnel vous a été utile, pensez à soutenir le développeur par un petit don. Cela nous aide à maintenir et améliorer l'application.",
+                showPaypalBtn: "Faire un don",
+                closeModalBtn: "Plus tard",
+                paypalText: "Adresse PayPal pour les dons :",
+                copyButton: "Copier",
+                paypalCopied: "E-mail PayPal copié!"
             },
             en: {
                 appTitle: "MarrakFit – Your calories & macros coach made in Morocco",
@@ -929,8 +1017,15 @@
                 previousButton: "Previous",
                 calculateButton: "Calculate my needs",
                 resultsTitle: "Your Nutritional Needs",
-                bmrTitle: "Your Basal Metabolic Rate (BMR)",
-                bmrDescription: "Calories needed at rest to maintain vital functions",
+                // Suppression du BMR
+                imcTitle: "Your Body Mass Index (BMI)",
+                imcDescription: "BMI is an indication of your body weight status",
+                imcUnderweight: "Underweight",
+                imcNormal: "Normal weight",
+                imcOverweight: "Overweight",
+                imcObesity1: "Obesity class I",
+                imcObesity2: "Obesity class II",
+                imcObesity3: "Obesity class III",
                 tdeeTitle: "Your Total Daily Energy Expenditure (TDEE)",
                 tdeeDescription: "Calories needed based on your activity level",
                 goalCaloriesTitle: "Recommended calories for your goal",
@@ -965,7 +1060,15 @@
                 createFirstPlan: "Create a new plan",
                 planSaved: "Plan saved successfully!",
                 planDeleted: "Plan deleted successfully!",
-                confirmDelete: "Are you sure you want to delete this plan?"
+                confirmDelete: "Are you sure you want to delete this plan?",
+                // Donation
+                donationTitle: "Support MarrakFit!",
+                donationMessage: "If this nutrition plan has been helpful to you, consider supporting the developer with a small donation. This helps us maintain and improve the application.",
+                showPaypalBtn: "Make a donation",
+                closeModalBtn: "Later",
+                paypalText: "PayPal address for donations:",
+                copyButton: "Copy",
+                paypalCopied: "PayPal email copied!"
             },
             ar: {
                 appTitle: "MarrakFit – مدرب السعرات والماكرو من المغرب",
@@ -1008,8 +1111,15 @@
                 previousButton: "السابق",
                 calculateButton: "حساب احتياجاتي",
                 resultsTitle: "احتياجاتك الغذائية",
-                bmrTitle: "معدل الأيض الأساسي (BMR)",
-                bmrDescription: "السعرات الحرارية اللازمة في الراحة للحفاظ على الوظائف الحيوية",
+                // Suppression du BMR
+                imcTitle: "مؤشر كتلة الجسم (IMC)",
+                imcDescription: "مؤشر كتلة الجسم هو مؤشر لحالة وزن جسمك",
+                imcUnderweight: "نقص الوزن",
+                imcNormal: "وزن طبيعي",
+                imcOverweight: "زيادة الوزن",
+                imcObesity1: "السمنة الدرجة الأولى",
+                imcObesity2: "السمنة الدرجة الثانية",
+                imcObesity3: "السمنة الدرجة الثالثة",
                 tdeeTitle: "إجمالي إنفاق الطاقة اليومي (TDEE)",
                 tdeeDescription: "السعرات الحرارية اللازمة بناءً على مستوى نشاطك",
                 goalCaloriesTitle: "السعرات الحرارية الموصى بها لهدفك",
@@ -1044,7 +1154,15 @@
                 createFirstPlan: "إنشاء خطة جديدة",
                 planSaved: "تم حفظ الخطة بنجاح!",
                 planDeleted: "تم حذف الخطة بنجاح!",
-                confirmDelete: "هل أنت متأكد أنك تريد حذف هذه الخطة؟"
+                confirmDelete: "هل أنت متأكد أنك تريد حذف هذه الخطة؟",
+                // Donation
+                donationTitle: "ادعم MarrakFit!",
+                donationMessage: "إذا كانت خطة التغذية هذه مفيدة لك، ففكر في دعم المطور بتبرع بسيط. يساعدنا هذا في الحفاظ على التطبيق وتحسينه.",
+                showPaypalBtn: "تبرع الآن",
+                closeModalBtn: "لاحقًا",
+                paypalText: "عنوان PayPal للتبرعات:",
+                copyButton: "نسخ",
+                paypalCopied: "تم نسخ بريد PayPal!"
             }
         };
 
@@ -1081,7 +1199,7 @@
         const emptyHistory = document.getElementById('emptyHistory');
         
         // Résultats
-        const bmrResult = document.getElementById('bmrResult');
+        const imcResult = document.getElementById('imcResult');
         const tdeeResult = document.getElementById('tdeeResult');
         const goalCaloriesResult = document.getElementById('goalCaloriesResult');
         const goalDescription = document.getElementById('goalDescription');
@@ -1106,6 +1224,16 @@
         
         const steps = document.querySelectorAll('.step');
         
+        // Don modal elements
+        const donationModal = document.getElementById('donationModal');
+        const showPaypalBtn = document.getElementById('showPaypalBtn');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const donationInitial = document.getElementById('donationInitial');
+        const donationPaypalInfo = document.getElementById('donationPaypalInfo');
+        const copyPaypalBtn = document.getElementById('copyPaypalBtn');
+        const paypalEmail = document.getElementById('paypalEmail');
+        const closePaypalInfoBtn = document.getElementById('closePaypalInfoBtn');
+        
         // Données de l'utilisateur
         let userData = {
             age: 0,
@@ -1115,7 +1243,8 @@
             activityLevel: 0,
             goal: '',
             intensity: 0,
-            bmr: 0,
+            bmr: 0, // Gardé dans l'objet pour le calcul TDEE mais non affiché
+            imc: 0, // Ajout de l'IMC
             tdee: 0,
             goalCalories: 0,
             protein: 0,
@@ -1172,6 +1301,22 @@
         backToHistoryFromSavedBtn.addEventListener('click', () => showSection(historySection));
         deleteSavedPlanBtn.addEventListener('click', deleteSavedPlan);
         createFirstPlanBtn.addEventListener('click', () => showSection(personalInfoSection));
+
+        // Donation Modal Listeners
+        showPaypalBtn.addEventListener('click', () => {
+            donationInitial.classList.add('hidden');
+            donationPaypalInfo.classList.remove('hidden');
+        });
+
+        closeModalBtn.addEventListener('click', () => {
+            donationModal.style.display = 'none';
+        });
+
+        closePaypalInfoBtn.addEventListener('click', () => {
+            donationModal.style.display = 'none';
+        });
+
+        copyPaypalBtn.addEventListener('click', copyPaypalEmail);
         
         // Gestionnaire de langue
         languageBtn.addEventListener('click', () => {
@@ -1190,6 +1335,11 @@
         function showSection(section) {
             document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
             stepIndicator.classList.add('hidden');
+            
+            // Hide donation modal
+            donationModal.style.display = 'none';
+            donationInitial.classList.remove('hidden');
+            donationPaypalInfo.classList.add('hidden');
             
             if (section === homeSection || section === historySection || section === savedPlanSection) {
                 // Cacher l'indicateur de progression sur les pages d'accueil et d'historique
@@ -1241,6 +1391,11 @@
             planSection.classList.remove('hidden');
             generateNutritionPlan();
             updateSteps(4);
+            
+            // Afficher la modale de don après 10 secondes
+            setTimeout(() => {
+                donationModal.style.display = 'flex';
+            }, 10000); // 10 secondes
         }
         
         function backToResultsSection() {
@@ -1313,15 +1468,19 @@
         
         // Calcul des résultats avec les nouvelles règles de protéines et lipides
         function calculateResults() {
-            // Calcul du BMR (Métabolisme de base)
+            // Calcul du BMR (Métabolisme de base) - non affiché
             if (userData.gender === 'male') {
                 userData.bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age + 5;
             } else {
                 userData.bmr = 10 * userData.weight + 6.25 * userData.height - 5 * userData.age - 161;
             }
+
+            // Calcul de l'IMC (Indice de Masse Corporelle)
+            const heightMeters = userData.height / 100;
+            userData.imc = parseFloat((userData.weight / (heightMeters * heightMeters)).toFixed(1));
             
             // Calcul du TDEE (Dépense énergétique totale)
-            userData.tdee = userData.bmr * userData.activityLevel;
+            userData.tdee = Math.round(userData.bmr * userData.activityLevel);
             
             // Calcul des calories selon l'objectif
             if (userData.goal === 'muscle') {
@@ -1387,14 +1546,44 @@
             userData.carbs = Math.max(0, Math.round(remainingCalories / 4));
             
             // Affichage des résultats
-            bmrResult.textContent = `${Math.round(userData.bmr)} ${currentLang === 'fr' ? 'calories' : currentLang === 'en' ? 'calories' : 'سعرة'}`;
-            tdeeResult.textContent = `${Math.round(userData.tdee)} ${currentLang === 'fr' ? 'calories' : currentLang === 'en' ? 'calories' : 'سعرة'}`;
+            
+            // IMC Display
+            const { status: imcStatus, emoji: imcEmoji } = getImcStatus(userData.imc);
+            imcResult.innerHTML = `${userData.imc} <span>${imcEmoji} (${imcStatus})</span>`;
+            
+            tdeeResult.textContent = `${userData.tdee} ${currentLang === 'fr' ? 'calories' : currentLang === 'en' ? 'calories' : 'سعرة'}`;
             goalCaloriesResult.textContent = `${userData.goalCalories} ${currentLang === 'fr' ? 'calories' : currentLang === 'en' ? 'calories' : 'سعرة'}`;
             proteinResult.textContent = `${userData.protein}g`;
             fatResult.textContent = `${userData.fat}g`;
             carbsResult.textContent = `${userData.carbs}g`;
             
             dailyCaloriesPlan.textContent = userData.goalCalories;
+        }
+
+        // Fonction de statut IMC
+        function getImcStatus(imc) {
+            let status = '';
+            let emoji = '';
+            if (imc < 18.5) {
+                status = translations[currentLang].imcUnderweight;
+                emoji = '😔';
+            } else if (imc >= 18.5 && imc < 25) {
+                status = translations[currentLang].imcNormal;
+                emoji = '👍';
+            } else if (imc >= 25 && imc < 30) {
+                status = translations[currentLang].imcOverweight;
+                emoji = '⚠️';
+            } else if (imc >= 30 && imc < 35) {
+                status = translations[currentLang].imcObesity1;
+                emoji = '🚨';
+            } else if (imc >= 35 && imc < 40) {
+                status = translations[currentLang].imcObesity2;
+                emoji = '🔥';
+            } else {
+                status = translations[currentLang].imcObesity3;
+                emoji = '🛑';
+            }
+            return { status, emoji };
         }
         
         // Génération du plan nutritionnel adaptatif avec totaux
@@ -1692,8 +1881,9 @@
             `;
             
             // Afficher les besoins nutritionnels
+            const { status: imcStatus, emoji: imcEmoji } = getImcStatus(plan.userData.imc);
             savedNutritionalNeeds.innerHTML = `
-                <p><strong>BMR:</strong> ${Math.round(plan.userData.bmr)} calories</p>
+                <p><strong>IMC:</strong> ${plan.userData.imc} ${imcEmoji} (${imcStatus})</p>
                 <p><strong>TDEE:</strong> ${Math.round(plan.userData.tdee)} calories</p>
                 <p><strong>Calories recommandées:</strong> ${plan.userData.goalCalories} calories</p>
                 <p><strong>Protéines:</strong> ${plan.userData.protein}g</p>
@@ -1720,6 +1910,16 @@
                 alert(translations[currentLang].planDeleted);
                 showHistory();
             }
+        }
+
+        // Fonction de copie de l'email PayPal
+        function copyPaypalEmail() {
+            const email = paypalEmail.textContent;
+            navigator.clipboard.writeText(email).then(() => {
+                alert(translations[currentLang].paypalCopied);
+            }).catch(err => {
+                console.error('Erreur lors de la copie: ', err);
+            });
         }
         
         // Fonctions utilitaires pour les labels
@@ -1752,10 +1952,41 @@
             for (const key in translations[lang]) {
                 const element = document.getElementById(key);
                 if (element) {
-                    element.textContent = translations[lang][key];
+                    // Pour les options de sélection (select), seul le texte doit être mis à jour
+                    if (element.tagName === 'OPTION' || element.tagName === 'LABEL') {
+                         element.textContent = translations[lang][key];
+                    } else if (element.tagName === 'BUTTON') {
+                        // Les boutons de l'interface principale ont déjà leur texte géré par leur ID
+                        // On gère spécifiquement les boutons de la modale de don si leur ID est dans la traduction
+                         if (key === 'showPaypalBtn' || key === 'closeModalBtn' || key === 'copyPaypalBtn') {
+                            element.textContent = translations[lang][key];
+                        }
+                    } else if (element.tagName !== 'INPUT' && element.tagName !== 'SELECT' && element.id !== 'paypalEmail') {
+                        // Mettre à jour le texte des éléments standards
+                         element.textContent = translations[lang][key];
+                    }
                 }
             }
             
+            // Mettre à jour les textes des boutons principaux (si leur ID n'est pas dans translations)
+            document.getElementById('startNewPlanBtn').textContent = translations[lang].startNewPlan;
+            document.getElementById('viewHistoryBtn').textContent = translations[lang].viewHistory;
+            document.getElementById('backFromHistoryBtn').textContent = `← ${translations[lang].backToHome}`;
+            document.getElementById('backToHomeFromPersonalBtn').textContent = translations[lang].backToHome;
+            document.getElementById('nextToGoalBtn').textContent = translations[lang].nextButton;
+            document.getElementById('backToPersonalBtn').textContent = translations[lang].previousButton;
+            document.getElementById('nextToResultsBtn').textContent = translations[lang].calculateButton;
+            document.getElementById('backToGoalBtn').textContent = translations[lang].previousButton;
+            document.getElementById('nextToPlanBtn').textContent = translations[lang].viewPlanButton;
+            document.getElementById('backToResultsBtn').textContent = translations[lang].previousButton;
+            document.getElementById('savePlanBtn').textContent = translations[lang].savePlanButton;
+            document.getElementById('restartBtn').textContent = translations[lang].restartButton;
+            document.getElementById('backFromSavedPlanBtn').textContent = `← ${translations[lang].backToHistory}`;
+            document.getElementById('backToHistoryFromSavedBtn').textContent = translations[lang].backToHistory;
+            document.getElementById('deleteSavedPlanBtn').textContent = translations[lang].deleteSavedPlan;
+            document.getElementById('createFirstPlanBtn').textContent = translations[lang].createFirstPlan;
+
+
             // Si nous sommes sur la page des résultats, recalculer pour mettre à jour les textes
             if (!resultsSection.classList.contains('hidden')) {
                 calculateResults();
@@ -1770,14 +2001,25 @@
             if (!historySection.classList.contains('hidden')) {
                 updateHistoryList();
             }
+
+             // Si nous sommes sur la vue détaillée d'un plan sauvegardé, mettre à jour
+            if (!savedPlanSection.classList.contains('hidden') && currentSavedPlanId) {
+                const savedPlans = JSON.parse(localStorage.getItem('marrakfit_plans') || '[]');
+                const currentPlan = savedPlans.find(p => p.id === currentSavedPlanId);
+                if (currentPlan) {
+                     viewSavedPlan(currentPlan); // Re-affiche le plan avec la nouvelle langue
+                }
+            }
             
             // Ajuster la direction du texte pour l'arabe
             if (lang === 'ar') {
                 document.body.style.direction = 'rtl';
                 document.body.style.textAlign = 'right';
+                document.querySelectorAll('.plan-table th, .plan-table td').forEach(el => el.style.textAlign = 'right');
             } else {
                 document.body.style.direction = 'ltr';
                 document.body.style.textAlign = 'left';
+                document.querySelectorAll('.plan-table th, .plan-table td').forEach(el => el.style.textAlign = 'left');
             }
         }
         
