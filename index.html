@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MarrakFit — Coach nutrition &amp; macros</title>
+<title>MarrakFit Pro — Coach Nutrition &amp; Macros</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&family=Cairo:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -22,7 +22,8 @@
   --gold-tint:#F6E8C8;
   --clay:#B15A2E;
   --clay-tint:#F3DFCF;
-  --mint:#5E8F79;
+  --mint:#2E7D5B;
+  --mint-tint:#DFF2E9;
   --danger:#AD3A2E;
   --radius-lg:22px;
   --radius-md:14px;
@@ -51,29 +52,17 @@ body[dir="rtl"] h1,body[dir="rtl"] h2,body[dir="rtl"] h3,body[dir="rtl"] .displa
 p{line-height:1.55;color:var(--ink-soft);}
 button{font-family:inherit;cursor:pointer;}
 .hidden{display:none !important;}
-a{color:inherit;}
 
-/* zellige motif */
-.zellige-motif{
-  --tile: var(--gold);
-  width:22px;height:22px;flex:none;
-  background:
-    conic-gradient(from 45deg, var(--tile) 0 25%, transparent 0 50%, var(--tile) 0 75%, transparent 0);
-  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
-  opacity:.85;
-}
-.zellige-row{display:flex;gap:6px;align-items:center;}
+.app-shell{max-width:920px;margin:0 auto;padding:0 20px 80px;}
 
-.app-shell{max-width:900px;margin:0 auto;padding:0 20px 80px;}
-
-/* header */
+/* Header */
 .app-header{
   position:relative;
   overflow:hidden;
   background:radial-gradient(120% 160% at 15% -10%, #1C6377 0%, var(--teal) 45%, var(--teal-dark) 100%);
   color:#F7F1E1;
   border-radius:0 0 28px 28px;
-  padding:22px 20px 26px;
+  padding:22px 24px 26px;
   margin-bottom:26px;
   box-shadow:var(--shadow);
 }
@@ -86,31 +75,35 @@ a{color:inherit;}
     repeating-linear-gradient(-45deg, rgba(247,241,225,.05) 0 2px, transparent 2px 26px);
   pointer-events:none;
 }
-.header-top{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1;}
-.brand{display:flex;align-items:center;gap:10px;}
+.header-top{display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2;}
+.brand{display:flex;align-items:center;gap:12px;cursor:pointer;}
 .brand-mark{
   width:38px;height:38px;flex:none;position:relative;
   background:conic-gradient(from 0deg, var(--gold), #E9C468, var(--gold), #8f671f, var(--gold));
   clip-path:polygon(50% 0,61% 39%,100% 50%,61% 61%,50% 100%,39% 61%,0 50%,39% 39%);
 }
-.brand-name{font-family:var(--font-display);font-size:1.35rem;font-weight:700;letter-spacing:-.02em;}
+.brand-name{font-family:var(--font-display);font-size:1.4rem;font-weight:700;letter-spacing:-.02em;display:flex;align-items:center;gap:8px;}
+.pro-badge{
+  background:var(--gold);color:var(--teal-dark);font-family:var(--font-body);
+  font-size:.65rem;font-weight:800;padding:2px 7px;border-radius:999px;letter-spacing:.08em;text-transform:uppercase;
+}
 body[dir="rtl"] .brand-name{font-family:var(--font-ar);}
-.app-subtitle{margin:10px 0 0;color:#DCE7E2;font-size:.97rem;max-width:34ch;position:relative;z-index:1;}
+.app-subtitle{margin:10px 0 0;color:#DCE7E2;font-size:.95rem;max-width:44ch;position:relative;z-index:1;}
 
-/* language selector */
-.language-selector{position:relative;z-index:2;}
+/* Language selector */
+.language-selector{position:relative;z-index:10;}
 .lang-btn{
   background:rgba(247,241,225,.14);
   border:1px solid rgba(247,241,225,.35);
   color:#F7F1E1;
   padding:8px 14px;border-radius:999px;font-size:.85rem;font-weight:600;
-  display:flex;align-items:center;gap:6px;
+  display:flex;align-items:center;gap:6px;transition:background .15s;
 }
 .lang-btn:hover{background:rgba(247,241,225,.24);}
 .language-options{
   position:absolute;top:calc(100% + 8px);right:0;
   background:var(--panel);border-radius:var(--radius-sm);box-shadow:var(--shadow);
-  padding:6px;display:none;flex-direction:column;min-width:140px;border:1px solid var(--line);
+  padding:6px;display:none;flex-direction:column;min-width:145px;border:1px solid var(--line);
 }
 body[dir="rtl"] .language-options{right:auto;left:0;}
 .language-options.show{display:flex;}
@@ -120,23 +113,23 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
 }
 .language-option:hover{background:var(--teal-tint);}
 
-/* step indicator */
+/* Step indicator */
 .step-indicator{
   display:flex;gap:8px;align-items:center;justify-content:center;
   margin:0 0 22px;
 }
 .step-dot{
-  width:30px;height:30px;border-radius:50%;
+  width:32px;height:32px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  font-size:.8rem;font-weight:700;color:var(--ink-faint);
+  font-size:.82rem;font-weight:700;color:var(--ink-faint);
   background:var(--bg-alt);border:2px solid var(--line);
   transition:all .25s var(--ease);
 }
 .step-dot.active{background:var(--teal);border-color:var(--teal);color:#fff;transform:scale(1.08);}
 .step-dot.completed{background:var(--gold);border-color:var(--gold);color:#3a2c08;}
-.step-line{width:26px;height:2px;background:var(--line);}
+.step-line{width:28px;height:2px;background:var(--line);}
 
-/* cards */
+/* Cards */
 .card{
   background:var(--panel);
   border:1px solid var(--line);
@@ -144,14 +137,14 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
   padding:26px;
   box-shadow:var(--shadow-sm);
 }
-.card + .card{margin-top:16px;}
+.card + .card{margin-top:18px;}
 .section-eyebrow{
   font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--clay);font-weight:700;margin:0 0 6px;
 }
 .section-title{margin:0 0 4px;font-size:1.5rem;}
 .section-desc{margin:0 0 20px;}
 
-/* home */
+/* Home */
 .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 @media (max-width:620px){.home-grid{grid-template-columns:1fr;}}
 .action-card{
@@ -175,11 +168,12 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
   padding:26px;text-align:center;color:var(--ink-faint);font-size:.92rem;
 }
 
-/* buttons */
+/* Buttons */
 .btn{
-  border:none;border-radius:999px;padding:12px 22px;font-weight:600;font-size:.95rem;
+  border:none;border-radius:999px;padding:11px 20px;font-weight:600;font-size:.92rem;
   display:inline-flex;align-items:center;gap:8px;transition:transform .15s var(--ease), box-shadow .15s var(--ease), background .15s;
 }
+.btn-sm{padding:6px 12px;font-size:.78rem;border-radius:8px;}
 .btn-primary{background:var(--teal);color:#fff;box-shadow:0 6px 16px -6px rgba(21,76,92,.55);}
 .btn-primary:hover{background:var(--teal-dark);transform:translateY(-1px);}
 .btn-secondary{background:var(--bg-alt);color:var(--ink);border:1px solid var(--line);}
@@ -192,7 +186,7 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
 .btn-row{display:flex;justify-content:space-between;gap:12px;margin-top:24px;flex-wrap:wrap;}
 .btn-row.end{justify-content:flex-end;}
 
-/* forms */
+/* Forms */
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 @media (max-width:560px){.form-grid{grid-template-columns:1fr;}}
 .field{display:flex;flex-direction:column;gap:6px;}
@@ -206,79 +200,119 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
 .field input:focus, .field select:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-tint);}
 .field-full{grid-column:1 / -1;}
 
-/* goal radio cards */
+/* Goal radio cards */
 .goal-options{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
 @media (max-width:560px){.goal-options{grid-template-columns:1fr;}}
 .goal-card{position:relative;}
 .goal-card input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0;width:100%;height:100%;}
 .goal-card .goal-face{
   border:1.5px solid var(--line);border-radius:var(--radius-md);padding:16px 14px;text-align:center;
-  transition:all .18s var(--ease);
+  transition:all .18s var(--ease);height:100%;display:flex;flex-direction:column;justify-content:center;
 }
 .goal-card .goal-face .g-icon{font-size:1.5rem;display:block;margin-bottom:6px;}
 .goal-card .goal-face .g-label{font-weight:600;font-size:.92rem;}
 .goal-card input:checked + .goal-face{border-color:var(--teal);background:var(--teal-tint);box-shadow:0 0 0 3px rgba(21,76,92,.12) inset;}
-.goal-card input:focus-visible + .goal-face{outline:2px solid var(--teal);outline-offset:2px;}
 
-/* results */
-.macro-layout{display:grid;grid-template-columns:220px 1fr;gap:26px;align-items:center;}
+/* Results & Analytics */
+.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px;}
+@media (max-width:560px){.stat-strip{grid-template-columns:1fr;}}
+.stat-tile{background:var(--bg-alt);border-radius:var(--radius-md);padding:15px;text-align:center;}
+.stat-tile.highlight{background:var(--teal);color:#fff;}
+.stat-tile.highlight .s-label, .stat-tile.highlight .s-unit{color:#DCE7E2;}
+.stat-tile.highlight .s-val{color:var(--gold);}
+.stat-tile .s-label{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);font-weight:600;}
+.stat-tile .s-val{font-family:var(--font-display);font-size:1.45rem;font-weight:700;color:var(--teal);margin-top:4px;}
+.stat-tile .s-unit{font-size:.74rem;color:var(--ink-soft);margin-top:2px;}
+
+/* Body Analytics Box */
+.analytics-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-md);
+  padding:16px;margin-bottom:22px;
+}
+@media (max-width:640px){.analytics-grid{grid-template-columns:1fr;}}
+.analytic-item{display:flex;flex-direction:column;gap:4px;}
+.analytic-label{font-size:.73rem;color:var(--ink-faint);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
+.analytic-value{font-size:1.05rem;font-weight:700;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.badge{font-size:.72rem;padding:2px 8px;border-radius:999px;font-weight:600;}
+.badge-ok{background:var(--mint-tint);color:var(--mint);}
+.badge-warn{background:var(--gold-tint);color:#8a651e;}
+.badge-alert{background:var(--clay-tint);color:var(--clay);}
+.analytic-sub{font-size:.78rem;color:var(--ink-soft);}
+
+.macro-layout{display:grid;grid-template-columns:200px 1fr;gap:26px;align-items:center;}
 @media (max-width:640px){.macro-layout{grid-template-columns:1fr;}}
 .donut-wrap{display:flex;flex-direction:column;align-items:center;gap:10px;}
-.donut-center-label{font-family:var(--font-display);font-size:1.5rem;font-weight:700;}
-.donut-center-sub{font-size:.72rem;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.08em;}
-.macro-legend{display:flex;flex-direction:column;gap:12px;}
-.macro-row{display:flex;align-items:center;gap:10px;}
-.macro-swatch{width:12px;height:12px;border-radius:3px;flex:none;}
-.macro-row .m-name{font-weight:600;font-size:.92rem;flex:1;}
-.macro-row .m-val{font-weight:700;font-family:var(--font-display);}
-.macro-row .m-sub{font-size:.76rem;color:var(--ink-faint);}
+.macro-legend{display:flex;flex-direction:column;gap:14px;}
+.macro-row{display:flex;align-items:center;gap:10px;padding-bottom:8px;border-bottom:1px solid var(--bg-alt);}
+.macro-row:last-child{border-bottom:none;padding-bottom:0;}
+.macro-swatch{width:14px;height:14px;border-radius:4px;flex:none;}
+.macro-row .m-name{font-weight:600;font-size:.94rem;flex:1;}
+.macro-row .m-val{font-weight:700;font-family:var(--font-display);font-size:1.05rem;}
+.macro-row .m-sub{font-size:.76rem;color:var(--ink-faint);font-family:var(--font-body);font-weight:400;}
 
-.stat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px;}
-@media (max-width:560px){.stat-strip{grid-template-columns:1fr;}}
-.stat-tile{background:var(--bg-alt);border-radius:var(--radius-md);padding:16px;text-align:center;}
-.stat-tile .s-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-faint);}
-.stat-tile .s-val{font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--teal);margin-top:4px;}
-.stat-tile .s-unit{font-size:.72rem;color:var(--ink-faint);}
-
-.macro-tune{margin-top:22px;border-top:1px dashed var(--line);padding-top:18px;}
+.macro-tune{margin-top:20px;border-top:1px dashed var(--line);padding-top:16px;}
 .macro-tune-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.tune-toggle{background:none;border:none;color:var(--teal);font-weight:600;font-size:.85rem;display:flex;gap:6px;align-items:center;}
+.tune-toggle{background:var(--bg-alt);border:1px solid var(--line);padding:7px 14px;border-radius:999px;color:var(--teal);font-weight:600;font-size:.83rem;display:flex;gap:6px;align-items:center;}
+.tune-toggle:hover{background:var(--teal-tint);}
 .slider-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
-.slider-row label{width:110px;font-size:.85rem;font-weight:600;flex:none;}
+.slider-row label{width:130px;font-size:.85rem;font-weight:600;flex:none;}
 .slider-row input[type=range]{flex:1;accent-color:var(--teal);}
-.slider-row .pct{width:44px;text-align:end;font-weight:700;font-family:var(--font-display);}
-.tune-warning{font-size:.78rem;color:var(--clay);margin-top:6px;}
+.slider-row .pct{width:50px;text-align:end;font-weight:700;font-family:var(--font-display);}
+.tune-warning{font-size:.8rem;color:var(--clay);margin-top:6px;font-weight:500;}
 
-/* plan / meal cards */
+/* Plan & Alternative Meals */
 .plan-summary-bar{
   display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
-  background:var(--teal-tint);border-radius:var(--radius-md);padding:14px 18px;margin-bottom:20px;
+  background:var(--teal-tint);border-radius:var(--radius-md);padding:14px 18px;margin-bottom:18px;
 }
 .plan-summary-bar .p-cal{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--teal-dark);}
 .meal-block{
   border:1px solid var(--line);border-radius:var(--radius-md);padding:16px 18px;margin-bottom:12px;
-  display:flex;gap:14px;align-items:flex-start;background:#fff;
+  display:flex;gap:14px;align-items:flex-start;background:#fff;transition:border-color .15s;
 }
+.meal-block:hover{border-color:var(--teal);}
 .meal-icon{
-  width:40px;height:40px;border-radius:10px;background:var(--gold-tint);color:#8a651e;
-  display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex:none;
+  width:42px;height:42px;border-radius:11px;background:var(--gold-tint);color:#8a651e;
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex:none;
 }
 .meal-body{flex:1;}
+.meal-header-row{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px;}
 .meal-type-tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.09em;color:var(--clay);font-weight:700;}
-.meal-name{font-weight:600;margin:2px 0 6px;font-size:1rem;}
-.meal-portion{font-size:.8rem;color:var(--ink-faint);margin-bottom:8px;}
+.swap-btn{
+  background:var(--bg-alt);border:1px solid var(--line);color:var(--teal-dark);
+  border-radius:999px;padding:4px 10px;font-size:.75rem;font-weight:600;
+  display:inline-flex;align-items:center;gap:4px;transition:all .15s;
+}
+.swap-btn:hover{background:var(--teal);color:#fff;border-color:var(--teal);}
+.meal-name{font-weight:600;margin:2px 0 6px;font-size:1rem;color:var(--ink);}
+.meal-tip{font-size:.8rem;color:var(--ink-soft);margin-bottom:8px;font-style:italic;}
 .meal-macros{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--ink-soft);}
 .meal-macros b{color:var(--ink);}
 .plan-total-row{
-  display:flex;justify-content:space-between;background:var(--bg-alt);border-radius:var(--radius-md);
-  padding:14px 18px;font-weight:700;margin-top:6px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;
+  background:var(--bg-alt);border-radius:var(--radius-md);padding:14px 18px;font-weight:700;margin-top:6px;
 }
 .hydration-note{
-  margin-top:16px;display:flex;gap:10px;align-items:flex-start;background:var(--teal-tint);
-  border-radius:var(--radius-md);padding:14px 16px;font-size:.86rem;color:var(--teal-dark);
+  margin-top:14px;display:flex;gap:10px;align-items:center;background:var(--teal-tint);
+  border-radius:var(--radius-md);padding:13px 16px;font-size:.86rem;color:var(--teal-dark);
 }
 
-/* history */
+/* Grocery List Accordion */
+.grocery-box{
+  margin-top:16px;border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;
+}
+.grocery-head{
+  background:var(--bg);padding:13px 18px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;
+  font-weight:600;font-size:.9rem;color:var(--teal-dark);
+}
+.grocery-content{padding:16px 18px;background:#fff;border-top:1px solid var(--line);}
+.grocery-tabs{display:flex;gap:8px;margin-bottom:12px;}
+.grocery-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;font-size:.86rem;}
+@media (max-width:500px){.grocery-grid{grid-template-columns:1fr;}}
+.grocery-item{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed var(--bg-alt);}
+
+/* History */
 .history-list{display:flex;flex-direction:column;gap:12px;}
 .history-item{
   border:1px solid var(--line);border-radius:var(--radius-md);padding:16px 18px;background:#fff;
@@ -286,7 +320,7 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
 }
 .history-item:hover{box-shadow:var(--shadow-sm);transform:translateY(-1px);}
 .history-item-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px;}
-.history-item-title{font-weight:700;font-family:var(--font-display);}
+.history-item-title{font-weight:700;font-family:var(--font-display);font-size:1.05rem;}
 .history-item-date{font-size:.78rem;color:var(--ink-faint);}
 .history-item-details{display:flex;gap:18px;flex-wrap:wrap;}
 .history-detail{display:flex;flex-direction:column;}
@@ -297,15 +331,24 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
 }
 .empty-state .e-icon{font-size:2.2rem;margin-bottom:10px;display:block;}
 
-/* saved plan */
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 22px;margin-bottom:6px;}
-.info-grid p{margin:4px 0;font-size:.9rem;}
+/* Saved plan */
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 22px;margin-bottom:12px;}
+@media (max-width:560px){.info-grid{grid-template-columns:1fr;}}
+.info-grid p{margin:3px 0;font-size:.9rem;}
 .info-grid strong{color:var(--ink);}
-
 .top-actions{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
 
+/* Toast Notification */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--teal-dark);color:#fff;padding:12px 22px;border-radius:999px;
+  font-size:.9rem;font-weight:600;box-shadow:var(--shadow);opacity:0;pointer-events:none;
+  transition:all .25s var(--ease);z-index:100;display:flex;align-items:center;gap:8px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
 @media print{
-  .app-header, .step-indicator, .btn-row, .top-actions, .language-selector, .no-print{display:none !important;}
+  .app-header, .step-indicator, .btn-row, .top-actions, .language-selector, .swap-btn, .no-print{display:none !important;}
   body{background:#fff;}
   .card{box-shadow:none;border:1px solid #ccc;}
 }
@@ -317,10 +360,10 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
 
   <header class="app-header">
     <div class="header-top">
-      <div class="brand">
+      <div class="brand" id="brandHomeBtn">
         <div class="brand-mark"></div>
         <div>
-          <div class="brand-name" id="appTitle">MarrakFit</div>
+          <div class="brand-name"><span id="appTitle">MarrakFit</span> <span class="pro-badge">PRO</span></div>
         </div>
       </div>
       <div class="language-selector">
@@ -332,7 +375,7 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
         </div>
       </div>
     </div>
-    <p class="app-subtitle" id="appSubtitle">Votre plan calorique et macros, pensé pour la cuisine marocaine.</p>
+    <p class="app-subtitle" id="appSubtitle">Analyse métabolique, macros &amp; menus marocains sur-mesure.</p>
   </header>
 
   <div class="step-indicator hidden" id="stepIndicator">
@@ -348,20 +391,20 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
       <div class="action-card">
         <div class="action-icon">＋</div>
         <h3 id="newPlanTitle">Nouveau plan</h3>
-        <p id="newPlanDescription">Créez un plan nutritionnel personnalisé selon vos objectifs.</p>
+        <p id="newPlanDescription">Calculez vos besoins, analysez votre profil et générez des menus adaptés.</p>
         <button class="btn btn-primary" id="startNewPlanBtn">Commencer</button>
       </div>
       <div class="action-card">
         <div class="action-icon">🗂</div>
         <h3 id="historyTitle">Historique</h3>
-        <p id="historyDescription">Consultez vos plans nutritionnels précédemment créés.</p>
+        <p id="historyDescription">Consultez et imprimez vos plans nutritionnels sauvegardés.</p>
         <button class="btn btn-secondary" id="viewHistoryBtn">Voir l'historique</button>
       </div>
     </div>
 
     <div class="card snapshot-card">
       <div class="section-eyebrow" id="snapshotEyebrow">Dernier plan</div>
-      <h3 class="section-title" id="snapshotTitle" style="font-size:1.15rem;">Aperçu</h3>
+      <h3 class="section-title" id="snapshotTitle" style="font-size:1.15rem;">Aperçu rapide</h3>
       <div id="snapshotBody"></div>
     </div>
   </section>
@@ -371,7 +414,7 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
     <div class="top-actions">
       <button class="btn btn-ghost" id="backFromHistoryBtn">← Retour à l'accueil</button>
     </div>
-    <h2 class="section-title" id="historyPageTitle">Historique des plans</h2>
+    <h2 class="section-title" id="historyPageTitle" style="margin-bottom:16px;">Historique des plans</h2>
     <div class="history-list" id="historyList"></div>
     <div class="empty-state hidden" id="emptyHistory">
       <span class="e-icon">🍽️</span>
@@ -386,12 +429,12 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
     <div class="card">
       <div class="section-eyebrow" id="stepLabel1">Étape 1 sur 4</div>
       <h2 class="section-title" id="personalInfoTitle">Informations personnelles</h2>
-      <p class="section-desc" id="personalInfoDesc">Ces données servent uniquement à calculer vos besoins ; elles restent sur votre appareil.</p>
+      <p class="section-desc" id="personalInfoDesc">Ces données restent strictement privées sur votre appareil.</p>
       <form id="personalInfoForm">
         <div class="form-grid">
           <div class="field">
-            <label for="age" id="ageLabel">Âge</label>
-            <input type="number" id="age" min="14" max="90" required placeholder="30">
+            <label for="age" id="ageLabel">Âge (ans)</label>
+            <input type="number" id="age" min="14" max="90" required placeholder="35">
           </div>
           <div class="field">
             <label for="gender" id="genderLabel">Genre</label>
@@ -402,26 +445,26 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
             </select>
           </div>
           <div class="field">
-            <label for="weight" id="weightLabel">Poids (kg)</label>
-            <input type="number" id="weight" min="30" max="300" step="0.1" required placeholder="72">
+            <label for="weight" id="weightLabel">Poids actuel (kg)</label>
+            <input type="number" id="weight" min="30" max="300" step="0.1" required placeholder="74">
           </div>
           <div class="field">
             <label for="height" id="heightLabel">Taille (cm)</label>
-            <input type="number" id="height" min="120" max="230" required placeholder="175">
+            <input type="number" id="height" min="120" max="230" required placeholder="171">
           </div>
           <div class="field">
             <label for="bodyFat" id="bodyFatLabel">Masse grasse (%) <span class="hint" id="optionalHint">— optionnel</span></label>
-            <input type="number" id="bodyFat" min="4" max="60" step="0.1" placeholder="—">
+            <input type="number" id="bodyFat" min="4" max="60" step="0.1" placeholder="Ex: 18">
           </div>
           <div class="field">
             <label for="activityLevel" id="activityLabel">Niveau d'activité</label>
             <select id="activityLevel" required>
               <option value="" id="activityDefault">Sélectionnez votre niveau d'activité</option>
               <option value="1.2" id="activitySedentary">Sédentaire (peu ou pas d'exercice)</option>
-              <option value="1.375" id="activityLight">Légèrement actif (1-3 jours/semaine)</option>
-              <option value="1.55" id="activityModerate">Modérément actif (3-5 jours/semaine)</option>
-              <option value="1.725" id="activityActive">Très actif (6-7 jours/semaine)</option>
-              <option value="1.9" id="activityExtreme">Extrêmement actif (entraînement intense quotidien)</option>
+              <option value="1.375" id="activityLight">Légèrement actif (1-3 séances/sem.)</option>
+              <option value="1.55" id="activityModerate">Modérément actif (3-5 séances/sem.)</option>
+              <option value="1.725" id="activityActive">Très actif (6-7 séances/sem.)</option>
+              <option value="1.9" id="activityExtreme">Extrêmement actif (entraînement biquotidien)</option>
             </select>
           </div>
         </div>
@@ -447,52 +490,72 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
           </label>
           <label class="goal-card">
             <input type="radio" name="goal" value="weightLoss">
-            <span class="goal-face"><span class="g-icon">📉</span><span class="g-label" id="goalWeightLossLabel">Perdre du poids</span></span>
+            <span class="goal-face"><span class="g-icon">📉</span><span class="g-label" id="goalWeightLossLabel">Perdre du gras</span></span>
           </label>
           <label class="goal-card">
             <input type="radio" name="goal" value="maintain">
-            <span class="goal-face"><span class="g-icon">⚖️</span><span class="g-label" id="goalMaintainLabel">Maintenir mon poids</span></span>
+            <span class="goal-face"><span class="g-icon">⚖️</span><span class="g-label" id="goalMaintainLabel">Recomposition / Maintien</span></span>
           </label>
         </div>
-        <div class="field field-full">
-          <label for="intensity" id="intensityLabel">Intensité de l'objectif</label>
+        <div class="field field-full" id="intensityWrapper">
+          <label for="intensity" id="intensityLabel">Rythme / Intensité de l'objectif</label>
           <select id="intensity" required>
             <option value="" id="intensityDefault">Sélectionnez l'intensité</option>
-            <option value="250" id="intensityLight">Léger (+/- 250 kcal)</option>
-            <option value="500" id="intensityModerate">Modéré (+/- 500 kcal)</option>
-            <option value="750" id="intensityIntense">Intense (+/- 750 kcal)</option>
+            <option value="250" id="intensityLight">Progressif (+/- 250 kcal · ~0.25 kg/sem.)</option>
+            <option value="500" id="intensityModerate">Modéré (+/- 500 kcal · ~0.45 kg/sem.)</option>
+            <option value="750" id="intensityIntense">Soutenu (+/- 750 kcal · ~0.7 kg/sem.)</option>
           </select>
         </div>
       </form>
       <div class="btn-row">
         <button class="btn btn-secondary" id="backToPersonalBtn">Précédent</button>
-        <button class="btn btn-primary" id="nextToResultsBtn">Calculer mes besoins</button>
+        <button class="btn btn-primary" id="nextToResultsBtn">Analyser &amp; Calculer</button>
       </div>
     </div>
   </section>
 
-  <!-- STEP 3 : RESULTS -->
+  <!-- STEP 3 : RESULTS & ANALYTICS -->
   <section id="resultsSection" class="hidden">
     <div class="card">
       <div class="section-eyebrow" id="stepLabel3">Étape 3 sur 4</div>
-      <h2 class="section-title" id="resultsTitle">Vos besoins nutritionnels</h2>
+      <h2 class="section-title" id="resultsTitle">Analyse &amp; Besoins nutritionnels</h2>
       <p class="section-desc" id="goalDescription">Description de l'objectif</p>
 
+      <!-- Calories Strip -->
       <div class="stat-strip">
         <div class="stat-tile">
           <div class="s-label" id="bmrTitle">Métabolisme de base</div>
           <div class="s-val" id="bmrResult">—</div>
-          <div class="s-unit" id="bmrDescription">Calories au repos</div>
+          <div class="s-unit" id="bmrDescription">Énergie au repos</div>
         </div>
         <div class="stat-tile">
           <div class="s-label" id="tdeeTitle">Dépense totale (TDEE)</div>
           <div class="s-val" id="tdeeResult">—</div>
-          <div class="s-unit" id="tdeeDescription">Selon votre activité</div>
+          <div class="s-unit" id="tdeeDescription">Maintien quotidien</div>
         </div>
-        <div class="stat-tile">
+        <div class="stat-tile highlight">
           <div class="s-label" id="goalCaloriesTitle">Objectif calorique</div>
           <div class="s-val" id="goalCaloriesResult">—</div>
-          <div class="s-unit" id="perDayLabel">par jour</div>
+          <div class="s-unit" id="perDayLabel">cible / jour</div>
+        </div>
+      </div>
+
+      <!-- Body & Trajectory Analytics -->
+      <div class="analytics-grid" id="analyticsGrid">
+        <div class="analytic-item">
+          <span class="analytic-label" id="bmiLabel">Indice de Masse (IMC)</span>
+          <span class="analytic-value" id="bmiValue">—</span>
+          <span class="analytic-sub" id="idealWeightSub">—</span>
+        </div>
+        <div class="analytic-item">
+          <span class="analytic-label" id="leanMassLabel">Composition estimée</span>
+          <span class="analytic-value" id="leanMassValue">—</span>
+          <span class="analytic-sub" id="formulaUsedSub">—</span>
+        </div>
+        <div class="analytic-item">
+          <span class="analytic-label" id="projectionLabel">Projection sur 4 semaines</span>
+          <span class="analytic-value" id="projectionValue">—</span>
+          <span class="analytic-sub" id="weeklyRateSub">—</span>
         </div>
       </div>
 
@@ -515,24 +578,24 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
           <div class="macro-row">
             <span class="macro-swatch" style="background:var(--clay)"></span>
             <span class="m-name" id="carbsLabel">Glucides</span>
-            <span class="m-val" id="carbsResult">— <span class="m-sub" id="carbsInfo">(reste des calories)</span></span>
+            <span class="m-val" id="carbsResult">—</span>
           </div>
         </div>
       </div>
 
       <div class="macro-tune">
         <div class="macro-tune-head">
-          <button class="tune-toggle" id="tuneToggleBtn" type="button">⚙︎ <span id="tuneToggleLabel">Ajuster mes macros</span></button>
+          <button class="tune-toggle" id="tuneToggleBtn" type="button">⚙️ <span id="tuneToggleLabel">Personnaliser le ratio des macros</span></button>
         </div>
         <div id="tunePanel" class="hidden">
           <div class="slider-row">
             <label id="tuneProteinLabel">Protéines (g/kg)</label>
-            <input type="range" id="proteinPerKg" min="1.2" max="2.6" step="0.1" value="2.0">
-            <span class="pct" id="proteinPerKgVal">2.0</span>
+            <input type="range" id="proteinPerKg" min="1.4" max="2.6" step="0.1" value="2.0">
+            <span class="pct" id="proteinPerKgVal">2.0 g</span>
           </div>
           <div class="slider-row">
             <label id="tuneFatLabel">Lipides (% kcal)</label>
-            <input type="range" id="fatPct" min="15" max="40" step="1" value="25">
+            <input type="range" id="fatPct" min="18" max="40" step="1" value="25">
             <span class="pct" id="fatPctVal">25%</span>
           </div>
           <p class="tune-warning" id="tuneWarning"></p>
@@ -541,26 +604,46 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
 
       <div class="btn-row">
         <button class="btn btn-secondary" id="backToGoalBtn">Précédent</button>
-        <button class="btn btn-primary" id="nextToPlanBtn">Voir mon plan nutritionnel</button>
+        <button class="btn btn-primary" id="nextToPlanBtn">Générer mes repas</button>
       </div>
     </div>
   </section>
 
-  <!-- STEP 4 : PLAN -->
+  <!-- STEP 4 : PLAN & ALTERNATIVES -->
   <section id="planSection" class="hidden">
     <div class="card">
       <div class="section-eyebrow" id="stepLabel4">Étape 4 sur 4</div>
-      <h2 class="section-title" id="planTitle">Votre plan nutritionnel quotidien</h2>
+      <h2 class="section-title" id="planTitle">Votre plan alimentaire &amp; alternatives</h2>
       <div class="plan-summary-bar">
-        <span id="planDescription">Basé sur vos besoins de</span>
-        <span class="p-cal" id="dailyCaloriesPlan">—</span>
+        <div>
+          <span id="planDescription">Cible journalière :</span>
+          <span class="p-cal" id="dailyCaloriesPlan" style="margin-inline-start:6px;">—</span>
+        </div>
+        <span style="font-size:.82rem;color:var(--teal-dark);font-weight:600;" id="swapHint">💡 Cliquez sur « Alternative » pour changer un repas</span>
       </div>
+
       <div id="planTableContainer"></div>
+
+      <!-- Grocery List -->
+      <div class="grocery-box no-print">
+        <div class="grocery-head" id="toggleGroceryBtn">
+          <span>🛒 <span id="groceryTitle">Liste de courses estimée</span></span>
+          <span id="groceryArrow">▼</span>
+        </div>
+        <div class="grocery-content hidden" id="groceryContent">
+          <div class="grocery-tabs">
+            <button class="btn btn-sm btn-primary" id="grocery1DayBtn">1 Jour</button>
+            <button class="btn btn-sm btn-secondary" id="grocery7DaysBtn">1 Semaine (x7)</button>
+          </div>
+          <div class="grocery-grid" id="groceryGrid"></div>
+        </div>
+      </div>
+
       <div class="btn-row">
         <button class="btn btn-secondary" id="backToResultsBtn">Précédent</button>
         <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="btn btn-secondary" id="regeneratePlanBtn" type="button">🔀 <span id="regenerateLabel">Autres suggestions</span></button>
-          <button class="btn btn-primary" id="savePlanBtn">Sauvegarder ce plan</button>
+          <button class="btn btn-secondary" id="regeneratePlanBtn" type="button">🔀 <span id="regenerateLabel">Tout varier</span></button>
+          <button class="btn btn-primary" id="savePlanBtn">💾 <span id="saveBtnText">Sauvegarder</span></button>
         </div>
       </div>
       <div class="btn-row end">
@@ -582,7 +665,7 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
       <h3 style="font-size:1rem;" id="savedPersonalInfoTitle">Profil</h3>
       <div class="info-grid" id="savedPersonalInfo"></div>
 
-      <h3 style="font-size:1rem;margin-top:16px;" id="savedNeedsTitle">Besoins nutritionnels</h3>
+      <h3 style="font-size:1rem;margin-top:16px;" id="savedNeedsTitle">Analyse &amp; Besoins</h3>
       <div id="savedNutritionalNeeds"></div>
 
       <h3 style="font-size:1rem;margin-top:18px;" id="savedPlanMealsTitle">Repas du jour</h3>
@@ -595,194 +678,243 @@ body[dir="rtl"] .language-options{right:auto;left:0;}
     </div>
   </section>
 
-  <p class="footnote" id="footnote">MarrakFit — outil d'estimation, ne remplace pas l'avis d'un professionnel de santé.</p>
+  <p class="footnote" id="footnote">MarrakFit Pro — outil d'estimation nutritionnelle, ne remplace pas un avis médical.</p>
 </div>
+
+<div class="toast" id="toast"></div>
 
 <script>
 /* =========================================================
-   MarrakFit — state
+   State & DOM
    ========================================================= */
 const state = {
   currentPlan: {},
   history: JSON.parse(localStorage.getItem('marrakfit-history') || '[]'),
-  macroOverride: { proteinPerKg: 2.0, fatPct: 25 }
+  macroOverride: { proteinPerKg: 2.0, fatPct: 25 },
+  groceryMultiplier: 1
 };
 
 const dom = {};
-['homeSection','historySection','personalInfoSection','goalSection','resultsSection','planSection','savedPlanSection',
- 'stepIndicator','startNewPlanBtn','viewHistoryBtn','backToHomeFromPersonalBtn','backFromHistoryBtn','createFirstPlanBtn',
+[
+ 'homeSection','historySection','personalInfoSection','goalSection','resultsSection','planSection','savedPlanSection',
+ 'stepIndicator','brandHomeBtn','startNewPlanBtn','viewHistoryBtn','backToHomeFromPersonalBtn','backFromHistoryBtn','createFirstPlanBtn',
  'nextToGoalBtn','backToPersonalBtn','nextToResultsBtn','backToGoalBtn','nextToPlanBtn','backToResultsBtn','savePlanBtn',
  'restartBtn','backFromSavedPlanBtn','backToHistoryFromSavedBtn','deleteSavedPlanBtn','printPlanBtn','regeneratePlanBtn',
- 'personalInfoForm','age','gender','weight','height','bodyFat','activityLevel','goalForm','intensity',
+ 'personalInfoForm','age','gender','weight','height','bodyFat','activityLevel','goalForm','intensity','intensityWrapper',
  'bmrResult','tdeeResult','goalCaloriesResult','goalDescription','proteinResult','fatResult','carbsResult',
+ 'bmiValue','idealWeightSub','leanMassValue','formulaUsedSub','projectionValue','weeklyRateSub',
  'dailyCaloriesPlan','planTableContainer','historyList','emptyHistory','savedPlanDate','savedPersonalInfo',
  'savedNutritionalNeeds','savedPlanTableContainer','macroDonut','tuneToggleBtn','tunePanel','proteinPerKg',
- 'proteinPerKgVal','fatPct','fatPctVal','tuneWarning','snapshotBody'
+ 'proteinPerKgVal','fatPct','fatPctVal','tuneWarning','snapshotBody','toast',
+ 'toggleGroceryBtn','groceryContent','groceryArrow','grocery1DayBtn','grocery7DaysBtn','groceryGrid'
 ].forEach(id => dom[id] = document.getElementById(id));
 
 /* =========================================================
-   Translations
+   Translations (FR / EN / AR)
    ========================================================= */
 const translations = {
   fr: {
-    appTitle:"MarrakFit", appSubtitle:"Votre plan calorique et macros, pensé pour la cuisine marocaine.",
-    currentLanguage:"Français", newPlanTitle:"Nouveau plan", newPlanDescription:"Créez un plan nutritionnel personnalisé selon vos objectifs.",
-    historyTitle:"Historique", historyDescription:"Consultez vos plans nutritionnels précédemment créés.",
-    startNewPlanBtn:"Commencer", viewHistoryBtn:"Voir l'historique", snapshotEyebrow:"Dernier plan", snapshotTitle:"Aperçu",
+    appTitle:"MarrakFit", appSubtitle:"Analyse métabolique, macros & menus marocains sur-mesure.",
+    currentLanguage:"Français", newPlanTitle:"Nouveau plan", newPlanDescription:"Calculez vos besoins, analysez votre profil et générez des menus adaptés.",
+    historyTitle:"Historique", historyDescription:"Consultez et imprimez vos plans nutritionnels sauvegardés.",
+    startNewPlanBtn:"Commencer", viewHistoryBtn:"Voir l'historique", snapshotEyebrow:"Dernier plan", snapshotTitle:"Aperçu rapide",
     historyPageTitle:"Historique des plans", emptyHistoryTitle:"Aucun plan sauvegardé",
     emptyHistoryDescription:"Commencez par créer votre premier plan nutritionnel.", createFirstPlanBtn:"Créer un nouveau plan",
     stepLabel1:"Étape 1 sur 4", personalInfoTitle:"Informations personnelles",
-    personalInfoDesc:"Ces données servent uniquement à calculer vos besoins ; elles restent sur votre appareil.",
-    ageLabel:"Âge", genderLabel:"Genre", genderDefault:"Sélectionnez votre genre", genderMale:"Homme", genderFemale:"Femme",
-    weightLabel:"Poids (kg)", heightLabel:"Taille (cm)", bodyFatLabel:"Masse grasse (%)", optionalHint:"— optionnel",
+    personalInfoDesc:"Ces données restent strictement privées sur votre appareil.",
+    ageLabel:"Âge (ans)", genderLabel:"Genre", genderDefault:"Sélectionnez votre genre", genderMale:"Homme", genderFemale:"Femme",
+    weightLabel:"Poids actuel (kg)", heightLabel:"Taille (cm)", bodyFatLabel:"Masse grasse (%)", optionalHint:"— optionnel",
     activityLabel:"Niveau d'activité", activityDefault:"Sélectionnez votre niveau d'activité",
-    activitySedentary:"Sédentaire (peu ou pas d'exercice)", activityLight:"Légèrement actif (1-3 jours/semaine)",
-    activityModerate:"Modérément actif (3-5 jours/semaine)", activityActive:"Très actif (6-7 jours/semaine)",
-    activityExtreme:"Extrêmement actif (entraînement intense quotidien)",
+    activitySedentary:"Sédentaire (peu ou pas d'exercice)", activityLight:"Légèrement actif (1-3 séances/sem.)",
+    activityModerate:"Modérément actif (3-5 séances/sem.)", activityActive:"Très actif (6-7 séances/sem.)",
+    activityExtreme:"Extrêmement actif (entraînement biquotidien)",
     backToHomeFromPersonalBtn:"Retour à l'accueil", nextToGoalBtn:"Suivant",
     stepLabel2:"Étape 2 sur 4", goalTitle:"Votre objectif", goalQuestion:"Que souhaitez-vous atteindre ?",
-    goalMuscleLabel:"Prendre du muscle", goalWeightLossLabel:"Perdre du poids", goalMaintainLabel:"Maintenir mon poids",
-    intensityLabel:"Intensité de l'objectif", intensityDefault:"Sélectionnez l'intensité",
-    intensityLight:"Léger (+/- 250 kcal)", intensityModerate:"Modéré (+/- 500 kcal)", intensityIntense:"Intense (+/- 750 kcal)",
-    backToPersonalBtn:"Précédent", nextToResultsBtn:"Calculer mes besoins",
-    stepLabel3:"Étape 3 sur 4", resultsTitle:"Vos besoins nutritionnels",
-    bmrTitle:"Métabolisme de base", bmrDescription:"Calories au repos",
-    tdeeTitle:"Dépense totale (TDEE)", tdeeDescription:"Selon votre activité",
-    goalCaloriesTitle:"Objectif calorique", perDayLabel:"par jour",
+    goalMuscleLabel:"Prendre du muscle", goalWeightLossLabel:"Perdre du gras", goalMaintainLabel:"Recomposition / Maintien",
+    intensityLabel:"Rythme / Intensité de l'objectif", intensityDefault:"Sélectionnez l'intensité",
+    intensityLight:"Progressif (+/- 250 kcal · ~0.25 kg/sem.)", intensityModerate:"Modéré (+/- 500 kcal · ~0.45 kg/sem.)", intensityIntense:"Soutenu (+/- 750 kcal · ~0.7 kg/sem.)",
+    backToPersonalBtn:"Précédent", nextToResultsBtn:"Analyser & Calculer",
+    stepLabel3:"Étape 3 sur 4", resultsTitle:"Analyse & Besoins nutritionnels",
+    bmrTitle:"Métabolisme de base", bmrDescription:"Énergie au repos",
+    tdeeTitle:"Dépense totale (TDEE)", tdeeDescription:"Maintien quotidien",
+    goalCaloriesTitle:"Objectif calorique", perDayLabel:"cible / jour",
+    bmiLabel:"Indice de Masse (IMC)", leanMassLabel:"Composition estimée", projectionLabel:"Projection sur 4 semaines",
+    bmiUnder:"Insuffisance pondérale", bmiNormal:"Poids normal", bmiOver:"Surpoids", bmiObese:"Obésité",
+    idealWeightText:"Poids idéal estimé :", leanMassText:"Masse maigre", bodyFatEstText:"Masse grasse",
+    formulaKatch:"Formule Katch-McArdle (précise)", formulaMifflin:"Formule Mifflin-St Jeor",
+    stableWeight:"Stabilité pondérale", perWeek:"/ sem.",
     macrosTitle:"Répartition des macronutriments", proteinLabel:"Protéines", fatLabel:"Lipides", carbsLabel:"Glucides",
-    carbsInfo:"(reste des calories)", tuneToggleLabel:"Ajuster mes macros",
+    carbsInfo:"énergie & récupération", tuneToggleLabel:"Personnaliser le ratio des macros",
     tuneProteinLabel:"Protéines (g/kg)", tuneFatLabel:"Lipides (% kcal)",
-    backToGoalBtn:"Précédent", nextToPlanBtn:"Voir mon plan nutritionnel",
-    stepLabel4:"Étape 4 sur 4", planTitle:"Votre plan nutritionnel quotidien", planDescription:"Basé sur vos besoins de",
-    regenerateLabel:"Autres suggestions", backToResultsBtn:"Précédent", savePlanBtn:"Sauvegarder ce plan",
+    backToGoalBtn:"Précédent", nextToPlanBtn:"Générer mes repas",
+    stepLabel4:"Étape 4 sur 4", planTitle:"Votre plan alimentaire & alternatives", planDescription:"Cible journalière :",
+    swapHint:"💡 Cliquez sur « Alternative » pour changer un repas", swapBtn:"🔄 Alternative",
+    groceryTitle:"Liste de courses estimée", grocery1DayBtn:"1 Jour", grocery7DaysBtn:"1 Semaine (x7)",
+    regenerateLabel:"Tout varier", backToResultsBtn:"Précédent", saveBtnText:"Sauvegarder",
     restartBtn:"Créer un nouveau plan", savedPlanTitle:"Plan nutritionnel", savedPlanDate:"Date de création : ",
-    printLabel:"Imprimer / PDF", savedPersonalInfoTitle:"Profil", savedNeedsTitle:"Besoins nutritionnels",
+    printLabel:"Imprimer / PDF", savedPersonalInfoTitle:"Profil", savedNeedsTitle:"Analyse & Besoins",
     savedPlanMealsTitle:"Repas du jour", deleteSavedPlanBtn:"Supprimer ce plan",
     backFromSavedPlanBtn:"← Retour à l'historique", backToHistoryFromSavedBtn:"Retour à l'historique",
-    backFromHistoryBtn:"← Retour à l'accueil", footnote:"MarrakFit — outil d'estimation, ne remplace pas l'avis d'un professionnel de santé.",
+    backFromHistoryBtn:"← Retour à l'accueil", footnote:"MarrakFit Pro — outil d'estimation nutritionnelle, ne remplace pas un avis médical.",
     breakfast:"Petit-déjeuner", lunch:"Déjeuner", dinner:"Dîner", snack:"Collation",
-    meal:"Repas", food:"Plat", calories:"Calories", protein:"Protéines", fat:"Lipides", carbs:"Glucides", dailyTotal:"Total journalier",
-    goalDescriptionMuscle:"Pour la prise de masse, vous êtes en léger surplus calorique — privilégiez des protéines à chaque repas.",
-    goalDescriptionWeightLoss:"Pour la perte de poids, vous êtes en déficit calorique — gardez des apports en protéines élevés pour préserver le muscle.",
-    goalDescriptionMaintain:"Pour maintenir votre poids, vos apports couvrent votre dépense énergétique totale.",
-    hydrationNote:"Pensez à boire environ", hydrationUnit:"litres d'eau par jour, davantage lors des journées chaudes ou d'entraînement.",
-    macroWarning:"Cette répartition laisse très peu de glucides ou trop peu de calories pour les lipides essentiels — ajustez avec prudence.",
-    savedAlert:"Plan sauvegardé !", deleteConfirm:"Êtes-vous sûr de vouloir supprimer ce plan ?",
-    portionLabel:"Portion", scaledLabel:"portion ajustée",
-    food_egg:"œuf", food_egg_plural:"œufs", food_oats:"flocons d'avoine", food_almonds:"amandes", food_dates:"dattes",
-    food_chicken:"poulet grillé", food_fish:"poisson grillé", food_rice:"riz", food_vegSteamed:"légumes vapeur",
-    food_salad:"salade verte", food_yogurt:"yaourt nature", food_fromageBlanc:"fromage blanc 0%", food_honey:"miel", food_fruit:"fruit de saison"
+    dailyTotal:"Total journalier",
+    goalDescriptionMuscle:"Surplus calorique maîtrisé pour stimuler l'hypertrophie tout en limitant la prise de gras.",
+    goalDescriptionWeightLoss:"Déficit calorique ciblé avec un apport élevé en protéines pour protéger votre masse musculaire.",
+    goalDescriptionMaintain:"Apport d'équilibre idéal pour la recomposition corporelle (perte de gras + maintien musculaire).",
+    hydrationNote:"Hydratation recommandée :", hydrationUnit:"d'eau par jour (+500 ml les jours d'entraînement).",
+    macroWarning:"⚠️ Attention : ce réglage laisse très peu de glucides pour votre énergie ou trop peu de lipides essentiels.",
+    savedAlert:"Plan sauvegardé dans l'historique !", swappedAlert:"Repas alternatif généré !",
+    deleteConfirm:"Êtes-vous sûr de vouloir supprimer ce plan ?",
+    // Aliments
+    food_egg:"œuf entier", food_egg_plural:"œufs entiers", food_oats:"flocons d'avoine", food_belboula:"semoule d'orge (Belboula)",
+    food_batbout:"batbout complet", food_almonds:"amandes", food_dates:"dattes Medjool", food_avocado:"avocat",
+    food_oliveOil:"huile d'olive", food_chicken:"blanc de poulet grillé", food_turkey:"filet de dinde",
+    food_fish:"filet de poisson blanc", food_sardines:"sardines grillées", food_beef:"bœuf maigre (kefta)",
+    food_rice:"riz basmati cuit", food_lentils:"lentilles marocaines (Adass)", food_potato:"pommes de terre au four",
+    food_vegSteamed:"légumes vapeur / tajine", food_salad:"salade marocaine (tomate/concombre)",
+    food_yogurt:"yaourt nature", food_fromageBlanc:"fromage blanc 0% / Jben frais", food_honey:"miel pur",
+    food_fruit:"fruit de saison", food_tuna:"thon au naturel"
   },
   en: {
-    appTitle:"MarrakFit", appSubtitle:"Your calorie & macro plan, built around Moroccan cuisine.",
-    currentLanguage:"English", newPlanTitle:"New plan", newPlanDescription:"Create a new personalized nutritional plan based on your goals.",
-    historyTitle:"History", historyDescription:"View your previously created nutritional plans.",
-    startNewPlanBtn:"Start", viewHistoryBtn:"View history", snapshotEyebrow:"Latest plan", snapshotTitle:"Overview",
+    appTitle:"MarrakFit", appSubtitle:"Metabolic analytics, macros & tailored Moroccan meal plans.",
+    currentLanguage:"English", newPlanTitle:"New plan", newPlanDescription:"Calculate your needs, analyze your profile and generate tailored meals.",
+    historyTitle:"History", historyDescription:"View and print your saved nutritional plans.",
+    startNewPlanBtn:"Start", viewHistoryBtn:"View history", snapshotEyebrow:"Latest plan", snapshotTitle:"Quick overview",
     historyPageTitle:"Plan history", emptyHistoryTitle:"No plans saved yet",
     emptyHistoryDescription:"Start by creating your first nutritional plan.", createFirstPlanBtn:"Create a new plan",
     stepLabel1:"Step 1 of 4", personalInfoTitle:"Personal information",
-    personalInfoDesc:"This data is only used to calculate your needs; it stays on your device.",
-    ageLabel:"Age", genderLabel:"Gender", genderDefault:"Select your gender", genderMale:"Male", genderFemale:"Female",
-    weightLabel:"Weight (kg)", heightLabel:"Height (cm)", bodyFatLabel:"Body fat (%)", optionalHint:"— optional",
+    personalInfoDesc:"This data remains strictly private on your device.",
+    ageLabel:"Age (years)", genderLabel:"Gender", genderDefault:"Select your gender", genderMale:"Male", genderFemale:"Female",
+    weightLabel:"Current weight (kg)", heightLabel:"Height (cm)", bodyFatLabel:"Body fat (%)", optionalHint:"— optional",
     activityLabel:"Activity level", activityDefault:"Select your activity level",
-    activitySedentary:"Sedentary (little or no exercise)", activityLight:"Lightly active (1-3 days/week)",
-    activityModerate:"Moderately active (3-5 days/week)", activityActive:"Very active (6-7 days/week)",
-    activityExtreme:"Extremely active (intense daily training)",
+    activitySedentary:"Sedentary (little or no exercise)", activityLight:"Lightly active (1-3 sessions/wk)",
+    activityModerate:"Moderately active (3-5 sessions/wk)", activityActive:"Very active (6-7 sessions/wk)",
+    activityExtreme:"Extremely active (twice-daily training)",
     backToHomeFromPersonalBtn:"Back to home", nextToGoalBtn:"Next",
     stepLabel2:"Step 2 of 4", goalTitle:"Your goal", goalQuestion:"What do you want to achieve?",
-    goalMuscleLabel:"Gain muscle", goalWeightLossLabel:"Lose weight", goalMaintainLabel:"Maintain weight",
-    intensityLabel:"Goal intensity", intensityDefault:"Select intensity",
-    intensityLight:"Light (+/- 250 kcal)", intensityModerate:"Moderate (+/- 500 kcal)", intensityIntense:"Intense (+/- 750 kcal)",
-    backToPersonalBtn:"Previous", nextToResultsBtn:"Calculate my needs",
-    stepLabel3:"Step 3 of 4", resultsTitle:"Your nutritional needs",
-    bmrTitle:"Basal metabolic rate", bmrDescription:"Calories at rest",
-    tdeeTitle:"Total daily expenditure (TDEE)", tdeeDescription:"Based on your activity",
-    goalCaloriesTitle:"Calorie target", perDayLabel:"per day",
+    goalMuscleLabel:"Gain muscle", goalWeightLossLabel:"Lose fat", goalMaintainLabel:"Recomp / Maintain",
+    intensityLabel:"Goal pace / intensity", intensityDefault:"Select intensity",
+    intensityLight:"Gradual (+/- 250 kcal · ~0.25 kg/wk)", intensityModerate:"Moderate (+/- 500 kcal · ~0.45 kg/wk)", intensityIntense:"Intense (+/- 750 kcal · ~0.7 kg/wk)",
+    backToPersonalBtn:"Previous", nextToResultsBtn:"Analyze & Calculate",
+    stepLabel3:"Step 3 of 4", resultsTitle:"Analytics & Nutritional Needs",
+    bmrTitle:"Basal Metabolic Rate", bmrDescription:"Energy at rest",
+    tdeeTitle:"Total Expenditure (TDEE)", tdeeDescription:"Daily maintenance",
+    goalCaloriesTitle:"Calorie target", perDayLabel:"target / day",
+    bmiLabel:"Body Mass Index (BMI)", leanMassLabel:"Estimated composition", projectionLabel:"4-Week projection",
+    bmiUnder:"Underweight", bmiNormal:"Normal weight", bmiOver:"Overweight", bmiObese:"Obesity",
+    idealWeightText:"Est. ideal weight:", leanMassText:"Lean mass", bodyFatEstText:"Body fat",
+    formulaKatch:"Katch-McArdle formula (accurate)", formulaMifflin:"Mifflin-St Jeor formula",
+    stableWeight:"Weight stability", perWeek:"/ wk",
     macrosTitle:"Macronutrient breakdown", proteinLabel:"Protein", fatLabel:"Fat", carbsLabel:"Carbs",
-    carbsInfo:"(remaining calories)", tuneToggleLabel:"Fine-tune my macros",
+    carbsInfo:"energy & recovery", tuneToggleLabel:"Customize macro ratios",
     tuneProteinLabel:"Protein (g/kg)", tuneFatLabel:"Fat (% kcal)",
-    backToGoalBtn:"Previous", nextToPlanBtn:"View my meal plan",
-    stepLabel4:"Step 4 of 4", planTitle:"Your daily nutrition plan", planDescription:"Based on your needs of",
-    regenerateLabel:"Other suggestions", backToResultsBtn:"Previous", savePlanBtn:"Save this plan",
+    backToGoalBtn:"Previous", nextToPlanBtn:"Generate my meals",
+    stepLabel4:"Step 4 of 4", planTitle:"Your daily meal plan & alternatives", planDescription:"Daily target:",
+    swapHint:"💡 Click « Alternative » to swap any meal", swapBtn:"🔄 Alternative",
+    groceryTitle:"Estimated grocery list", grocery1DayBtn:"1 Day", grocery7DaysBtn:"1 Week (x7)",
+    regenerateLabel:"Shuffle all", backToResultsBtn:"Previous", saveBtnText:"Save plan",
     restartBtn:"Create a new plan", savedPlanTitle:"Nutrition plan", savedPlanDate:"Creation date: ",
-    printLabel:"Print / PDF", savedPersonalInfoTitle:"Profile", savedNeedsTitle:"Nutritional needs",
+    printLabel:"Print / PDF", savedPersonalInfoTitle:"Profile", savedNeedsTitle:"Analytics & Needs",
     savedPlanMealsTitle:"Meals of the day", deleteSavedPlanBtn:"Delete this plan",
     backFromSavedPlanBtn:"← Back to history", backToHistoryFromSavedBtn:"Back to history",
-    backFromHistoryBtn:"← Back to home", footnote:"MarrakFit — an estimation tool, not a substitute for professional medical advice.",
+    backFromHistoryBtn:"← Back to home", footnote:"MarrakFit Pro — nutritional estimation tool, not a substitute for medical advice.",
     breakfast:"Breakfast", lunch:"Lunch", dinner:"Dinner", snack:"Snack",
-    meal:"Meal", food:"Dish", calories:"Calories", protein:"Protein", fat:"Fat", carbs:"Carbs", dailyTotal:"Daily total",
-    goalDescriptionMuscle:"For muscle gain, you're in a slight calorie surplus — prioritize protein at every meal.",
-    goalDescriptionWeightLoss:"For weight loss, you're in a calorie deficit — keep protein high to preserve muscle.",
-    goalDescriptionMaintain:"To maintain your weight, your intake matches your total energy expenditure.",
-    hydrationNote:"Aim to drink around", hydrationUnit:"litres of water a day, more on hot or training days.",
-    macroWarning:"This split leaves very little room for carbs or essential fats — adjust carefully.",
-    savedAlert:"Plan saved!", deleteConfirm:"Are you sure you want to delete this plan?",
-    portionLabel:"Portion", scaledLabel:"adjusted portion",
-    food_egg:"egg", food_egg_plural:"eggs", food_oats:"rolled oats", food_almonds:"almonds", food_dates:"dates",
-    food_chicken:"grilled chicken", food_fish:"grilled fish", food_rice:"rice", food_vegSteamed:"steamed vegetables",
-    food_salad:"green salad", food_yogurt:"plain yogurt", food_fromageBlanc:"low-fat cottage cheese", food_honey:"honey", food_fruit:"seasonal fruit"
+    dailyTotal:"Daily total",
+    goalDescriptionMuscle:"Controlled calorie surplus to stimulate muscle growth while minimizing fat gain.",
+    goalDescriptionWeightLoss:"Targeted calorie deficit with high protein intake to preserve lean muscle mass.",
+    goalDescriptionMaintain:"Balanced energy intake ideal for body recomposition (fat loss + muscle maintenance).",
+    hydrationNote:"Recommended hydration:", hydrationUnit:"of water per day (+500 ml on training days).",
+    macroWarning:"⚠️ Warning: this split leaves very little carbs for energy or too few essential fats.",
+    savedAlert:"Plan saved to history!", swappedAlert:"Alternative meal generated!",
+    deleteConfirm:"Are you sure you want to delete this plan?",
+    food_egg:"whole egg", food_egg_plural:"whole eggs", food_oats:"rolled oats", food_belboula:"barley semolina (Belboula)",
+    food_batbout:"whole-wheat batbout", food_almonds:"almonds", food_dates:"Medjool dates", food_avocado:"avocado",
+    food_oliveOil:"olive oil", food_chicken:"grilled chicken breast", food_turkey:"turkey fillet",
+    food_fish:"grilled white fish", food_sardines:"grilled sardines", food_beef:"lean beef (kefta)",
+    food_rice:"cooked basmati rice", food_lentils:"Moroccan lentils (Adass)", food_potato:"baked potatoes",
+    food_vegSteamed:"steamed / tagine vegetables", food_salad:"Moroccan salad (tomato/cucumber)",
+    food_yogurt:"plain yogurt", food_fromageBlanc:"0% cottage cheese / fresh Jben", food_honey:"pure honey",
+    food_fruit:"seasonal fruit", food_tuna:"canned tuna in water"
   },
   ar: {
-    appTitle:"مراك-فيت", appSubtitle:"خطتك للسعرات الحرارية والماكروز، مبنية على المطبخ المغربي.",
-    currentLanguage:"العربية", newPlanTitle:"خطة جديدة", newPlanDescription:"أنشئ خطة غذائية شخصية جديدة بناءً على أهدافك.",
-    historyTitle:"السجل", historyDescription:"استعرض خططك الغذائية التي تم إنشاؤها مسبقًا.",
-    startNewPlanBtn:"ابدأ", viewHistoryBtn:"عرض السجل", snapshotEyebrow:"آخر خطة", snapshotTitle:"نظرة عامة",
+    appTitle:"مراك-فيت", appSubtitle:"تحليل الأيض، الماكروز ووجبات مغربية مخصصة لهدفك.",
+    currentLanguage:"العربية", newPlanTitle:"خطة جديدة", newPlanDescription:"احسب احتياجاتك، حلل مؤشرات جسمك وأنشئ وجبات متوازنة.",
+    historyTitle:"السجل", historyDescription:"استعرض واطبع خططك الغذائية المحفوظة.",
+    startNewPlanBtn:"ابدأ الآن", viewHistoryBtn:"عرض السجل", snapshotEyebrow:"آخر خطة", snapshotTitle:"نظرة سريعة",
     historyPageTitle:"سجل الخطط", emptyHistoryTitle:"لا توجد خطط محفوظة",
     emptyHistoryDescription:"ابدأ بإنشاء خطتك الغذائية الأولى.", createFirstPlanBtn:"أنشئ خطة جديدة",
     stepLabel1:"الخطوة 1 من 4", personalInfoTitle:"المعلومات الشخصية",
-    personalInfoDesc:"تُستخدم هذه المعطيات فقط لحساب احتياجاتك، وتبقى محفوظة على جهازك.",
-    ageLabel:"العمر", genderLabel:"الجنس", genderDefault:"اختر جنسك", genderMale:"ذكر", genderFemale:"أنثى",
-    weightLabel:"الوزن (كغ)", heightLabel:"الطول (سم)", bodyFatLabel:"نسبة الدهون (%)", optionalHint:"— اختياري",
+    personalInfoDesc:"تبقى هذه المعطيات سرية تماماً على جهازك.",
+    ageLabel:"العمر (سنة)", genderLabel:"الجنس", genderDefault:"اختر جنسك", genderMale:"ذكر", genderFemale:"أنثى",
+    weightLabel:"الوزن الحالي (كغ)", heightLabel:"الطول (سم)", bodyFatLabel:"نسبة الدهون (%)", optionalHint:"— اختياري",
     activityLabel:"مستوى النشاط", activityDefault:"اختر مستوى نشاطك",
-    activitySedentary:"قليل النشاط (قليل أو بدون رياضة)", activityLight:"نشاط خفيف (1-3 أيام/أسبوع)",
-    activityModerate:"نشاط معتدل (3-5 أيام/أسبوع)", activityActive:"نشاط عالٍ (6-7 أيام/أسبوع)",
-    activityExtreme:"نشاط مكثف جداً (تدريب يومي مكثف)",
+    activitySedentary:"خامل (قليل أو بدون رياضة)", activityLight:"نشاط خفيف (1-3 حصص/أسبوع)",
+    activityModerate:"نشاط معتدل (3-5 حصص/أسبوع)", activityActive:"نشاط عالٍ (6-7 حصص/أسبوع)",
+    activityExtreme:"نشاط مكثف جداً (تدريب يومي مزدوج)",
     backToHomeFromPersonalBtn:"العودة للرئيسية", nextToGoalBtn:"التالي",
     stepLabel2:"الخطوة 2 من 4", goalTitle:"هدفك", goalQuestion:"ما الذي تريد تحقيقه؟",
-    goalMuscleLabel:"بناء العضلات", goalWeightLossLabel:"فقدان الوزن", goalMaintainLabel:"الحفاظ على الوزن",
-    intensityLabel:"شدة الهدف", intensityDefault:"اختر الشدة",
-    intensityLight:"خفيف (+/- 250 سعرة)", intensityModerate:"معتدل (+/- 500 سعرة)", intensityIntense:"مكثف (+/- 750 سعرة)",
-    backToPersonalBtn:"السابق", nextToResultsBtn:"احسب احتياجاتي",
-    stepLabel3:"الخطوة 3 من 4", resultsTitle:"احتياجاتك الغذائية",
-    bmrTitle:"معدل الأيض الأساسي", bmrDescription:"السعرات في حالة الراحة",
-    tdeeTitle:"إجمالي الإنفاق اليومي (TDEE)", tdeeDescription:"حسب مستوى نشاطك",
-    goalCaloriesTitle:"السعرات المستهدفة", perDayLabel:"في اليوم",
+    goalMuscleLabel:"بناء العضلات", goalWeightLossLabel:"حرق الدهون", goalMaintainLabel:"إعادة تشكيل الجسم / ثبات",
+    intensityLabel:"وتيرة / شدة الهدف", intensityDefault:"اختر الشدة",
+    intensityLight:"تدريجي (+/- 250 سعرة · ~0.25 كغ/أسبوع)", intensityModerate:"معتدل (+/- 500 سعرة · ~0.45 كغ/أسبوع)", intensityIntense:"مكثف (+/- 750 سعرة · ~0.7 كغ/أسبوع)",
+    backToPersonalBtn:"السابق", nextToResultsBtn:"تحليل وحساب",
+    stepLabel3:"الخطوة 3 من 4", resultsTitle:"التحليل والاحتياجات الغذائية",
+    bmrTitle:"معدل الأيض الأساسي", bmrDescription:"الطاقة أثناء الراحة",
+    tdeeTitle:"الإنفاق اليومي (TDEE)", tdeeDescription:"سعرات الثبات اليومي",
+    goalCaloriesTitle:"الهدف اليومي", perDayLabel:"سعرة / يوم",
+    bmiLabel:"مؤشر كتلة الجسم (BMI)", leanMassLabel:"تكوين الجسم التقديري", projectionLabel:"التوقع خلال 4 أسابيع",
+    bmiUnder:"نقص الوزن", bmiNormal:"وزن مثالي", bmiOver:"زيادة وزن", bmiObese:"سمنة",
+    idealWeightText:"الوزن المثالي التقديري:", leanMassText:"الكتلة العضلية الصافية", bodyFatEstText:"كتلة الدهون",
+    formulaKatch:"معادلة Katch-McArdle (دقيقة)", formulaMifflin:"معادلة Mifflin-St Jeor",
+    stableWeight:"ثبات الوزن", perWeek:"/ أسبوع",
     macrosTitle:"توزيع المغذيات الكبرى", proteinLabel:"البروتينات", fatLabel:"الدهون", carbsLabel:"الكربوهيدرات",
-    carbsInfo:"(بقية السعرات)", tuneToggleLabel:"ضبط الماكروز",
+    carbsInfo:"للطاقة والاستشفاء", tuneToggleLabel:"تخصيص نسب الماكروز",
     tuneProteinLabel:"البروتين (غ/كغ)", tuneFatLabel:"الدهون (% من السعرات)",
-    backToGoalBtn:"السابق", nextToPlanBtn:"اعرض خطتي الغذائية",
-    stepLabel4:"الخطوة 4 من 4", planTitle:"خطتك الغذائية اليومية", planDescription:"بناءً على احتياجاتك من",
-    regenerateLabel:"اقتراحات أخرى", backToResultsBtn:"السابق", savePlanBtn:"حفظ هذه الخطة",
+    backToGoalBtn:"السابق", nextToPlanBtn:"توليد الوجبات",
+    stepLabel4:"الخطوة 4 من 4", planTitle:"خطتك الغذائية والوجبات البديلة", planDescription:"الهدف اليومي:",
+    swapHint:"💡 اضغط على « وجبة بديلة » لتغيير أي وجبة", swapBtn:"🔄 وجبة بديلة",
+    groceryTitle:"قائمة المشتريات التقديرية", grocery1DayBtn:"يوم واحد", grocery7DaysBtn:"أسبوع كامل (x7)",
+    regenerateLabel:"تغيير الكل", backToResultsBtn:"السابق", saveBtnText:"حفظ الخطة",
     restartBtn:"إنشاء خطة جديدة", savedPlanTitle:"خطة غذائية", savedPlanDate:"تاريخ الإنشاء: ",
-    printLabel:"طباعة / PDF", savedPersonalInfoTitle:"الملف الشخصي", savedNeedsTitle:"الاحتياجات الغذائية",
+    printLabel:"طباعة / PDF", savedPersonalInfoTitle:"الملف الشخصي", savedNeedsTitle:"التحليل والاحتياجات",
     savedPlanMealsTitle:"وجبات اليوم", deleteSavedPlanBtn:"حذف هذه الخطة",
     backFromSavedPlanBtn:"← العودة للسجل", backToHistoryFromSavedBtn:"العودة للسجل",
-    backFromHistoryBtn:"← العودة للرئيسية", footnote:"مراك-فيت — أداة تقديرية، لا تُغني عن استشارة مختص صحي.",
+    backFromHistoryBtn:"← العودة للرئيسية", footnote:"مراك-فيت برو — أداة تقديرية، لا تُغني عن استشارة مختص صحي.",
     breakfast:"الفطور", lunch:"الغداء", dinner:"العشاء", snack:"وجبة خفيفة",
-    meal:"الوجبة", food:"الطبق", calories:"السعرات", protein:"البروتين", fat:"الدهون", carbs:"الكربوهيدرات", dailyTotal:"المجموع اليومي",
-    goalDescriptionMuscle:"لبناء العضلات، أنت في فائض طفيف من السعرات — ركّز على البروتين في كل وجبة.",
-    goalDescriptionWeightLoss:"لفقدان الوزن، أنت في عجز في السعرات — حافظ على بروتين مرتفع للحفاظ على العضلات.",
-    goalDescriptionMaintain:"للحفاظ على وزنك، تغطي احتياجاتك إجمالي إنفاقك الطاقي.",
-    hydrationNote:"احرص على شرب ما يقارب", hydrationUnit:"لترات من الماء يوميًا، وأكثر في الأيام الحارة أو أيام التمرين.",
-    macroWarning:"هذا التوزيع يترك مجالاً ضئيلاً جداً للكربوهيدرات أو الدهون الأساسية — عدّل بحذر.",
-    savedAlert:"تم حفظ الخطة!", deleteConfirm:"هل أنت متأكد أنك تريد حذف هذه الخطة؟",
-    portionLabel:"الحصة", scaledLabel:"حصة معدّلة",
-    food_egg:"بيضة", food_egg_plural:"بيضات", food_oats:"شوفان", food_almonds:"لوز", food_dates:"تمر",
-    food_chicken:"دجاج مشوي", food_fish:"سمك مشوي", food_rice:"أرز", food_vegSteamed:"خضار على البخار",
-    food_salad:"سلطة خضراء", food_yogurt:"زبادي طبيعي", food_fromageBlanc:"جبن أبيض 0%", food_honey:"عسل", food_fruit:"فاكهة موسمية"
+    dailyTotal:"المجموع اليومي",
+    goalDescriptionMuscle:"فائض سعرات مدروس لتحفيز بناء العضلات مع تقليل اكتساب الدهون.",
+    goalDescriptionWeightLoss:"عجز سعرات موجه مع بروتين مرتفع لحماية الكتلة العضلية.",
+    goalDescriptionMaintain:"توازن مثالي لإعادة تشكيل الجسم (حرق الدهون مع الحفاظ على العضل).",
+    hydrationNote:"شرب الماء الموصى به:", hydrationUnit:"من الماء يومياً (+500 مل في أيام التمرين).",
+    macroWarning:"⚠️ تنبيه: هذا التوزيع يترك كربوهيدرات قليلة جداً للطاقة أو دهوناً أساسية غير كافية.",
+    savedAlert:"تم حفظ الخطة في السجل!", swappedAlert:"تم اقتراح وجبة بديلة!",
+    deleteConfirm:"هل أنت متأكد أنك تريد حذف هذه الخطة؟",
+    food_egg:"بيضة كاملة", food_egg_plural:"بيضات كاملة", food_oats:"شوفان", food_belboula:"بلبولة الشعير",
+    food_batbout:"بطبوط قمح كامل", food_almonds:"لوز", food_dates:"تمر مجهول", food_avocado:"أفوكادو",
+    food_oliveOil:"زيت زيتون", food_chicken:"صدر دجاج مشوي", food_turkey:"شرائح ديك رومي",
+    food_fish:"سمك أبيض مشوي", food_sardines:"سردين مشوي", food_beef:"لحم مفروم قليل الدسم (كفتة)",
+    food_rice:"أرز بسمتي مطبوخ", food_lentils:"عدس مغربي", food_potato:"بطاطس في الفرن",
+    food_vegSteamed:"خضار طاجين / على البخار", food_salad:"سلطة مغربية (طماطم وخيار)",
+    food_yogurt:"زبادي طبيعي", food_fromageBlanc:"جبن طري 0% دسم", food_honey:"عسل حر",
+    food_fruit:"فاكهة موسمية", food_tuna:"تونة بالماء"
   }
 };
 
 let currentLang = localStorage.getItem('marrakfit-lang') || 'fr';
-
 function t(key){ return (translations[currentLang] && translations[currentLang][key]) || translations.fr[key] || key; }
+
+function showToast(msg){
+  dom.toast.textContent = msg;
+  dom.toast.classList.add('show');
+  clearTimeout(dom.toast._timer);
+  dom.toast._timer = setTimeout(() => dom.toast.classList.remove('show'), 2800);
+}
 
 function setLanguage(lang){
   currentLang = lang;
   localStorage.setItem('marrakfit-lang', lang);
   document.documentElement.lang = lang;
   document.body.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  document.title = t('appTitle') + ' — ' + (lang==='ar' ? 'مدرب التغذية' : 'Coach nutrition');
+  document.title = t('appTitle') + ' Pro';
 
   document.querySelectorAll('[id]').forEach(el => {
     const key = el.id;
@@ -790,7 +922,7 @@ function setLanguage(lang){
   });
   document.getElementById('currentLanguage').textContent = translations[lang].currentLanguage;
 
-  if (!dom.resultsSection.classList.contains('hidden') && state.currentPlan.results) displayResults(false);
+  if (!dom.resultsSection.classList.contains('hidden') && state.currentPlan.results) displayResults();
   if (!dom.planSection.classList.contains('hidden') && state.currentPlan.mealPlan) renderPlanUI(state.currentPlan);
   if (!dom.historySection.classList.contains('hidden')) renderHistory();
   renderSnapshot();
@@ -800,14 +932,17 @@ document.getElementById('languageBtn').addEventListener('click', () => {
   document.getElementById('languageOptions').classList.toggle('show');
 });
 document.querySelectorAll('.language-option').forEach(opt => {
-  opt.addEventListener('click', e => { setLanguage(e.target.dataset.lang); document.getElementById('languageOptions').classList.remove('show'); });
+  opt.addEventListener('click', e => {
+    setLanguage(e.target.dataset.lang);
+    document.getElementById('languageOptions').classList.remove('show');
+  });
 });
 document.addEventListener('click', e => {
   if (!e.target.closest('.language-selector')) document.getElementById('languageOptions').classList.remove('show');
 });
 
 /* =========================================================
-   Navigation
+   Navigation & Goal Intensity Toggle
    ========================================================= */
 function showSection(sectionId, updateIndicator=false){
   ['homeSection','historySection','personalInfoSection','goalSection','resultsSection','planSection','savedPlanSection']
@@ -831,19 +966,30 @@ function updateStepIndicator(sectionId){
   }
 }
 
+document.querySelectorAll('input[name="goal"]').forEach(radio => {
+  radio.addEventListener('change', e => {
+    if (e.target.value === 'maintain'){
+      dom.intensityWrapper.classList.add('hidden');
+      dom.intensity.removeAttribute('required');
+    } else {
+      dom.intensityWrapper.classList.remove('hidden');
+      dom.intensity.setAttribute('required', 'required');
+    }
+  });
+});
+
 /* =========================================================
-   Nutrition science
+   Nutrition Science & Body Analytics
    ========================================================= */
 function computeBMR({age, gender, weight, height, bodyFat}){
   if (bodyFat && bodyFat > 0){
-    // Katch-McArdle using lean body mass — more accurate when body-fat % is known
     const leanMass = weight * (1 - bodyFat/100);
-    return 370 + 21.6 * leanMass;
+    return { bmr: 370 + 21.6 * leanMass, method: 'katch', leanMass };
   }
-  // Mifflin-St Jeor
-  return gender === 'male'
+  const bmr = gender === 'male'
     ? (10*weight) + (6.25*height) - (5*age) + 5
     : (10*weight) + (6.25*height) - (5*age) - 161;
+  return { bmr, method: 'mifflin', leanMass: null };
 }
 
 function computeMacros(goalCalories, weight, proteinPerKg, fatPct){
@@ -868,29 +1014,48 @@ function calculateResults(){
   const bodyFat = parseFloat(dom.bodyFat.value) || null;
   const activityFactor = parseFloat(dom.activityLevel.value);
   const goal = document.querySelector('input[name="goal"]:checked').value;
-  const intensity = parseFloat(dom.intensity.value);
+  const intensity = goal === 'maintain' ? 0 : parseFloat(dom.intensity.value);
 
-  const bmr = computeBMR({age, gender, weight, height, bodyFat});
+  // Ajustement intelligent des protéines par défaut selon l'objectif
+  if (goal === 'weightLoss') state.macroOverride.proteinPerKg = 2.2;
+  else if (goal === 'muscle') state.macroOverride.proteinPerKg = 2.0;
+  else state.macroOverride.proteinPerKg = 2.0;
+  dom.proteinPerKg.value = state.macroOverride.proteinPerKg;
+  dom.proteinPerKgVal.textContent = state.macroOverride.proteinPerKg.toFixed(1) + ' g';
+
+  const { bmr, method, leanMass } = computeBMR({age, gender, weight, height, bodyFat});
   const tdee = bmr * activityFactor;
   let goalCalories = tdee;
   if (goal === 'muscle') goalCalories = tdee + intensity;
   else if (goal === 'weightLoss') goalCalories = Math.max(1200, tdee - intensity);
+
+  // Calculs analytiques avancés
+  const heightM = height / 100;
+  const bmi = +(weight / (heightM * heightM)).toFixed(1);
+  // Formule de Devine pour poids idéal
+  const inchesOver5ft = Math.max(0, (height - 152.4) / 2.54);
+  const idealWeight = Math.round((gender === 'male' ? 50 : 45.5) + 2.3 * inchesOver5ft);
+
+  const dailyDelta = goalCalories - tdee;
+  const weeklyDeltaKg = +((dailyDelta * 7) / 7700).toFixed(2);
+  const fourWeeksWeight = +(weight + weeklyDeltaKg * 4).toFixed(1);
 
   const macros = computeMacros(goalCalories, weight, state.macroOverride.proteinPerKg, state.macroOverride.fatPct);
 
   state.currentPlan = {
     id: Date.now(),
     date: new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-MA' : (currentLang === 'en' ? 'en-GB' : 'fr-FR')),
-    personalInfo: { age, gender, weight, height, bodyFat, activityLevel: dom.activityLevel.options[dom.activityLevel.selectedIndex].text },
-    goals: { goal, intensity, intensityLabel: dom.intensity.options[dom.intensity.selectedIndex].text },
+    personalInfo: { age, gender, weight, height, bodyFat, activityFactor },
+    goals: { goal, intensity },
+    analytics: { bmi, idealWeight, method, leanMass: leanMass ? +leanMass.toFixed(1) : null, weeklyDeltaKg, fourWeeksWeight },
     results: { bmr: Math.round(bmr), tdee: Math.round(tdee), goalCalories: Math.round(goalCalories), ...macros },
     macroSettings: { ...state.macroOverride }
   };
-  displayResults(true);
+  displayResults();
 }
 
 function drawDonut(protPct, fatPct, carbPct){
-  const size=180, r=72, cx=90, cy=90, stroke=22;
+  const r=72, cx=90, cy=90, stroke=22;
   const circ = 2*Math.PI*r;
   const segs = [
     {pct:protPct, color:'var(--teal)'},
@@ -909,14 +1074,15 @@ function drawDonut(protPct, fatPct, carbPct){
   dom.macroDonut.innerHTML = `
     <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg-alt)" stroke-width="${stroke}"/>
     ${circles}
-    <text x="${cx}" y="${cy-4}" text-anchor="middle" font-family="Fraunces, serif" font-weight="700" font-size="20" fill="var(--ink)">${Math.round(protPct)}/${Math.round(fatPct)}/${Math.round(carbPct)}</text>
+    <text x="${cx}" y="${cy-4}" text-anchor="middle" font-family="Fraunces, serif" font-weight="700" font-size="19" fill="var(--ink)">${Math.round(protPct)}/${Math.round(fatPct)}/${Math.round(carbPct)}</text>
     <text x="${cx}" y="${cy+16}" text-anchor="middle" font-family="Work Sans, sans-serif" font-size="10" letter-spacing="1" fill="var(--ink-faint)">P / L / G</text>
   `;
 }
 
-function displayResults(recompute){
+function displayResults(){
   const p = state.currentPlan;
   const { bmr, tdee, goalCalories, proteinGrams, fatGrams, carbsGrams, proteinCals, fatCals, carbsCals } = p.results;
+  const { bmi, idealWeight, method, leanMass, weeklyDeltaKg, fourWeeksWeight } = p.analytics;
   const goal = p.goals.goal;
 
   dom.bmrResult.textContent = `${bmr} kcal`;
@@ -926,9 +1092,37 @@ function displayResults(recompute){
   const descKey = goal === 'muscle' ? 'goalDescriptionMuscle' : goal === 'weightLoss' ? 'goalDescriptionWeightLoss' : 'goalDescriptionMaintain';
   dom.goalDescription.textContent = t(descKey);
 
-  dom.proteinResult.textContent = `${proteinGrams} g`;
-  dom.fatResult.textContent = `${fatGrams} g`;
-  dom.carbsResult.innerHTML = `${carbsGrams} g <span class="m-sub">(${t('carbsInfo')})</span>`;
+  // Analytics UI
+  let bmiStatus = t('bmiNormal'), bmiClass = 'badge-ok';
+  if (bmi < 18.5){ bmiStatus = t('bmiUnder'); bmiClass = 'badge-warn'; }
+  else if (bmi >= 25 && bmi < 30){ bmiStatus = t('bmiOver'); bmiClass = 'badge-warn'; }
+  else if (bmi >= 30){ bmiStatus = t('bmiObese'); bmiClass = 'badge-alert'; }
+
+  dom.bmiValue.innerHTML = `${bmi} <span class="badge ${bmiClass}">${bmiStatus}</span>`;
+  dom.idealWeightSub.textContent = `${t('idealWeightText')} ~${idealWeight} kg`;
+
+  if (leanMass){
+    const fatKg = +(p.personalInfo.weight - leanMass).toFixed(1);
+    dom.leanMassValue.textContent = `${leanMass} kg (${t('leanMassText')})`;
+    dom.formulaUsedSub.textContent = `${fatKg} kg ${t('bodyFatEstText')} · ${t('formulaKatch')}`;
+  } else {
+    dom.leanMassValue.textContent = `${p.personalInfo.weight} kg`;
+    dom.formulaUsedSub.textContent = t('formulaMifflin');
+  }
+
+  if (weeklyDeltaKg === 0){
+    dom.projectionValue.innerHTML = `${p.personalInfo.weight} kg <span class="badge badge-ok">${t('stableWeight')}</span>`;
+    dom.weeklyRateSub.textContent = `0.00 kg ${t('perWeek')}`;
+  } else {
+    const sign = weeklyDeltaKg > 0 ? '+' : '';
+    dom.projectionValue.innerHTML = `${fourWeeksWeight} kg <span class="badge badge-warn">${sign}${(weeklyDeltaKg*4).toFixed(1)} kg</span>`;
+    dom.weeklyRateSub.textContent = `${sign}${weeklyDeltaKg} kg ${t('perWeek')}`;
+  }
+
+  // Macros UI
+  dom.proteinResult.innerHTML = `${proteinGrams} g <span class="m-sub">(${proteinCals} kcal)</span>`;
+  dom.fatResult.innerHTML = `${fatGrams} g <span class="m-sub">(${fatCals} kcal)</span>`;
+  dom.carbsResult.innerHTML = `${carbsGrams} g <span class="m-sub">(${carbsCals} kcal)</span>`;
 
   const total = Math.max(1, proteinCals + fatCals + carbsCals);
   drawDonut(100*proteinCals/total, 100*fatCals/total, 100*carbsCals/total);
@@ -939,10 +1133,10 @@ function displayResults(recompute){
   showSection('resultsSection', true);
 }
 
-/* macro tuning */
+/* Macro Tuning */
 dom.tuneToggleBtn.addEventListener('click', () => dom.tunePanel.classList.toggle('hidden'));
 dom.proteinPerKg.addEventListener('input', () => {
-  dom.proteinPerKgVal.textContent = parseFloat(dom.proteinPerKg.value).toFixed(1);
+  dom.proteinPerKgVal.textContent = parseFloat(dom.proteinPerKg.value).toFixed(1) + ' g';
   state.macroOverride.proteinPerKg = parseFloat(dom.proteinPerKg.value);
   recalcFromTuning();
 });
@@ -957,33 +1151,66 @@ function recalcFromTuning(){
   const macros = computeMacros(p.results.goalCalories, p.personalInfo.weight, state.macroOverride.proteinPerKg, state.macroOverride.fatPct);
   p.results = { ...p.results, ...macros };
   p.macroSettings = { ...state.macroOverride };
-  displayResults(false);
+  displayResults();
 }
 
 /* =========================================================
-   Meal plan generator — fixed structure, quantities computed from need
-   Breakfast: eggs + oats + almonds OR dates
-   Lunch/Dinner: chicken OR fish + rice + steamed veg OR green salad
-   Snack: plain yogurt OR 0% cottage cheese+honey OR fruit
-   Nutrition values are per 100g (per-unit for eggs, converted to grams).
+   Rich Moroccan & Healthy Food Database + Meal Templates
    ========================================================= */
 const FOODS = {
-  egg:          {kcal100:156, protein100:12.6, fat100:10.6, carbs100:1.1,  nameKey:'food_egg',         unitGrams:50},
+  egg:          {kcal100:155, protein100:12.6, fat100:10.6, carbs100:1.1,  nameKey:'food_egg',         unitGrams:55},
   oats:         {kcal100:375, protein100:13,   fat100:7,    carbs100:60,   nameKey:'food_oats'},
+  belboula:     {kcal100:340, protein100:10,   fat100:2,    carbs100:70,   nameKey:'food_belboula'},
+  batbout:      {kcal100:250, protein100:8.5,  fat100:1.5,  carbs100:50,   nameKey:'food_batbout'},
   almonds:      {kcal100:579, protein100:21,   fat100:50,   carbs100:22,   nameKey:'food_almonds'},
   dates:        {kcal100:282, protein100:2.5,  fat100:0.4,  carbs100:75,   nameKey:'food_dates'},
+  avocado:      {kcal100:160, protein100:2,    fat100:14.7, carbs100:8.5,  nameKey:'food_avocado'},
+  oliveOil:     {kcal100:884, protein100:0,    fat100:100,  carbs100:0,    nameKey:'food_oliveOil'},
   chicken:      {kcal100:165, protein100:31,   fat100:3.6,  carbs100:0,    nameKey:'food_chicken'},
-  fish:         {kcal100:150, protein100:24,   fat100:6,    carbs100:0,    nameKey:'food_fish'},
+  turkey:       {kcal100:145, protein100:29,   fat100:2.5,  carbs100:0,    nameKey:'food_turkey'},
+  fish:         {kcal100:135, protein100:24,   fat100:4,    carbs100:0,    nameKey:'food_fish'},
+  sardines:     {kcal100:208, protein100:24.6, fat100:11.5, carbs100:0,    nameKey:'food_sardines'},
+  beef:         {kcal100:215, protein100:26,   fat100:12,   carbs100:0,    nameKey:'food_beef'},
+  tuna:         {kcal100:116, protein100:26,   fat100:1,    carbs100:0,    nameKey:'food_tuna'},
   rice:         {kcal100:130, protein100:2.7,  fat100:0.3,  carbs100:28,   nameKey:'food_rice'},
+  lentils:      {kcal100:116, protein100:9,    fat100:0.4,  carbs100:20,   nameKey:'food_lentils'},
+  potato:       {kcal100:87,  protein100:1.9,  fat100:0.1,  carbs100:20,   nameKey:'food_potato'},
   vegSteamed:   {kcal100:40,  protein100:2,    fat100:0.3,  carbs100:7,    nameKey:'food_vegSteamed'},
-  salad:        {kcal100:70,  protein100:1.2,  fat100:5,    carbs100:4,    nameKey:'food_salad'},
+  salad:        {kcal100:35,  protein100:1.2,  fat100:0.3,  carbs100:6,    nameKey:'food_salad'},
   yogurt:       {kcal100:60,  protein100:3.5,  fat100:3,    carbs100:4.7,  nameKey:'food_yogurt'},
-  fromageBlanc: {kcal100:45,  protein100:8,    fat100:0.2,  carbs100:4,    nameKey:'food_fromageBlanc'},
+  fromageBlanc: {kcal100:55,  protein100:9,    fat100:0.5,  carbs100:4,    nameKey:'food_fromageBlanc'},
   honey:        {kcal100:304, protein100:0.3,  fat100:0,    carbs100:82,   nameKey:'food_honey'},
   fruit:        {kcal100:52,  protein100:0.4,  fat100:0.2,  carbs100:14,   nameKey:'food_fruit'}
 };
 
-const slotShare = { breakfast:0.25, lunch:0.35, dinner:0.30, snack:0.10 };
+const MEAL_TEMPLATES = {
+  breakfast: [
+    { id:'bf1', base:'oats', topping:'almonds', eggs:true },
+    { id:'bf2', base:'belboula', topping:'oliveOil', eggs:true },
+    { id:'bf3', base:'batbout', topping:'avocado', eggs:true },
+    { id:'bf4', base:'oats', topping:'dates', eggs:true }
+  ],
+  lunch: [
+    { id:'ln1', protein:'chicken', carb:'rice', veg:'vegSteamed' },
+    { id:'ln2', protein:'beef', carb:'lentils', veg:'salad' },
+    { id:'ln3', protein:'turkey', carb:'potato', veg:'vegSteamed' },
+    { id:'ln4', protein:'sardines', carb:'batbout', veg:'salad' }
+  ],
+  dinner: [
+    { id:'dn1', protein:'fish', carb:'rice', veg:'salad' },
+    { id:'dn2', protein:'chicken', carb:'potato', veg:'vegSteamed' },
+    { id:'dn3', protein:'tuna', carb:'lentils', veg:'salad' },
+    { id:'dn4', protein:'turkey', carb:'rice', veg:'vegSteamed' }
+  ],
+  snack: [
+    { id:'sn1', type:'fromageHoney' },
+    { id:'sn2', type:'yogurtNuts' },
+    { id:'sn3', type:'fruitDates' },
+    { id:'sn4', type:'eggsFruit' }
+  ]
+};
+
+const slotShare = { breakfast:0.25, lunch:0.35, dinner:0.28, snack:0.12 };
 const mealIcons = { breakfast:'☕', lunch:'🍲', dinner:'🌙', snack:'🍇' };
 
 const round5 = n => Math.round(n/5)*5;
@@ -1008,110 +1235,119 @@ function labelForComponent(comp){
     const n = Math.max(1, Math.round(comp.grams / f.unitGrams));
     return `${n} ${t(n > 1 ? 'food_egg_plural' : 'food_egg')}`;
   }
-  return `${comp.grams} g ${t(f.nameKey)}`;
+  return `${comp.grams}g ${t(f.nameKey)}`;
 }
 
-// Breakfast: eggs (2 or 3, based on target) + oats + almonds/dates
-function buildBreakfast(targetKcal, toppingKey){
-  const eggCount = targetKcal < 380 ? 2 : 3;
-  const eggComp = componentFromGrams('egg', eggCount * FOODS.egg.unitGrams);
+function buildSlotMeal(slot, targetKcal, targetProtGrams, templateIndex){
+  const templates = MEAL_TEMPLATES[slot];
+  const tpl = templates[templateIndex % templates.length];
+  let items = [];
 
-  const remaining = Math.max(90, targetKcal - eggComp.kcal);
-  const toppingKcalShare = remaining * 0.30;
-  const oatKcalShare = remaining - toppingKcalShare;
+  if (slot === 'breakfast'){
+    const eggCount = targetKcal < 420 ? 2 : 3;
+    const eggComp = componentFromGrams('egg', eggCount * FOODS.egg.unitGrams);
+    const remKcal = Math.max(100, targetKcal - eggComp.kcal);
+    const topKcal = remKcal * 0.28;
+    const baseKcal = remKcal - topKcal;
 
-  const toppingGrams = clamp(round5(toppingKcalShare / FOODS[toppingKey].kcal100 * 100), 10, 45);
-  const oatGrams = clamp(round5(oatKcalShare / FOODS.oats.kcal100 * 100), 30, 100);
+    const topMax = tpl.topping === 'oliveOil' ? 15 : (tpl.topping === 'avocado' ? 80 : 40);
+    const topMin = tpl.topping === 'oliveOil' ? 5 : 15;
+    const topGrams = clamp(round5(topKcal / FOODS[tpl.topping].kcal100 * 100), topMin, topMax);
+    const baseGrams = clamp(round5(baseKcal / FOODS[tpl.base].kcal100 * 100), 35, 130);
 
-  return [eggComp, componentFromGrams('oats', oatGrams), componentFromGrams(toppingKey, toppingGrams)];
-}
-
-// Lunch/Dinner: chicken/fish + rice + steamed veg/salad
-function buildMainMeal(targetKcal, proteinKey, sideKey){
-  const sideGrams = 150;
-  const sideComp = componentFromGrams(sideKey, sideGrams);
-
-  const proteinKcalShare = Math.max(140, (targetKcal - sideComp.kcal) * 0.5);
-  const proteinGrams = clamp(round10(proteinKcalShare / FOODS[proteinKey].kcal100 * 100), 100, 260);
-  const proteinComp = componentFromGrams(proteinKey, proteinGrams);
-
-  const riceKcal = Math.max(0, targetKcal - sideComp.kcal - proteinComp.kcal);
-  const riceGrams = clamp(round10(riceKcal / FOODS.rice.kcal100 * 100), 50, 320);
-  const riceComp = componentFromGrams('rice', riceGrams);
-
-  return [proteinComp, riceComp, sideComp];
-}
-
-// Snack: yogurt OR cottage cheese + honey OR fruit
-function buildSnack(targetKcal, choiceKey){
-  if (choiceKey === 'yogurt'){
-    const grams = clamp(round10(targetKcal / FOODS.yogurt.kcal100 * 100), 100, 350);
-    return [componentFromGrams('yogurt', grams)];
+    items = [eggComp, componentFromGrams(tpl.base, baseGrams), componentFromGrams(tpl.topping, topGrams)];
   }
-  if (choiceKey === 'fromageHoney'){
-    const fromageComp = componentFromGrams('fromageBlanc', 150);
-    const honeyKcal = Math.max(0, targetKcal - fromageComp.kcal);
-    const honeyGrams = clamp(round5(honeyKcal / FOODS.honey.kcal100 * 100), 5, 30);
-    return [fromageComp, componentFromGrams('honey', honeyGrams)];
+  else if (slot === 'lunch' || slot === 'dinner'){
+    const vegComp = componentFromGrams(tpl.veg, 160);
+    // Calcul précis de la protéine selon le besoin cible en grammes
+    const neededProt = Math.max(25, targetProtGrams - vegComp.protein);
+    const protGrams = clamp(round10((neededProt / FOODS[tpl.protein].protein100) * 100), 100, 280);
+    const protComp = componentFromGrams(tpl.protein, protGrams);
+
+    const remKcal = Math.max(60, targetKcal - vegComp.kcal - protComp.kcal);
+    const carbMax = tpl.carb === 'batbout' ? 120 : 350;
+    const carbGrams = clamp(round10((remKcal / FOODS[tpl.carb].kcal100) * 100), 50, carbMax);
+    const carbComp = componentFromGrams(tpl.carb, carbGrams);
+
+    items = [protComp, carbComp, vegComp];
   }
-  const grams = clamp(round10(targetKcal / FOODS.fruit.kcal100 * 100), 80, 320);
-  return [componentFromGrams('fruit', grams)];
-}
+  else if (slot === 'snack'){
+    if (tpl.type === 'fromageHoney'){
+      const fb = componentFromGrams('fromageBlanc', 150);
+      const rem = Math.max(20, targetKcal - fb.kcal);
+      const honeyG = clamp(round5(rem / FOODS.honey.kcal100 * 100), 5, 25);
+      items = [fb, componentFromGrams('honey', honeyG)];
+    } else if (tpl.type === 'yogurtNuts'){
+      const yog = componentFromGrams('yogurt', 150);
+      const rem = Math.max(30, targetKcal - yog.kcal);
+      const almG = clamp(round5(rem / FOODS.almonds.kcal100 * 100), 10, 35);
+      items = [yog, componentFromGrams('almonds', almG)];
+    } else if (tpl.type === 'fruitDates'){
+      const fr = componentFromGrams('fruit', 150);
+      const rem = Math.max(30, targetKcal - fr.kcal);
+      const dtG = clamp(round5(rem / FOODS.dates.kcal100 * 100), 15, 50);
+      items = [fr, componentFromGrams('dates', dtG)];
+    } else {
+      const egg = componentFromGrams('egg', 2 * FOODS.egg.unitGrams);
+      const rem = Math.max(30, targetKcal - egg.kcal);
+      const frG = clamp(round10(rem / FOODS.fruit.kcal100 * 100), 80, 200);
+      items = [egg, componentFromGrams('fruit', frG)];
+    }
+  }
 
-function pick(arr, shuffle, fallbackIndex){
-  return shuffle ? arr[Math.floor(Math.random()*arr.length)] : arr[fallbackIndex];
-}
+  const totals = items.reduce((acc,c)=>({
+    calories: acc.calories+c.kcal, protein: acc.protein+c.protein, fat: acc.fat+c.fat, carbs: acc.carbs+c.carbs
+  }), {calories:0,protein:0,fat:0,carbs:0});
 
-function pickMealsForPlan(goalCalories, goal, shuffle){
-  const toppingChoices = ['almonds','dates'];
-  const proteinChoices = ['chicken','fish'];
-  const sideChoices = ['vegSteamed','salad'];
-  const snackChoices = ['yogurt','fromageHoney','fruit'];
-
-  const breakfastTarget = goalCalories * slotShare.breakfast;
-  const lunchTarget = goalCalories * slotShare.lunch;
-  const dinnerTarget = goalCalories * slotShare.dinner;
-  const snackTarget = goalCalories * slotShare.snack;
-
-  const topping = pick(toppingChoices, shuffle, 0);
-  const lunchProtein = pick(proteinChoices, shuffle, 0);
-  const lunchSide = pick(sideChoices, shuffle, 0);
-  const dinnerProtein = shuffle ? pick(proteinChoices, true, 0) : (lunchProtein === 'chicken' ? 'fish' : 'chicken');
-  const dinnerSide = shuffle ? pick(sideChoices, true, 0) : (lunchSide === 'vegSteamed' ? 'salad' : 'vegSteamed');
-  const snackChoice = pick(snackChoices, shuffle, 0);
-
-  const slots = [
-    { slot:'breakfast', items: buildBreakfast(breakfastTarget, topping) },
-    { slot:'lunch',     items: buildMainMeal(lunchTarget, lunchProtein, lunchSide) },
-    { slot:'dinner',    items: buildMainMeal(dinnerTarget, dinnerProtein, dinnerSide) },
-    { slot:'snack',     items: buildSnack(snackTarget, snackChoice) }
-  ];
-
-  return slots.map(s => {
-    const totals = s.items.reduce((acc,c)=>({
-      calories: acc.calories+c.kcal, protein: acc.protein+c.protein, fat: acc.fat+c.fat, carbs: acc.carbs+c.carbs
-    }), {calories:0,protein:0,fat:0,carbs:0});
-    return { slot: s.slot, items: s.items, ...totals };
-  });
+  return { slot, templateIndex: templateIndex % templates.length, items, ...totals };
 }
 
 function generatePlan(shuffle){
   const p = state.currentPlan;
-  p.mealPlan = pickMealsForPlan(p.results.goalCalories, p.goals.goal, shuffle);
+  const slots = ['breakfast', 'lunch', 'dinner', 'snack'];
+  p.mealPlan = slots.map((slot, idx) => {
+    const tplIdx = shuffle ? Math.floor(Math.random() * MEAL_TEMPLATES[slot].length) : 0;
+    return buildSlotMeal(
+      slot,
+      p.results.goalCalories * slotShare[slot],
+      p.results.proteinGrams * slotShare[slot],
+      tplIdx
+    );
+  });
   renderPlanUI(p);
   showSection('planSection', true);
 }
 
-function mealTableHTML(mealPlan){
+// Fonction dédiée : changer UN SEUL repas par une alternative
+window.swapSingleMeal = function(slotIndex){
+  const p = state.currentPlan;
+  if (!p.mealPlan || !p.mealPlan[slotIndex]) return;
+  const currentMeal = p.mealPlan[slotIndex];
+  const nextTplIndex = (currentMeal.templateIndex + 1) % MEAL_TEMPLATES[currentMeal.slot].length;
+
+  p.mealPlan[slotIndex] = buildSlotMeal(
+    currentMeal.slot,
+    p.results.goalCalories * slotShare[currentMeal.slot],
+    p.results.proteinGrams * slotShare[currentMeal.slot],
+    nextTplIndex
+  );
+  renderPlanUI(p);
+  showToast(t('swappedAlert'));
+};
+
+function mealTableHTML(mealPlan, weightKg, allowSwap = true){
   const totals = mealPlan.reduce((acc,m)=>({
     calories: acc.calories+m.calories, protein: acc.protein+m.protein, fat: acc.fat+m.fat, carbs: acc.carbs+m.carbs
   }), {calories:0,protein:0,fat:0,carbs:0});
 
-  const blocks = mealPlan.map(m => `
+  const blocks = mealPlan.map((m, idx) => `
     <div class="meal-block">
       <div class="meal-icon">${mealIcons[m.slot]}</div>
       <div class="meal-body">
-        <div class="meal-type-tag">${t(m.slot)}</div>
+        <div class="meal-header-row">
+          <span class="meal-type-tag">${t(m.slot)} · Option ${m.templateIndex + 1}/${MEAL_TEMPLATES[m.slot].length}</span>
+          ${allowSwap ? `<button type="button" class="swap-btn no-print" onclick="swapSingleMeal(${idx})">${t('swapBtn')}</button>` : ''}
+        </div>
         <div class="meal-name">${m.items.map(labelForComponent).join(' + ')}</div>
         <div class="meal-macros">
           <span><b>${m.calories}</b> kcal</span>
@@ -1122,7 +1358,7 @@ function mealTableHTML(mealPlan){
       </div>
     </div>`).join('');
 
-  const litersWater = (0.033 * (state.currentPlan.personalInfo ? state.currentPlan.personalInfo.weight : 70)).toFixed(1);
+  const litersWater = (0.033 * (weightKg || 70)).toFixed(1);
 
   return `
     ${blocks}
@@ -1134,15 +1370,54 @@ function mealTableHTML(mealPlan){
   `;
 }
 
+function renderGroceryList(mealPlan){
+  const map = {};
+  mealPlan.forEach(m => {
+    m.items.forEach(item => {
+      if (!map[item.foodKey]) map[item.foodKey] = 0;
+      map[item.foodKey] += item.grams * state.groceryMultiplier;
+    });
+  });
+  dom.groceryGrid.innerHTML = Object.entries(map).map(([key, totalGrams]) => {
+    const f = FOODS[key];
+    let qtyText = `${totalGrams} g`;
+    if (key === 'egg'){
+      const count = Math.round(totalGrams / f.unitGrams);
+      qtyText = `${count} ${t(count > 1 ? 'food_egg_plural' : 'food_egg')}`;
+    } else if (totalGrams >= 1000){
+      qtyText = `${(totalGrams/1000).toFixed(2)} kg`;
+    }
+    return `<div class="grocery-item"><span>${t(f.nameKey)}</span><strong>${qtyText}</strong></div>`;
+  }).join('');
+}
+
 function renderPlanUI(p){
   dom.dailyCaloriesPlan.textContent = `${p.results.goalCalories} kcal`;
-  dom.planTableContainer.innerHTML = mealTableHTML(p.mealPlan);
+  dom.planTableContainer.innerHTML = mealTableHTML(p.mealPlan, p.personalInfo.weight, true);
+  renderGroceryList(p.mealPlan);
 }
 
 dom.regeneratePlanBtn.addEventListener('click', () => generatePlan(true));
 
+dom.toggleGroceryBtn.addEventListener('click', () => {
+  dom.groceryContent.classList.toggle('hidden');
+  dom.groceryArrow.textContent = dom.groceryContent.classList.contains('hidden') ? '▼' : '▲';
+});
+dom.grocery1DayBtn.addEventListener('click', () => {
+  state.groceryMultiplier = 1;
+  dom.grocery1DayBtn.className = 'btn btn-sm btn-primary';
+  dom.grocery7DaysBtn.className = 'btn btn-sm btn-secondary';
+  if (state.currentPlan.mealPlan) renderGroceryList(state.currentPlan.mealPlan);
+});
+dom.grocery7DaysBtn.addEventListener('click', () => {
+  state.groceryMultiplier = 7;
+  dom.grocery7DaysBtn.className = 'btn btn-sm btn-primary';
+  dom.grocery1DayBtn.className = 'btn btn-sm btn-secondary';
+  if (state.currentPlan.mealPlan) renderGroceryList(state.currentPlan.mealPlan);
+});
+
 /* =========================================================
-   History / persistence
+   History & Persistence
    ========================================================= */
 function renderSnapshot(){
   if (!dom.snapshotBody) return;
@@ -1151,10 +1426,11 @@ function renderSnapshot(){
     dom.snapshotBody.innerHTML = `<div class="snapshot-empty">${t('emptyHistoryDescription')}</div>`;
     return;
   }
+  const goalKey = `goal${last.goals.goal.charAt(0).toUpperCase()+last.goals.goal.slice(1)}Label`;
   dom.snapshotBody.innerHTML = `
-    <div class="history-item" style="cursor:pointer;" id="snapshotLink">
+    <div class="history-item" id="snapshotLink">
       <div class="history-item-header">
-        <div class="history-item-title">${t(`goal${last.goals.goal.charAt(0).toUpperCase()+last.goals.goal.slice(1)}Label`)}</div>
+        <div class="history-item-title">${t(goalKey)}</div>
         <div class="history-item-date">${last.date}</div>
       </div>
       <div class="history-item-details">
@@ -1175,11 +1451,12 @@ function renderHistory(){
   }
   dom.emptyHistory.classList.add('hidden');
   [...state.history].reverse().forEach(plan => {
+    const goalKey = `goal${plan.goals.goal.charAt(0).toUpperCase()+plan.goals.goal.slice(1)}Label`;
     const item = document.createElement('div');
     item.className = 'history-item';
     item.innerHTML = `
       <div class="history-item-header">
-        <div class="history-item-title">${t(`goal${plan.goals.goal.charAt(0).toUpperCase()+plan.goals.goal.slice(1)}Label`)}</div>
+        <div class="history-item-title">${t(goalKey)}</div>
         <div class="history-item-date">${t('savedPlanDate')}${plan.date}</div>
       </div>
       <div class="history-item-details">
@@ -1195,8 +1472,13 @@ function renderHistory(){
 
 function savePlan(){
   if (!state.currentPlan.mealPlan) generatePlan(false);
-  state.history.push(state.currentPlan);
+  // Évite les doublons si l'utilisateur clique plusieurs fois sur sauvegarder
+  const exists = state.history.findIndex(p => p.id === state.currentPlan.id);
+  if (exists >= 0) state.history[exists] = JSON.parse(JSON.stringify(state.currentPlan));
+  else state.history.push(JSON.parse(JSON.stringify(state.currentPlan)));
+
   localStorage.setItem('marrakfit-history', JSON.stringify(state.history));
+  showToast(t('savedAlert'));
   showSection('homeSection', false);
 }
 
@@ -1210,18 +1492,17 @@ function viewSavedPlan(planId){
     <p><strong>${t('genderLabel')} :</strong> ${t(`gender${plan.personalInfo.gender.charAt(0).toUpperCase()+plan.personalInfo.gender.slice(1)}`)}</p>
     <p><strong>${t('weightLabel')} :</strong> ${plan.personalInfo.weight} kg</p>
     <p><strong>${t('heightLabel')} :</strong> ${plan.personalInfo.height} cm</p>
-    <p><strong>${t('activityLabel')} :</strong> ${plan.personalInfo.activityLevel}</p>
+    ${plan.analytics ? `<p><strong>${t('bmiLabel')} :</strong> ${plan.analytics.bmi}</p>` : ''}
   `;
   dom.savedNutritionalNeeds.innerHTML = `
     <div class="stat-strip">
       <div class="stat-tile"><div class="s-label">${t('bmrTitle')}</div><div class="s-val">${plan.results.bmr}</div><div class="s-unit">kcal</div></div>
       <div class="stat-tile"><div class="s-label">${t('tdeeTitle')}</div><div class="s-val">${plan.results.tdee}</div><div class="s-unit">kcal</div></div>
-      <div class="stat-tile"><div class="s-label">${t('goalCaloriesTitle')}</div><div class="s-val">${plan.results.goalCalories}</div><div class="s-unit">kcal</div></div>
+      <div class="stat-tile highlight"><div class="s-label">${t('goalCaloriesTitle')}</div><div class="s-val">${plan.results.goalCalories}</div><div class="s-unit">kcal</div></div>
     </div>
     <p><strong>${t('macrosTitle')} :</strong> ${t('proteinLabel')} ${plan.results.proteinGrams}g · ${t('fatLabel')} ${plan.results.fatGrams}g · ${t('carbsLabel')} ${plan.results.carbsGrams}g</p>
   `;
-  if (!plan.mealPlan) plan.mealPlan = pickMealsForPlan(plan.results.goalCalories, plan.goals.goal, false);
-  dom.savedPlanTableContainer.innerHTML = mealTableHTML(plan.mealPlan);
+  dom.savedPlanTableContainer.innerHTML = mealTableHTML(plan.mealPlan, plan.personalInfo.weight, false);
 
   showSection('savedPlanSection', false);
   dom.deleteSavedPlanBtn.dataset.id = planId;
@@ -1237,8 +1518,11 @@ function deletePlan(planId){
 /* =========================================================
    Events
    ========================================================= */
+dom.brandHomeBtn.addEventListener('click', () => showSection('homeSection', false));
 dom.startNewPlanBtn.addEventListener('click', () => {
-  dom.personalInfoForm.reset(); dom.goalForm.reset();
+  dom.personalInfoForm.reset();
+  dom.goalForm.reset();
+  dom.intensityWrapper.classList.remove('hidden');
   showSection('personalInfoSection', true);
 });
 dom.viewHistoryBtn.addEventListener('click', () => { renderHistory(); showSection('historySection', false); });
@@ -1261,7 +1545,7 @@ dom.nextToPlanBtn.addEventListener('click', () => generatePlan(false));
 dom.backToGoalBtn.addEventListener('click', () => showSection('goalSection', true));
 dom.backToResultsBtn.addEventListener('click', () => showSection('resultsSection', true));
 
-dom.savePlanBtn.addEventListener('click', () => { savePlan(); });
+dom.savePlanBtn.addEventListener('click', savePlan);
 dom.restartBtn.addEventListener('click', () => showSection('homeSection', false));
 
 dom.backFromSavedPlanBtn.addEventListener('click', () => { renderHistory(); showSection('historySection', false); });
@@ -1272,7 +1556,6 @@ dom.deleteSavedPlanBtn.addEventListener('click', e => {
 });
 dom.printPlanBtn.addEventListener('click', () => window.print());
 
-/* Initial setup */
 document.addEventListener('DOMContentLoaded', () => {
   setLanguage(currentLang);
   showSection('homeSection', false);
